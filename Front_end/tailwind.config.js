@@ -11,6 +11,9 @@ export default {
   variants: {
     extend: {
       display: ["focus-group"],
+      transitionDuration:{
+        '2000': '2000ms',
+      }
     },
   },
   plugins: [require("@tailwindcss/forms")],

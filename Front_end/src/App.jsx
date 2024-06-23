@@ -3,7 +3,6 @@ import Layout from "./components/shared/Layout";
 import Dashboard from "./components/Dashboard";
 import Products from "./components/Products";
 
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Switch } from "@headlessui/react";
 import Login from "./Login";

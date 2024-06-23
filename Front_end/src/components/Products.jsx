@@ -1,5 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Transition } from "@headlessui/react";
+
+import EditButton from "./button/button_product/EditButton";
+import DeleteButton from "./button/button_product/DeleteButton";
+import Modal from "./Modal";
+
 import {
   HiFilter,
   HiOutlineEyeOff,
@@ -19,8 +25,9 @@ const status = [
   { name: "Under Review", icon: <HiOutlineMail className="w-6 h-6" /> },
 ];
 
-const products = [
+const initialProducts = [
   {
+    id: 1,
     name: "Organic Landing page",
     category: "Web Design",
     imageUrl: "/images/galery-1.jpg",
@@ -28,6 +35,7 @@ const products = [
     stock: 793,
   },
   {
+    id: 2,
     name: "Organic Landing page",
     category: "Web Design",
     imageUrl: "/images/galery-1.jpg",
@@ -35,6 +43,7 @@ const products = [
     stock: 793,
   },
   {
+    id: 3,
     name: "Organic Landing page",
     category: "Web Design",
     imageUrl: "/images/galery-1.jpg",
@@ -42,6 +51,7 @@ const products = [
     stock: 793,
   },
   {
+    id: 4,
     name: "Organic Landing page",
     category: "Web Design",
     imageUrl: "/images/galery-1.jpg",
@@ -51,11 +61,25 @@ const products = [
 ];
 
 export default function Products() {
-  return (
-    // <div>
-    //    this is product page <Link to="/dashboard_admin" className="underline">go to dashboard</Link>
-    // </div>
+  const [products, setProducts] = useState(initialProducts);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const handleDeleteClick = (productId) => {
+    setSelectedProduct(productId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+  const handleDelete = () => {
+    setProducts(products.filter((product) => product.id !== selectedProduct));
+    handleCloseModal();
+  };
+  return (
     <main>
       <div className="flex items-center justify-between py-7 px-10">
         <div>
@@ -75,11 +99,8 @@ export default function Products() {
       </div>
 
       <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
-        {status.map((Published) => (
-          <li
-            key={Published.icon}
-            className="flex items-center gap-4 text-gray-700"
-          >
+        {status.map((Published, index) => (
+          <li key={index} className="flex items-center gap-4 text-gray-700">
             <button className="flex gap-x-2 items-center py-5 px-6 text-gray-500 hover:text-indigo-600 relative group">
               {Published.icon}
               <span className="font-medium">{Published.name}</span>
@@ -107,9 +128,10 @@ export default function Products() {
               <td className="py-4 px-4 text-center"></td>
             </tr>
           </thead>
+
           <tbody>
-            {products.map((product, index) => (
-              <tr key={index} className="border-b border-t-gray-200">
+            {products.map((product) => (
+              <tr key={product.id} className="border-b border-t-gray-200">
                 <td className="flex gap-x-4 items-center py-4 pl-10">
                   <input
                     type="checkbox"
@@ -125,45 +147,45 @@ export default function Products() {
                 <td className="py-4 px-4 text-center">{product.price}</td>
                 <td className="py-4 px-4 text-center">{product.stock}</td>
                 <td className="py-4 px-4 text-center">{product.createdAt}</td>
-                <td>
-                  <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M2 5a1 1 0 011-1h5a1 1 0 011 1v1a1 1 0 01-1 1H3v10a1 1 0 001 1h12a1 1 0 001-1V7h-5a1 1 0 01-1-1V5a1 1 0 011-1h7a1 1 0 011 1v12a3 3 0 01-3 3H5a3 3 0 01-3-3V5z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Edit
-                  </button>
-                  <span className="ml-2">
-                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M7 3a1 1 0 011-1h4a1 1 0 011 1v1h2a1 1 0 011 1v12a2 2 0 01-2 2H6a2 2 0 01-2-2V5a1 1 0 011-1h2V3zm5 2H8v11h4V5zm-3 3a1 1 0 011 1v5a1 1 0 11-2 0V9a1 1 0 011-1zm2-2a1 1 0 11-2 0 1 1 0 012 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Delete
-                    </button>
-                  </span>
+
+                <td className="py-4 px-4 text-center">
+                  <div className="flex justify-center gap-2">
+                    <EditButton />
+                    <DeleteButton
+                      onClick={() => handleDeleteClick(product.id)}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Modal untuk konfirmasi delete */}
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Confirm Deletion
+        </h2>
+        <p className="text-sm text-gray-600 mb-6">
+          Are you sure you want to delete this product? This action cannot be
+          undone.
+        </p>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={handleCloseModal}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
+      </Modal>
     </main>
   );
 }
