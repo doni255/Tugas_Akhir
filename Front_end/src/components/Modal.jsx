@@ -6,6 +6,12 @@ const Modal = ({ open, onClose, children }) => {
 
   if (!open) return null;
 
+  const handleOverlayClick = (e) => {
+    if (modalRef.current === e.target) {
+      onClose();
+    }
+  };
+
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center z-50 ${

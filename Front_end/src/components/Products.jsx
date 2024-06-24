@@ -65,6 +65,9 @@ export default function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+
+
+
   const handleDeleteClick = (productId) => {
     setSelectedProduct(productId);
     setIsModalOpen(true);
@@ -79,6 +82,7 @@ export default function Products() {
     setProducts(products.filter((product) => product.id !== selectedProduct));
     handleCloseModal();
   };
+
   return (
     <main>
       <div className="flex items-center justify-between py-7 px-10">
@@ -90,7 +94,10 @@ export default function Products() {
             Let's grow to your business! Create your product and upload here
           </p>
         </div>
-        <button className="inline-flex gap-x-2 items-center py-2.5 px-6 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
+        <button
+         
+          className="inline-flex gap-x-2 items-center py-2.5 px-6 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+        >
           <HiPlus className="w-6 h-6 fill-current" />
           <span className="text-sm font-semibold tracking-wide">
             Create Item
@@ -98,7 +105,7 @@ export default function Products() {
         </button>
       </div>
 
-      <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
+      {/* <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
         {status.map((Published, index) => (
           <li key={index} className="flex items-center gap-4 text-gray-700">
             <button className="flex gap-x-2 items-center py-5 px-6 text-gray-500 hover:text-indigo-600 relative group">
@@ -108,7 +115,7 @@ export default function Products() {
             </button>
           </li>
         ))}
-      </ul>
+      </ul> */}
 
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -186,6 +193,8 @@ export default function Products() {
           </button>
         </div>
       </Modal>
+
+      
     </main>
   );
 }
