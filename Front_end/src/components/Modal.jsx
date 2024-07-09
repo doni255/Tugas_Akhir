@@ -1,16 +1,47 @@
 // src/button/button_product/Modal.js
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
 
-const Modal = ({ open, onClose, children }) => {
+const Modal = ({ open, onClose, children, type, addItem }) => {
   const modalRef = useRef(null);
 
-  if (!open) return null;
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    imageUrl: "",
+    price: "",
+    stock: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (type === "create") {
+      addItem(formData);
+      setFormData({
+        name: "",
+        category: "",
+        imageUrl: "",
+        price: "",
+        stock: "",
+      });
+    }
+    onClose();
+  };
 
   const handleOverlayClick = (e) => {
     if (modalRef.current === e.target) {
       onClose();
     }
   };
+
+  if (!open) return null;
 
   return (
     <div
@@ -37,6 +68,12 @@ const Modal = ({ open, onClose, children }) => {
       </div>
     </div>
   );
+};
+
+Modal.PropTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node,
 };
 
 export default Modal;

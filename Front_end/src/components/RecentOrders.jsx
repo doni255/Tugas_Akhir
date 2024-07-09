@@ -1,6 +1,6 @@
-import React from 'react'
-import { Link } from "react-router-dom"
-import { getOrderStatus } from "../lib/utils/index"
+import React from "react";
+import { Link } from "react-router-dom";
+import { getOrderStatus } from "../lib/utils/index";
 
 const recentOrderData = [
   {
@@ -62,19 +62,19 @@ function RecentOrders() {
       <div className="mt-3">
         <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
           <thead>
-            <tr className='font-semibold'>
+            <tr className="font-semibold">
               <td>ID</td>
               <td>Product ID</td>
               <td>Customer Name</td>
               <td>Order Date</td>
               <td>Order Total</td>
-              <td>Shipping Address</td>
+              <td>Products</td>
               <td>Order Status</td>
             </tr>
           </thead>
           <tbody>
             {recentOrderData.map((order) => (
-              <tr key={order.id}>
+              <tr key={order.id} className="hover:bg-gray-100">
                 <td>
                   <Link to={`/order/${order.id}`}>{order.id}</Link>
                 </td>
@@ -101,4 +101,4 @@ function RecentOrders() {
   );
 }
 
-export default RecentOrders
+export default RecentOrders;

@@ -1,12 +1,11 @@
 import { Menu, Popover, Transition } from "@headlessui/react";
 import classNames from "classnames";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import {
   HiOutlineBell,
   HiOutlineChatAlt,
   HiOutlineSearch,
 } from "react-icons/hi";
-import doniImage from "../../assets/images/doni.png";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
@@ -16,7 +15,7 @@ export default function Header() {
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-color-gray-200">
       <div className="relative">
         <HiOutlineSearch
-          font-size={20}
+          fontSize={20}
           className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
         />
         <input
