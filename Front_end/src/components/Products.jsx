@@ -29,7 +29,7 @@ export const initialProducts = [
     id_product: "MR-0001",
     name: "Organic Landing page",
     category: "Web Design",
-    imageUrl: "/images/pompa.png",
+    imageUrl: "/images/galery-1.jpg",
     price: 20,
     stock: 793,
   },
@@ -136,19 +136,19 @@ export default function Products() {
 
   return (
     <main>
-      <div className="flex items-center justify-between py-7 px-10">
-        <div>
-          <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
-            Products
-          </h1>
-          <p className="text-sm font-medium text-gray-500">
-            Let's grow to your business! Create your product and upload here
-          </p>
+      <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
+        <div className="flex items-center justify-between py-7 px-10">
+          <div>
+            <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
+              Products
+            </h1>
+            <p className="text-sm font-medium text-gray-500">
+              Let's grow to your business! Create your product and upload here
+            </p>
+          </div>
+          <CreateItem onAddItem={handleAddItem} />
         </div>
-        <CreateItem onAddItem={handleAddItem} />
-      </div>
-
-      {/* <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
+        {/* <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
         {status.map((Published, index) => (
           <li key={index} className="flex items-center gap-4 text-gray-700">
             <button className="flex gap-x-2 items-center py-5 px-6 text-gray-500 hover:text-indigo-600 relative group">
@@ -159,70 +159,69 @@ export default function Products() {
           </li>
         ))}
       </ul> */}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
+                <td className="pl-10 py-4">
+                  <div className="flex items-center gap-x-4">
+                    <input
+                      type="checkbox"
+                      className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
+                    />
+                    <span>ID</span>
+                  </div>
+                </td>
+                <td className="py-4 px-4">&nbsp; Gambar</td>
+                <td className="py-4 px-4 text-center">Product Name</td>
+                <td className="py-4 px-4 text-center">Kategori Produk</td>
+                <td className="py-4 px-4 text-center">Pricing</td>
+                <td className="py-4 px-4 text-center">Stock</td>
+                <td></td>
+                <td></td>
+              </tr>
+            </thead>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
-              <td className="pl-10 py-4">
-                <div className="flex items-center gap-x-4">
-                  <input
-                    type="checkbox"
-                    className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
-                  />
-                  <span>ID</span>
-                </div>
-              </td>
-              <td className="py-4 px-4">&nbsp; Gambar</td>
-              <td className="py-4 px-4 text-center">Product Name</td>
-              <td className="py-4 px-4 text-center">Kategori Produk</td>
-              <td className="py-4 px-4 text-center">Pricing</td>
-              <td className="py-4 px-4 text-center">Stock</td>
-            </tr>
-          </thead>
-
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className=" border-b border-t-gray-200">
-                <td className="gap-x-4 items-center py-4 pl-10">
-                  <input
-                    type="checkbox"
-                    className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
-                  />
-                  <span className="py-4 px-4 text-center">
-                    {product.id_product}
-                  </span>
-                  {/* <img
+            <tbody>
+              {products.map((product) => (
+                <tr key={product.id} className=" border-b border-t-gray-200">
+                  <td className="gap-x-4 items-center py-4 pl-10">
+                    <input
+                      type="checkbox"
+                      className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
+                    />
+                    <span className="py-4 px-4 text-center">
+                      {product.id_product}
+                    </span>
+                    {/* <img
                     src={product.imageUrl}
                     alt={product.name}
                     className="w-48 aspect-[3/2 rounded-lg object-cover object-top border border-gray-200"
                   /> */}
-                </td>
-                <td className="py-4 px-4">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="w-44 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
-                  />
-                </td>
-                <td className="py-4 px-4 text-center">{product.name}</td>
-                <td className="py-4 px-4 text-center">{product.category}</td>
-                <td className="py-4 px-4 text-center">{product.price}</td>
-                <td className="py-4 px-4 text-center">{product.stock}</td>
-                <td className="py-4 px-4 text-center">{product.createdAt}</td>
-
-                <td className="py-4 px-4 text-center">
-                  <div className="flex justify-center gap-2">
+                  </td>
+                  <td className="py-4 px-4">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-44 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
+                    />
+                  </td>
+                  <td className="py-4 px-4 text-center">{product.name}</td>
+                  <td className="py-4 px-4 text-center">{product.category}</td>
+                  <td className="py-4 px-4 text-center">{product.price}</td>
+                  <td className="py-4 px-4 text-center">{product.stock}</td>
+                  <td className="py-4 px-4 text-center">{product.createdAt}</td>
+                  <td className="py-4 px-4 text-center">
                     <EditButton onClick={() => handleEditClick(product)} />
                     <DeleteButton
                       onClick={() => handleDeleteClick(product.id)}
                     />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal for Edit Form */}

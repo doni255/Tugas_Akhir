@@ -36,9 +36,21 @@ export const DASHBOARD_SIDEBAR_LINKS = [
   },
   {
     key: "report",
-    label: "Report",
+    label: "Laporan",
     path: "/dashboard_admin/report",
     icon: <HiOutlineDocumentText />,
+    subLinks: [
+      {
+        key: "pendapatan",
+        label: "Pendapatan",
+        path: "/dashboard_admin/pendapatan",
+      },
+      {
+        key: "barang_masuk",
+        label: "Barang Masuk",
+        path: "/dashboard_admin/barang_masuk",
+      },
+    ],
   },
   {
     key: "messages",

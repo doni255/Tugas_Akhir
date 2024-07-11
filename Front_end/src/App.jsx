@@ -12,6 +12,8 @@ import Orders from "./components/Orders";
 import Customers from "./components/Customers";
 import Report from "./components/Report";
 import Messages from "./components/Messages";
+import BarangMasuk from "./components/Barang_Masuk";
+import Pendapatan from "./components/Pendapatan";
 
 function App() {
   return (
@@ -25,7 +27,9 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="orders" element={<Orders />} />
           <Route path="customers" element={<Customers />} />
-          <Route path="report" element={<Report />} />
+          {/* <Route path="report" element={<Report />} /> */}
+          <Route path="pendapatan" element={<Pendapatan />} />
+          <Route path="barang_masuk" element={<BarangMasuk />} />
           <Route path="messages" element={<Messages />} />
         </Route>
       </Routes>

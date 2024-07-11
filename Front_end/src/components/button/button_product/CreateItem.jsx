@@ -19,9 +19,9 @@ function CreateItem({ onAddItem }) {
     <>
       <button
         onClick={toggleModal}
-        className="inline-flex gap-x-2 items-center py-2.5 px-6 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+        className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
       >
-        <HiPlus className="w-6 h-6 fill-current" />
+        <HiPlus className="w-4 h-4 fill-current" />
         <span className="text-sm font-semibold tracking-wide">Create Item</span>
       </button>
 
@@ -132,7 +132,7 @@ function CreateItem({ onAddItem }) {
     e.preventDefault();
     const formData = {
       name: e.target.name.value,
-      category: e.target.imageUrl.value,
+      category: e.target.category.value,
       imageUrl: e.target.imageUrl.value,
       price: parseFloat(e.target.price.value),
       stock: parseInt(e.target.stock.value, 10),

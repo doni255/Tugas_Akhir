@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import { FcBullish } from "react-icons/fc";
 import {
@@ -6,7 +6,7 @@ import {
   DASHBOARD_SIDEBAR_LINKS,
 } from "../lib/consts/navigation";
 import { Link, useLocation } from "react-router-dom";
-import { HiOutlineLogout } from "react-icons/hi";
+import { HiChevronDown, HiChevronUp, HiOutlineLogout } from "react-icons/hi";
 
 const linkClasses =
   "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base";
@@ -40,6 +40,57 @@ export default function Sidebar() {
 
 function SidebarLink({ item }) {
   const { pathname } = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  if (item.subLinks) {
+    return (
+      <div>
+        <div
+          onClick={handleToggle}
+          className={classNames(
+            pathname === item.path
+              ? "bg-neutral-700 text-white"
+              : "text-neutral-400",
+            linkClasses,
+            "cursor-pointer"
+          )}
+        >
+          <span className="text-xl">{item.icon}</span>
+          <span className="flex-1">{item.label}</span>
+          {isOpen ? <HiChevronDown /> : <HiChevronUp />}
+        </div>
+        <div
+          className={classNames("transition-all duration-1000 ease-in-out overflow-hidden", {
+            "max-h-0": !isOpen,
+            "max-h-screen": isOpen,
+          })}
+        >
+          {isOpen && (
+            <div className="pl-6">
+              {item.subLinks.map((subItem) => (
+                <Link
+                  key={subItem.key}
+                  to={subItem.path}
+                  className={classNames(
+                    pathname === subItem.path
+                      ? "bg-neutral-700 text-white"
+                      : "text-neutral-400",
+                    linkClasses
+                  )}
+                >
+                  {subItem.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Link
