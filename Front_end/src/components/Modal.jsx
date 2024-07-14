@@ -1,5 +1,5 @@
 // src/button/button_product/Modal.js
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 const Modal = ({ open, onClose, children, type, addItem }) => {

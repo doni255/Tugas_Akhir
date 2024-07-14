@@ -1,5 +1,6 @@
-import React from "react";
 import TambahBarang from "./button/button_tambah_barang_masuk/TambahBarang";
+import Pagination from "../lib/consts/Pagination";
+import react, { useState } from "react";
 
 export const barangMasuk = [
   {
@@ -13,7 +14,7 @@ export const barangMasuk = [
   },
   {
     id: 2,
-    No: "2",  
+    No: "2",
     name: "Mitsubishi",
     harga_beli: "550.000",
     harga_jual: "600.600",
@@ -38,9 +39,35 @@ export const barangMasuk = [
     jumlah_masuk: "5 mesin",
     nama_supplier: "eko",
   },
+  {
+    id: 5,
+    No: "5",
+    name: "Organic Landing page",
+    harga_beli: "550.000",
+    harga_jual: "600.600",
+    jumlah_masuk: "5 mesin",
+    nama_supplier: "eko",
+  },
+  {
+    id: 6,
+    No: "6",
+    name: "Organic Landing page",
+    harga_beli: "550.000",
+    harga_jual: "600.600",
+    jumlah_masuk: "5 mesin",
+    nama_supplier: "eko",
+  },
 ];
 
 export default function Barang_Masuk() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = barangMasuk.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
     <main>
       {/* <div className={"flex justify-center py-2"}>
@@ -68,75 +95,74 @@ export default function Barang_Masuk() {
             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
               <thead className="ltr:text-left rtl:text-right">
                 <tr className={"font-semibold"}>
-                  <th className="">
-                    No
-                  </th>
-                  <th className="">
-                    Nama Barang
-                  </th>
-                  <th className="">
-                    Harga Beli
-                  </th>
-                  <th className="">
-                    Harga Jual
-                  </th>
-                  <th className="">
-                    Jumlah Masuk
-                  </th>
-                  <th className="">
-                    Supplier
-                  </th>
+                  <th className="">No</th>
+                  <th className="">Nama Barang</th>
+                  <th className="">Harga Beli</th>
+                  <th className="">Harga Jual</th>
+                  <th className="">Jumlah Masuk</th>
+                  <th className="">Supplier</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-gray-200">
-                {barangMasuk.map((barang) => (
+                {currentItems.map((barang) => (
                   <tr key={barang.id}>
-                    <td className={"whitespace-nowrap px-4 py-2 font-medium text-gray-900"}>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                      }
+                    >
                       {barang.No}
                     </td>
-                    <td className={"whitespace-nowrap px-4 py-2 font-medium text-gray-900"}>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                      }
+                    >
                       {barang.name}
                     </td>
-                    <td className={"whitespace-nowrap px-4 py-2 font-medium text-gray-900"}>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                      }
+                    >
                       {barang.harga_beli}
                     </td>
-                    <td className={"whitespace-nowrap px-4 py-2 font-medium text-gray-900"}>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                      }
+                    >
                       {barang.harga_jual}
                     </td>
-                    <td className={"whitespace-nowrap px-4 py-2 font-medium text-gray-900"}>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                      }
+                    >
                       {barang.jumlah_masuk}
                     </td>
-                    <td className={"whitespace-nowrap px-4 py-2 font-medium text-gray-900"}>    
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                      }
+                    >
                       {barang.nama_supplier}
                     </td>
                   </tr>
                 ))}
-                {/* <tr>
-                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                    1
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    24/05/1995
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    Web Developer
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    $120,000
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    $120,000
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    $120,000
-                  </td>
-                </tr> */}
               </tbody>
             </table>
           </div>
 
-          <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={barangMasuk.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+
+          {/* <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
             <ol className="flex justify-end gap-1 text-xs font-medium">
               <li>
                 <a
@@ -211,7 +237,7 @@ export default function Barang_Masuk() {
                 </a>
               </li>
             </ol>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>

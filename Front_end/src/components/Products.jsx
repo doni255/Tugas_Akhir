@@ -14,6 +14,7 @@ import {
   HiOutlineXCircle,
   HiPlus,
 } from "react-icons/hi";
+import Pagination from "../lib/consts/Pagination";
 
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
@@ -60,10 +61,27 @@ export const initialProducts = [
     price: 20,
     stock: 793,
   },
+  {
+    id: 5,
+    id_product: "MR-0001",
+    name: "Organic Landing page",
+    category: "Web Design",
+    imageUrl: "/images/galery-1.jpg",
+    price: 20,
+    stock: 793,
+  },
+  {
+    id: 6,
+    id_product: "MR-0001",
+    name: "Organic Landing page",
+    category: "Web Design",
+    imageUrl: "/images/galery-1.jpg",
+    price: 20,
+    stock: 793,
+  },
 ];
 
 export default function Products() {
-  const [products, setProducts] = useState(initialProducts);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -134,6 +152,17 @@ export default function Products() {
     setProducts([...products, newItem]);
   };
 
+  // Bagian Paginasi
+  const [products, setProducts] = useState(initialProducts);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <main>
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
@@ -183,7 +212,7 @@ export default function Products() {
             </thead>
 
             <tbody>
-              {products.map((product) => (
+              {currentItems.map((product) => (
                 <tr key={product.id} className=" border-b border-t-gray-200">
                   <td className="gap-x-4 items-center py-4 pl-10">
                     <input
@@ -203,7 +232,7 @@ export default function Products() {
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className="w-44 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
+                      className="w-40 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
                     />
                   </td>
                   <td className="py-4 px-4 text-center">{product.name}</td>
@@ -222,6 +251,12 @@ export default function Products() {
             </tbody>
           </table>
         </div>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={products.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
       </div>
 
       {/* Modal for Edit Form */}
