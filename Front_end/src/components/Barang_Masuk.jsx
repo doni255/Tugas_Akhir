@@ -1,81 +1,90 @@
 import TambahBarang from "./button/button_tambah_barang_masuk/TambahBarang";
 import Pagination from "../lib/consts/Pagination";
-import react, { useState } from "react";
+import React, { useState } from "react";
+import EditButton from "./button/button_product/EditButton";
+import DeleteButton from "./button/button_product/DeleteButton";
+import Modal from "./Modal";
+import { barangMasuk } from "./hook/barang_masuk/dataBarangMasuk";
+import useBarangMasukData from "./hook/barang_masuk/useBarangMasuk";
 
-export const barangMasuk = [
-  {
-    id: 1,
-    No: "1",
-    name: "Mesin pompa air",
-    harga_beli: "550.000",
-    harga_jual: "600.600",
-    jumlah_masuk: "5 mesin",
-    nama_supplier: "eko",
-  },
-  {
-    id: 2,
-    No: "2",
-    name: "Mitsubishi",
-    harga_beli: "550.000",
-    harga_jual: "600.600",
-    jumlah_masuk: "5 mesin",
-    nama_supplier: "ahen",
-  },
-  {
-    id: 3,
-    No: "3",
-    name: "Organic Landing page",
-    harga_beli: "550.000",
-    harga_jual: "600.600",
-    jumlah_masuk: "5 mesin",
-    nama_supplier: "eko",
-  },
-  {
-    id: 4,
-    No: "4",
-    name: "Organic Landing page",
-    harga_beli: "550.000",
-    harga_jual: "600.600",
-    jumlah_masuk: "5 mesin",
-    nama_supplier: "eko",
-  },
-  {
-    id: 5,
-    No: "5",
-    name: "Organic Landing page",
-    harga_beli: "550.000",
-    harga_jual: "600.600",
-    jumlah_masuk: "5 mesin",
-    nama_supplier: "eko",
-  },
-  {
-    id: 6,
-    No: "6",
-    name: "Organic Landing page",
-    harga_beli: "550.000",
-    harga_jual: "600.600",
-    jumlah_masuk: "5 mesin",
-    nama_supplier: "eko",
-  },
-];
+// export const barangMasuk = [
+//   {
+//     id: 1,
+//     No: "1",
+//     name: "Mesin pompa air",
+//     harga_beli: "550.000",
+//     harga_jual: "600.600",
+//     jumlah_masuk: "5 mesin",
+//     nama_supplier: "eko",
+//   },
+//   {
+//     id: 2,
+//     No: "2",
+//     name: "Mitsubishi",
+//     harga_beli: "550.000",
+//     harga_jual: "600.600",
+//     jumlah_masuk: "5 mesin",
+//     nama_supplier: "ahen",
+//   },
+//   {
+//     id: 3,
+//     No: "3",
+//     name: "Organic Landing page",
+//     harga_beli: "550.000",
+//     harga_jual: "600.600",
+//     jumlah_masuk: "5 mesin",
+//     nama_supplier: "eko",
+//   },
+//   {
+//     id: 4,
+//     No: "4",
+//     name: "Organic Landing page",
+//     harga_beli: "550.000",
+//     harga_jual: "600.600",
+//     jumlah_masuk: "5 mesin",
+//     nama_supplier: "eko",
+//   },
+//   {
+//     id: 5,
+//     No: "5",
+//     name: "Organic Landing page",
+//     harga_beli: "550.000",
+//     harga_jual: "600.600",
+//     jumlah_masuk: "5 mesin",
+//     nama_supplier: "eko",
+//   },
+//   {
+//     id: 6,
+//     No: "6",
+//     name: "Organic Landing page",
+//     harga_beli: "550.000",
+//     harga_jual: "600.600",
+//     jumlah_masuk: "5 mesin",
+//     nama_supplier: "eko",
+//   },
+// ];
 
 export default function Barang_Masuk() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const {
+    barangMasukData,
+    isModalOpen,
+    selectedBarangMasuk,
+    currentItems,
+    currentPage,
+    itemsPerPage,
+    isEditModalOpen,
+    handleCloseEditModal,
+    editedBarangMasuk,
+    handleEditClick,
+    setEditedBarangMasuk,
+    handleDeleteClick,
+    handleDelete,
+    handleCloseModal,
+    paginate,
+  } = useBarangMasukData();
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = barangMasuk.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
     <main>
-      {/* <div className={"flex justify-center py-2"}>
-        <strong className="text-xl font-semibold loading-relaxed text-gray-500">
-          BARANG MASUK
-        </strong>
-      </div> */}
-
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 ">
         <div className="flex items-center justify-between mb-2 py-7 px-8">
           <strong className="text-2xl font-semibold loading-relaxed text-gray-800">
@@ -85,7 +94,7 @@ export default function Barang_Masuk() {
           <TambahBarang />
         </div>
         {/*
-  Heads up! 👋
+    Heads up! 👋
 
   This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
 */}
@@ -95,12 +104,13 @@ export default function Barang_Masuk() {
             <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
               <thead className="ltr:text-left rtl:text-right">
                 <tr className={"font-semibold"}>
-                  <th className="">No</th>
-                  <th className="">Nama Barang</th>
-                  <th className="">Harga Beli</th>
-                  <th className="">Harga Jual</th>
-                  <th className="">Jumlah Masuk</th>
-                  <th className="">Supplier</th>
+                  <th className="px-4 py-4 text-center">No</th>
+                  <th className="px-4 py-4 text-center">Nama Barang</th>
+                  <th className="px-4 py-4 text-center">Harga Beli</th>
+                  <th className="px-4 py-4 text-center">Harga Jual</th>
+                  <th className="px-4 py-4 text-center">Jumlah Masuk</th>
+                  <th className="px-4 py-4 text-center">Supplier</th>
+                  <th className="px-4 py-4 text-center"></th>
                 </tr>
               </thead>
 
@@ -109,45 +119,55 @@ export default function Barang_Masuk() {
                   <tr key={barang.id}>
                     <td
                       className={
-                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
                       }
                     >
                       {barang.No}
                     </td>
                     <td
                       className={
-                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
                       }
                     >
                       {barang.name}
                     </td>
                     <td
                       className={
-                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
                       }
                     >
                       {barang.harga_beli}
                     </td>
                     <td
                       className={
-                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
                       }
                     >
                       {barang.harga_jual}
                     </td>
                     <td
                       className={
-                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
                       }
                     >
                       {barang.jumlah_masuk}
                     </td>
                     <td
                       className={
-                        "whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
                       }
                     >
                       {barang.nama_supplier}
+                    </td>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
+                      }
+                    >
+                      <EditButton onClick={() => handleEditClick(barang.id)} />
+                      <DeleteButton
+                        onClick={() => handleDeleteClick(barang.id)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -161,85 +181,162 @@ export default function Barang_Masuk() {
             paginate={paginate}
             currentPage={currentPage}
           />
-
-          {/* <div className="rounded-b-lg border-t border-gray-200 px-4 py-2">
-            <ol className="flex justify-end gap-1 text-xs font-medium">
-              <li>
-                <a
-                  href="#"
-                  className="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180"
-                >
-                  <span className="sr-only">Prev Page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="#"
-                  className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
-                >
-                  1
-                </a>
-              </li>
-
-              <li className="block size-8 rounded border-blue-600 bg-blue-600 text-center leading-8 text-white">
-                2
-              </li>
-
-              <li>
-                <a
-                  href="#"
-                  className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
-                >
-                  3
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="#"
-                  className="block size-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900"
-                >
-                  4
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="#"
-                  className="inline-flex size-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180"
-                >
-                  <span className="sr-only">Next Page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </li>
-            </ol>
-          </div> */}
         </div>
       </div>
+
+      {/* Modal for Edit Form */}
+      <Modal open={isEditModalOpen} onClose={handleCloseEditModal}>
+        <h2 className="text-lg font-semibold mb-4">Edit Product</h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (editedBarangMasuk) {
+              handleEditSubmit(editedBarangMasuk);
+            } else {
+              console.error("editedBarangMasuk is undefined");
+            }
+          }}
+          action="#"
+          className="mt-8 grid grid-cols-6 gap-6"
+        >
+          <div className="col-span-6 sm:col-span-6 ">
+            <label
+              htmlFor="ProductName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Product Name:
+            </label>
+            <input
+              type="text"
+              value={editedBarangMasuk.name}
+              onChange={(e) =>
+                setEditedBarangMasuk({
+                  ...editedBarangMasuk,
+                  name: e.target.value,
+                })
+              }
+              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+
+          <div className="col-span-6 sm:col-span-6 ">
+            <label
+              htmlFor="Category"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Kategori Produk:
+            </label>
+            <input
+              type="text"
+              value={editedBarangMasuk.harga_beli}
+              onChange={(e) =>
+                setEditedBarangMasuk({
+                  ...editedBarangMasuk,
+                  harga_beli: e.target.value,
+                })
+              }
+              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+
+          <div className="col-span-6">
+            <label
+              htmlFor="Price"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Price:
+            </label>
+            <input
+              type="text"
+              value={editedBarangMasuk.harga_jual}
+              onChange={(e) =>
+                setEditedBarangMasuk({
+                  ...editedBarangMasuk,
+                  harga_jual: e.target.value,
+                })
+              }
+              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+          <div className="col-span-6">
+            <label
+              htmlFor="Stock"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Stock:
+            </label>
+            <input
+              type="text"
+              value={editedBarangMasuk.jumlah_masuk}
+              onChange={(e) =>
+                setEditedBarangMasuk({
+                  ...editedBarangMasuk,
+                  jumlah_masuk: e.target.value,
+                })
+              }
+              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+          <div className="col-span-6">
+            <label
+              htmlFor="Stock"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Stock:
+            </label>
+            <input
+              type="text"
+              value={editedBarangMasuk.nama_supplier}
+              onChange={(e) =>
+                setEditedBarangMasuk({
+                  ...editedBarangMasuk,
+                  nama_supplier: e.target.value,
+                })
+              }
+              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+          <div className="flex gap-2.5">
+            <button
+              type="submit"
+              className="inline-block rounded bg-blue-500 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
+            >
+              Update
+            </button>
+            <button
+              onClick={handleCloseEditModal}
+              className="inline-block rounded border border-current px-8 py-3 text-sm font-medium text-indigo-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal untuk konfirmasi delete */}
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Confirm Deletion
+        </h2>
+        <p className="text-sm text-gray-600 mb-6">
+          Are you sure you want to delete this barang masuk? This action cannot
+          be undone.
+        </p>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={handleCloseModal}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400  transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition hover:scale-110"
+          >
+            Delete
+          </button>
+        </div>
+      </Modal>
     </main>
   );
 }

@@ -164,7 +164,7 @@ export default function Products() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <main>
+    <main className="relative">
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
@@ -201,11 +201,11 @@ export default function Products() {
                     <span>ID</span>
                   </div>
                 </td>
-                <td className="py-4 px-4">&nbsp; Gambar</td>
-                <td className="py-4 px-4 text-center">Product Name</td>
-                <td className="py-4 px-4 text-center">Kategori Produk</td>
-                <td className="py-4 px-4 text-center">Pricing</td>
-                <td className="py-4 px-4 text-center">Stock</td>
+                <td className="">&nbsp; Gambar</td>
+                <td className="">Product Name</td>
+                <td className="">Kategori Produk</td>
+                <td className="">Pricing</td>
+                <td className="">Stock</td>
                 <td></td>
                 <td></td>
               </tr>
@@ -232,7 +232,7 @@ export default function Products() {
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className="w-40 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
+                      className="w-24 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
                     />
                   </td>
                   <td className="py-4 px-4 text-center">{product.name}</td>
@@ -251,6 +251,7 @@ export default function Products() {
             </tbody>
           </table>
         </div>
+
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={products.length}

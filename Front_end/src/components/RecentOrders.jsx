@@ -63,35 +63,35 @@ function RecentOrders() {
         <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
           <thead>
             <tr className="font-semibold">
-              <td>ID</td>
-              <td>Product ID</td>
-              <td>Customer Name</td>
-              <td>Order Date</td>
-              <td>Order Total</td>
-              <td>Products</td>
-              <td>Order Status</td>
+              <td className="py-4 px-4 text-center">ID</td>
+              <td className="py-4 px-4 text-center">Product ID</td>
+              <td className="py-4 px-4 text-center">Customer Name</td>
+              <td className="py-4 px-4 text-center">Order Date</td>
+              <td className="py-4 px-4 text-center">Order Total</td>
+              <td className="py-4 px-4 text-center">Products</td>
+              <td className="py-4 px-4 text-center">Order Status</td>
             </tr>
           </thead>
           <tbody>
             {recentOrderData.map((order) => (
               <tr key={order.id} className="hover:bg-gray-100">
-                <td>
+                <td className="py-4 px-4 text-center">
                   <Link to={`/order/${order.id}`}>{order.id}</Link>
                 </td>
-                <td>
+                <td className="py-4 px-4 text-center">
                   <Link to={`/product/${order.product_id}`}>
                     {order.product_id}
                   </Link>
                 </td>
-                <td>
+                <td className="py-4 px-4 text-center">
                   <Link to={`/customer/${order.customer_name}`}>
                     {order.customer_name}
                   </Link>
                 </td>
-                <td>{new Date(order.order_date).toLocaleDateString()}</td>
-                <td>{order.order_total}</td>
-                <td>{order.shipment_address}</td>
-                <td>{getOrderStatus(order.current_order_status)}</td>
+                <td className="py-4 px-4 text-center">{new Date(order.order_date).toLocaleDateString()}</td>
+                <td className="py-4 px-4 text-center">{order.order_total}</td>
+                <td className="py-4 px-4 text-center">{order.shipment_address}</td>
+                <td className="py-4 px-4 text-center">{getOrderStatus(order.current_order_status)}</td>
               </tr>
             ))}
           </tbody>

@@ -11,7 +11,7 @@ const CustomerData = [
 
 export default function Customers() {
   return (
-    <main>
+    <main >
       <div className="flex items-center justify-between py-7 px-10">
         <div>
           <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
@@ -29,26 +29,26 @@ export default function Customers() {
           <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
             <thead>
               <tr className="font-semibold">
-                <td>ID</td>
-                <td>Kode Pelanggan</td>
-                <td>Nama</td>
-                <td>Tanggal Daftar</td>
-                <td>Alamat</td>
-                <td>Kota</td>
-                <td>No Telepon</td>
-                <td>Lihat/Hapus</td>
+                <td className="px-4 py-4 text-center">ID</td>
+                <td  className="px-4 py-4 text-center">Kode Pelanggan</td>
+                <td  className="px-4 py-4 text-center">Nama</td>
+                <td  className="px-4 py-4 text-center">Tanggal Daftar</td>
+                <td  className="px-4 py-4 text-center">Alamat</td>
+                <td  className="px-4 py-4 text-center">Kota</td>
+                <td  className="px-4 py-4 text-center">No Telepon</td>
+                <td  className="px-4 py-4 text-center">Lihat/Hapus</td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>sadsa</td>
-                <td>sadsa</td>
-                <td>sadsa</td>
-                <td>sadsa</td>
-                <td>sadsa</td>
-                <td>sadsa</td>
-                <td>sadsa</td>
-                <td></td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center">sadsa</td>
+                <td  className="px-4 py-4 text-center"></td>
               </tr>
             </tbody>
           </table>
