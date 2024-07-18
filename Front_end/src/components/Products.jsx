@@ -213,7 +213,7 @@ export default function Products() {
 
             <tbody>
               {currentItems.map((product) => (
-                <tr key={product.id} className=" border-b border-t-gray-200">
+                <tr key={product.id} className="hover:bg-gray-100">
                   <td className="gap-x-4 items-center py-4 pl-10">
                     <input
                       type="checkbox"

@@ -5,7 +5,7 @@ import EditButton from "./button/button_product/EditButton";
 import DeleteButton from "./button/button_product/DeleteButton";
 import Modal from "./Modal";
 import { barangMasuk } from "./hook/barang_masuk/dataBarangMasuk";
-import useBarangMasukData from "./hook/barang_masuk/useBarangMasuk";
+import useBarangMasukData from "./hook/barang_masuk/useBarangMasuk.jsx";
 
 // export const barangMasuk = [
 //   {
@@ -73,8 +73,9 @@ export default function Barang_Masuk() {
     currentPage,
     itemsPerPage,
     isEditModalOpen,
-    handleCloseEditModal,
     editedBarangMasuk,
+    handleCloseEditModal,
+    handleEditSubmit,
     handleEditClick,
     setEditedBarangMasuk,
     handleDeleteClick,
@@ -106,6 +107,7 @@ export default function Barang_Masuk() {
                 <tr className={"font-semibold"}>
                   <th className="px-4 py-4 text-center">No</th>
                   <th className="px-4 py-4 text-center">Nama Barang</th>
+                  <th className="px-4 py-4 text-center">Tanggal Masuk</th>
                   <th className="px-4 py-4 text-center">Harga Beli</th>
                   <th className="px-4 py-4 text-center">Harga Jual</th>
                   <th className="px-4 py-4 text-center">Jumlah Masuk</th>
@@ -116,7 +118,7 @@ export default function Barang_Masuk() {
 
               <tbody className="divide-y divide-gray-200">
                 {currentItems.map((barang) => (
-                  <tr key={barang.id}>
+                  <tr key={barang.id} className="hover:bg-gray-100  ">
                     <td
                       className={
                         "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
@@ -130,6 +132,13 @@ export default function Barang_Masuk() {
                       }
                     >
                       {barang.name}
+                    </td>
+                    <td
+                      className={
+                        "whitespace-nowrap px-4 py-4 text-center font-medium text-gray-900"
+                      }
+                    >
+                      {barang.tanggal_masuk}
                     </td>
                     <td
                       className={
@@ -221,10 +230,30 @@ export default function Barang_Masuk() {
 
           <div className="col-span-6 sm:col-span-6 ">
             <label
+              htmlFor="ProductName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Tanggal Masuk:
+            </label>
+            <input
+              type="date"
+              value={editedBarangMasuk.tanggal_masuk}
+              onChange={(e) =>
+                setEditedBarangMasuk({
+                  ...editedBarangMasuk,
+                  tanggal_masuk: e.target.value,
+                })
+              }
+              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+
+          <div className="col-span-6 sm:col-span-6 ">
+            <label
               htmlFor="Category"
               className="block text-sm font-medium text-gray-700"
             >
-              Kategori Produk:
+              Harga Beli:
             </label>
             <input
               type="text"
@@ -244,7 +273,7 @@ export default function Barang_Masuk() {
               htmlFor="Price"
               className="block text-sm font-medium text-gray-700"
             >
-              Price:
+              Harga Jual:
             </label>
             <input
               type="text"
@@ -263,7 +292,7 @@ export default function Barang_Masuk() {
               htmlFor="Stock"
               className="block text-sm font-medium text-gray-700"
             >
-              Stock:
+              Jumlah Masuk:
             </label>
             <input
               type="text"
@@ -282,7 +311,7 @@ export default function Barang_Masuk() {
               htmlFor="Stock"
               className="block text-sm font-medium text-gray-700"
             >
-              Stock:
+              Nama Supplier:
             </label>
             <input
               type="text"
