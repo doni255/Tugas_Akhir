@@ -15,12 +15,16 @@ import Messages from "./components/Messages";
 import BarangMasuk from "./components/Barang_Masuk";
 import Pendapatan from "./components/Pendapatan";
 
+
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
+
+
 
         <Route path="/dashboard_admin" element={<Layout />}>
           <Route index element={<Dashboard />} />
