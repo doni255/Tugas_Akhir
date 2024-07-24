@@ -1,20 +1,25 @@
 import "./App.css";
-import Layout from "./components/shared/Layout";
-import Dashboard from "./components/Dashboard";
-import Products from "./components/Products";
+import Layout from "./dashboard/components/shared/Layout";
+import Dashboard from "./dashboard/components/Dashboard";
+import Products from "./dashboard/components/Products";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Switch } from "@headlessui/react";
 
 import Login from "./Login";
 import Register from "./Register";
-import Orders from "./components/Orders";
-import Customers from "./components/Customers";
-import Report from "./components/Report";
-import Messages from "./components/Messages";
-import BarangMasuk from "./components/Barang_Masuk";
-import Pendapatan from "./components/Pendapatan";
 
+import Orders from "./dashboard/components/Orders";
+import Customers from "./dashboard/components/Customers";
+import Messages from "./dashboard/components/Messages";
+import BarangMasuk from "./dashboard/components/Barang_Masuk";
+import Pendapatan from "./dashboard/components/Pendapatan";
+
+
+
+import MobNavBar from "./e-commerce/components/MobNavbar";
+import Navbar from "./e-commerce/components/Navbar";
+import Hero from "./e-commerce/components/Hero";
 
 
 function App() {
@@ -23,8 +28,6 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
-
-
 
         <Route path="/dashboard_admin" element={<Layout />}>
           <Route index element={<Dashboard />} />
@@ -35,6 +38,18 @@ function App() {
           <Route path="pendapatan" element={<Pendapatan />} />
           <Route path="barang_masuk" element={<BarangMasuk />} />
           <Route path="messages" element={<Messages />} />
+        </Route>
+
+        <Route path="/e-commerce" element={<Navbar />}>
+          <Route
+            index
+            element={
+              <>
+                <MobNavBar />
+                <Hero />
+              </>
+            }
+          />
         </Route>
       </Routes>
     </Router>
