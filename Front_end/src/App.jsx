@@ -20,6 +20,9 @@ import Pendapatan from "./dashboard/components/Pendapatan";
 import MobNavBar from "./e-commerce/components/MobNavbar";
 import Navbar from "./e-commerce/components/Navbar";
 import Hero from "./e-commerce/components/Hero";
+import Category from "./e-commerce/components/Category";
+import CategoryCard from "./e-commerce/components/CategoryCard";
+import FeatureSectionFruits from "./e-commerce/components/FeatureSectionFruits";
 
 
 function App() {
@@ -47,6 +50,9 @@ function App() {
               <>
                 <MobNavBar />
                 <Hero />
+                <Category />
+                <CategoryCard />
+                <FeatureSectionFruits />
               </>
             }
           />

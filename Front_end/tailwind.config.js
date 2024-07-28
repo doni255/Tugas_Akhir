@@ -6,9 +6,9 @@ export default {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
-      color: {
+      colors: {
         accent: "#179957",
-        accentDark: "184D47",
+        accentDark: "#184D47",
       },
       container: {
         center: true,
@@ -18,7 +18,7 @@ export default {
   },
   variants: {
     extend: {
-      display: ["focus-group"],
+      display: ["group-focus"],
       transitionDuration: {
         2000: "2000ms",
       },

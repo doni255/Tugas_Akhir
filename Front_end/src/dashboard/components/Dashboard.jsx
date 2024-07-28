@@ -12,12 +12,12 @@ export default function Dashboard() {
       <div className="flex flex-col gap-4 h-full overflow-y-auto p-4">
         <DashboardStatsGrid />
         <div className="flex flex-row gap-4 w-full">
-          {/* <TransactionChart />
-        <BuyerProfileChart /> */}
+          <TransactionChart />
+        <BuyerProfileChart />
         </div>
         <div className="flex flex-row gap-4 w-full">
-          {/* <RecentOrders />
-        <PopularProducts /> */}
+          <RecentOrders />
+        <PopularProducts />
         </div>
         {/* <p>this is dashboard</p> <Link to="/products">go to products</Link> */}
       </div>

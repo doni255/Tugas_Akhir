@@ -5,7 +5,7 @@ import sparePartSaw from "../assets/images/sparepart_saw.jpg";
 
 const Hero = () => {
   return (
-    <div className="container mx-auto px-4 py-8 bg-red-100">
+    <div className="container mx-auto px-4 py-8 ">
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="md:col-span-2 lg:row-span-2 relative">
           <img
