@@ -15,15 +15,14 @@ import Messages from "./dashboard/components/Messages";
 import BarangMasuk from "./dashboard/components/Barang_Masuk";
 import Pendapatan from "./dashboard/components/Pendapatan";
 
-
-
 import MobNavBar from "./e-commerce/components/MobNavbar";
 import Navbar from "./e-commerce/components/Navbar";
 import Hero from "./e-commerce/components/Hero";
 import Category from "./e-commerce/components/Category";
 import CategoryCard from "./e-commerce/components/CategoryCard";
-import FeatureSectionFruits from "./e-commerce/components/FeatureSectionFruits";
-
+import FeatureSectionSaw_SparePart from "./e-commerce/components/FeatureSectionSaw_SparePart";
+import FeatureSectionGenerators_SparePart from "./e-commerce/components/FeatureSectionGenerators_SparePart";
+import Banner from "./e-commerce/components/Banner";
 
 function App() {
   return (
@@ -52,7 +51,10 @@ function App() {
                 <Hero />
                 <Category />
                 <CategoryCard />
-                <FeatureSectionFruits />
+                <FeatureSectionSaw_SparePart />
+
+                <FeatureSectionGenerators_SparePart />
+                <Banner />
               </>
             }
           />

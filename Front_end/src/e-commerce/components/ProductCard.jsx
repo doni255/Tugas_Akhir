@@ -5,7 +5,7 @@ import { AiFillStar, AiOutlineStar, AiOutlineShopping } from "react-icons/ai";
 const ProductCard = ({ img, name, price }) => {
   return (
     <div className="border border-gray-200 hover:border-gray-300 hover:scale-105 transition-transform rounded-lg relative">
-      <img src={img} alt={name} />
+      <img src={img} alt={name} className="w-full h-48 object-contain" />
 
       <div className="space-y-2 relative p-4">
         <div className="text-yellow-400 flex gap-[2px] text-[20px]">
