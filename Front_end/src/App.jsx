@@ -4,8 +4,6 @@ import Dashboard from "./dashboard/components/Dashboard";
 import Products from "./dashboard/components/Products";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Switch } from "@headlessui/react";
-
 import Login from "./Login";
 import Register from "./Register";
 
@@ -23,43 +21,55 @@ import CategoryCard from "./e-commerce/components/CategoryCard";
 import FeatureSectionSaw_SparePart from "./e-commerce/components/FeatureSectionSaw_SparePart";
 import FeatureSectionGenerators_SparePart from "./e-commerce/components/FeatureSectionGenerators_SparePart";
 import Banner from "./e-commerce/components/Banner";
+import BlogSection from "./e-commerce/components/BlogSection";
+import NewsLetter from "./e-commerce/components/NewsLetter";
+import Feature from "./e-commerce/components/Feature";
+import { CartContextProvider } from "./e-commerce/context/cartContext";
+import { useState } from "react";
+import Cart from "./e-commerce/components/Cart";
 
 function App() {
+  const [showCart, setShowCart] = useState(false);
+
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/register" element={<Register />}></Route>
+      <CartContextProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route path="/dashboard_admin" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="customers" element={<Customers />} />
-          {/* <Route path="report" element={<Report />} /> */}
-          <Route path="pendapatan" element={<Pendapatan />} />
-          <Route path="barang_masuk" element={<BarangMasuk />} />
-          <Route path="messages" element={<Messages />} />
-        </Route>
+          <Route path="/dashboard_admin" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="pendapatan" element={<Pendapatan />} />
+            <Route path="barang_masuk" element={<BarangMasuk />} />
+            <Route path="messages" element={<Messages />} />
+          </Route>
 
-        <Route path="/e-commerce" element={<Navbar />}>
-          <Route
-            index
-            element={
-              <>
-                <MobNavBar />
-                <Hero />
-                <Category />
-                <CategoryCard />
-                <FeatureSectionSaw_SparePart />
-
-                <FeatureSectionGenerators_SparePart />
-                <Banner />
-              </>
-            }
-          />
-        </Route>
-      </Routes>
+          <Route path="/e-commerce" element={<Navbar setShowCart={setShowCart} />}>
+            <Route
+              index
+              element={
+                <>
+                  <MobNavBar setShowCart={setShowCart} />
+                  <Hero />
+                  <Category />
+                  <CategoryCard />
+                  <FeatureSectionSaw_SparePart />
+                  <FeatureSectionGenerators_SparePart />
+                  <Banner />
+                  <BlogSection />
+                  <NewsLetter />
+                  <Feature />
+                  {showCart && <Cart setShowCart={setShowCart} />}
+                </>
+              }
+            />
+          </Route>
+        </Routes>
+      </CartContextProvider>
     </Router>
   );
 }
