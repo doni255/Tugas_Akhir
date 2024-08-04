@@ -35,9 +35,13 @@ function App() {
     <Router>
       <CartContextProvider>
         <Routes>
+
+          // Bagian Login & Register
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          
+          // Bagian Dahboard
           <Route path="/dashboard_admin" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
@@ -48,6 +52,7 @@ function App() {
             <Route path="messages" element={<Messages />} />
           </Route>
 
+          // Bagian E-commerce
           <Route path="/e-commerce" element={<Navbar setShowCart={setShowCart} />}>
             <Route
               index

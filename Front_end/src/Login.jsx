@@ -2,7 +2,8 @@ import React from "react";
 import "./index.css";
 import "./Login.css";
 
-import { useNavigate } from "react-router-dom";
+import { Navigate, Outlet ,useNavigate } from "react-router-dom";
+import { useStateContext } from "./contexts/contextprovider";
 
 
 export default function Login() {
@@ -13,6 +14,13 @@ export default function Login() {
     navigate("/register");
   };
 
+  // const {user, token} = useStateContext();
+  // if(!token){
+  //   return <Navigate  to='/login' />
+  // }
+
+  
+
   return (  
     <div className="bg-gradient-to-l bg-gray-50">
       <div class="flex justify-center items-center min-h-screen">
@@ -22,10 +30,10 @@ export default function Login() {
           </h1>
           <hr class="mt-3" />
 
-          <form action="">
+          <form >
             <div class="mt-3">
               <label for="username" class="block text-base mb-2">
-                Username
+                Username 
               </label>
               <input
                 type="text"

@@ -10,6 +10,10 @@ export default function Register() {
   const handleLoginClick = () => {
     navigate("/login");
   };
+  
+  const Submit = (ev) => {
+    ev.preventDefault();
+  }
 
   return (
     <section className="bg-gray-50 min-h-screen flex items-center justify-center p-12">
@@ -17,12 +21,12 @@ export default function Register() {
         <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
           <div className="m l lg:max-w-3xl">
             <form
-              action="#"
+              onSubmit={Submit}
               className="grid grid-cols-6 gap-6 max-w-md mx-auto"
             >
               <div className="col-span-6 flex justify-center">
                 <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-                  Create Account 😁
+                  Create Account 😁 
                 </h1>
               </div>
 
