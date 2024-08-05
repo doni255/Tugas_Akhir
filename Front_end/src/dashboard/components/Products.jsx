@@ -1,10 +1,12 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { FiLayers } from "react-icons/fi";
 
 import EditButton from "./button/button_product/EditButton";
 import DeleteButton from "./button/button_product/DeleteButton";
 import Modal from "./Modal";
 import CreateItem from "./button/button_product/CreateItem";
+
+import axios from "axios";
 
 import {
   HiFilter,
@@ -22,63 +24,6 @@ const status = [
   { name: "Hidden", icon: <HiOutlineEyeOff className="w-6 h-6" /> },
   { name: "Rejected", icon: <HiOutlineXCircle className="w-6 h-6" /> },
   { name: "Under Review", icon: <HiOutlineMail className="w-6 h-6" /> },
-];
-
-export const initialProducts = [
-  {
-    id: 1,
-    id_product: "MR-0001",
-    name: "Organic Landing page",
-    category: "Web Design",
-    imageUrl: "/images/galery-1.jpg",
-    price: 20,
-    stock: 793,
-  },
-  {
-    id: 2,
-    id_product: "MR-0001",
-    name: "Mitsubishi",
-    category: "Web Design",
-    imageUrl: "/images/galery-1.jpg",
-    price: 20,
-    stock: 793,
-  },
-  {
-    id: 3,
-    id_product: "MR-0001",
-    name: "Organic Landing page",
-    category: "Web Design",
-    imageUrl: "/images/galery-1.jpg",
-    price: 20,
-    stock: 793,
-  },
-  {
-    id: 4,
-    id_product: "MR-0001",
-    name: "Organic Landing page",
-    category: "Web Design",
-    imageUrl: "/images/galery-1.jpg",
-    price: 20,
-    stock: 793,
-  },
-  {
-    id: 5,
-    id_product: "MR-0001",
-    name: "Organic Landing page",
-    category: "Web Design",
-    imageUrl: "/images/galery-1.jpg",
-    price: 20,
-    stock: 793,
-  },
-  {
-    id: 6,
-    id_product: "MR-0001",
-    name: "Organic Landing page",
-    category: "Web Design",
-    imageUrl: "/images/galery-1.jpg",
-    price: 20,
-    stock: 793,
-  },
 ];
 
 export default function Products() {
@@ -153,15 +98,53 @@ export default function Products() {
   };
 
   // Bagian Paginasi
-  const [products, setProducts] = useState(initialProducts);
+  // Menginisialisasi products sebagai array kosong untuk menghindari undefined
+  const [products, setProducts] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = Array.isArray(products)
+    ? products.slice(indexOfFirstItem, indexOfLastItem)
+    : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/product");
+      setProducts(response.data.data || []); // Mengakses array produk di dalam response.data.data
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]); // Menghindari products menjadi undefined
+    }
+  };
+
+  const destroyProduct = async (productId, setProducts, handleCloseModal) => {
+    try {
+      // Send DELETE request to the backend
+      await axios.delete(`http://localhost:8000/api/product/${id_product}`);
+  
+      // Update the frontend state
+      setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
+  
+      // Close the confirmation modal
+      handleCloseModal();
+  
+      // Optionally, show a success message
+      console.log('Product deleted successfully');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      // Optionally, show an error message to the user
+    }
+  };
+  
 
   return (
     <main className="relative">
@@ -219,9 +202,7 @@ export default function Products() {
                       type="checkbox"
                       className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
                     />
-                    <span className="py-4 px-4 text-center">
-                      {product.id_product}
-                    </span>
+                    <span className="py-4 px-4 text-center"></span>
                     {/* <img
                     src={product.imageUrl}
                     alt={product.name}
@@ -230,16 +211,21 @@ export default function Products() {
                   </td>
                   <td className="py-4 px-4">
                     <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-24 justify-center aspect-auto 3/2 rounded-lg object-cover object-top border border-gray-200"
+                      src={`data:image/png;base64,${product.gambar}`}
+                      className="w-14 justify-center aspect-auto rounded-lg object-cover object-top border border-gray-200"
                     />
                   </td>
-                  <td className="py-4 px-4 text-center">{product.name}</td>
-                  <td className="py-4 px-4 text-center">{product.category}</td>
-                  <td className="py-4 px-4 text-center">{product.price}</td>
-                  <td className="py-4 px-4 text-center">{product.stock}</td>
-                  <td className="py-4 px-4 text-center">{product.createdAt}</td>
+                  <td className="py-4 px-4 text-center">
+                    {product.nama_product}
+                  </td>
+                  <td className="py-4 px-4 text-center">
+                    {product.kategori_produk}
+                  </td>
+                  <td className="py-4 px-4 text-center">${product.harga}</td>
+                  <td className="py-4 px-4 text-center">
+                    {product.jumlah_stock}
+                  </td>
+                  {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
                   <td className="py-4 px-4 text-center">
                     <EditButton onClick={() => handleEditClick(product)} />
                     <DeleteButton

@@ -1,5 +1,6 @@
     <?php
 
+    use App\Http\Controllers\ProductController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\UserController;
@@ -23,4 +24,5 @@
     Route::apiResource('/users', UserController::class);
     // Rute untuk login
     Route::post('/login', [UserController::class, 'login']);
-
+    Route::get('/product', [ProductController::class, 'getProducts']);
+    Route::delete('/product/{id}', [ProductController::class, 'destroy']);

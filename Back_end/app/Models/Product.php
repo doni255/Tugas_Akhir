@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Carbon\Carbon;
 
-class User extends Authenticatable
+class Product extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -18,17 +18,22 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $table = 'users';
-    protected $primaryKey = 'id_user';
+    protected $table = 'products';
+    protected $primaryKey = 'id_product';
     protected $fillable = [
-        'nama',
-        'email',
-        'no_telpon',
-        'role',
-        'kota',
-        'alamat',
-        'password',
+        'gambar',
+        'nama_product',
+        'kategori_produk',
+        'harga',
+        'jumlah_stock',
     ];
+
+    protected $appends = ['konten_base64'];
+
+    public function getKontenBase64Attribute()
+    {
+        return base64_encode($this->attributes['gambar']);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

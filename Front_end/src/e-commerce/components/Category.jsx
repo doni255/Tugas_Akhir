@@ -1,5 +1,5 @@
 import React from "react";
-import { initialProducts } from "../../dashboard/components/Products.jsx";
+// import { initialProducts } from "../../dashboard/components/Products.jsx";
 import CategoryCard from "./CategoryCard.jsx";
 import sparepartSawImage from "../assets/images/sparepart_saw.jpg";
 

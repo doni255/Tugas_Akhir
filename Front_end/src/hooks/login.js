@@ -37,8 +37,15 @@ const login = () => {
       });
       if (response.status === 200) {
         // Arahkan pengguna ke halaman setelah login sukses
-        console.log("Login successful"); // Debug log
-        navigate("/register"); // Ubah ke rute tujuan Anda
+        console.log(response.data.data);
+        console.log(response.data.data.role);
+        console.log(response.data.data.message); // Debug log
+
+        if(response.data.data.role == "user") 
+          navigate("/e-commerce"); // Ubah ke rute tujuan Anda
+
+        if(response.data.data.role == "admin") 
+          navigate("/dashboard_admin/"); // Ubah ke rute tujuan Anda
       }
     } catch (error) {
       if (error.response) {
