@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./index.css";
 import "./Login.css";
 
 import { useNavigate } from "react-router-dom";
+import axiosClient from "./axiosClient";
+import { useStateContext } from "./contexts/contextprovider";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -10,10 +12,45 @@ export default function Register() {
   const handleLoginClick = () => {
     navigate("/login");
   };
-  
+
+  const namaRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const no_telponRef = useRef();
+  const kotaRef = useRef();
+  const alamatRef = useRef();
+
+  const { setUser, setToken } = useStateContext();
+
   const Submit = (ev) => {
     ev.preventDefault();
-  }
+    console.log("Submit function called");
+    const payload = {
+      nama: namaRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      no_telpon: no_telponRef.current.value,
+      kota: kotaRef.current.value,
+      alamat: alamatRef.current.value,
+    };
+    // Perhatikan bahwa metode POST digunakan di sini
+    axiosClient
+      .post("", payload)
+      .then(({ data }) => {
+        setUser(data.user);
+        setToken(data.token);
+        localStorage.setItem("ACCESS_TOKEN", data.token); // Menyimpan token di localStorage
+        navigate("/login"); // Alihkan ke halaman yang sesuai setelah login
+      })
+      .catch((err) => {
+        const response = err.response;
+        if (response && response.status === 422) {
+          console.log(response.data.errors);
+        } else {
+          console.error("Unexpected error:", err);
+        }
+      });
+  };
 
   return (
     <section className="bg-gray-50 min-h-screen flex items-center justify-center p-12">
@@ -26,38 +63,23 @@ export default function Register() {
             >
               <div className="col-span-6 flex justify-center">
                 <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-                  Create Account 😁 
+                  Create Account 😁
                 </h1>
               </div>
 
-              <div className="col-span-6 sm:col-span-3">
+              <div className="col-span-6">
                 <label
                   htmlFor="FirstName"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  First Name
+                  Nama
                 </label>
 
                 <input
+                  ref={namaRef}
                   type="text"
-                  id="FirstName"
-                  name="first_name"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                />
-              </div>
-
-              <div className="col-span-6 sm:col-span-3">
-                <label
-                  htmlFor="LastName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Last Name
-                </label>
-
-                <input
-                  type="text"
-                  id="LastName"
-                  name="last_name"
+                  id="Nama"
+                  name="Nama"
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
@@ -67,11 +89,11 @@ export default function Register() {
                   htmlFor="Email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {" "}
-                  Email{" "}
+                  Email
                 </label>
 
                 <input
+                  ref={emailRef}
                   type="email"
                   id="Email"
                   name="email"
@@ -84,11 +106,11 @@ export default function Register() {
                   htmlFor="Password"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {" "}
-                  Password{" "}
+                  Password
                 </label>
 
                 <input
+                  ref={passwordRef}
                   type="password"
                   id="Password"
                   name="password"
@@ -104,61 +126,61 @@ export default function Register() {
                   Password Confirmation
                 </label>
 
-                <input
+                {/* <input
                   type="password"
                   id="PasswordConfirmation"
                   name="password_confirmation"
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                />
+                /> */}
               </div>
 
               <div className="col-span-6">
                 <label
-                  htmlFor="Email"
+                  htmlFor="noHp"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {" "}
-                  No HP{" "}
+                  Nomor HP
                 </label>
 
                 <input
-                  type="email"
-                  id="Email"
-                  name="email"
+                  ref={no_telponRef}
+                  type="text"
+                  id="No_telpon"
+                  name="no_telpon "
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
 
               <div className="col-span-6">
                 <label
-                  htmlFor="Email"
+                  htmlFor="Kota"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {" "}
-                  Kota{" "}
+                  Kota
                 </label>
 
                 <input
-                  type="email"
-                  id="Email"
-                  name="email"
+                  ref={kotaRef}
+                  type="text"
+                  id="Kota"
+                  name="kota"
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
 
               <div className="col-span-6">
                 <label
-                  htmlFor="Email"
+                  htmlFor="Alamat"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {" "}
-                  Alamat{" "}
+                  Alamat
                 </label>
 
                 <input
-                  type="email"
-                  id="Email"
-                  name="email"
+                  ref={alamatRef}
+                  type="text"
+                  id="Alamat"
+                  name="alamat"
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
