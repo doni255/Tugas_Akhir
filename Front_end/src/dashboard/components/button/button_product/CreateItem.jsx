@@ -4,6 +4,13 @@ import Modal from "../../Modal";
 
 function CreateItem({ onAddItem }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    imageUrl: null,
+    price: "",
+    stock: "",
+  });
 
   const addItem = (newItem) => {
     console.log("New Item Added:", newItem);
@@ -13,6 +20,60 @@ function CreateItem({ onAddItem }) {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, imageUrl: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, category, imageUrl, price, stock } = formData;
+
+    // Convert base64 image data from data URL
+    const base64Image = imageUrl ? imageUrl.split(",")[1] : "";
+
+    const newItem = {
+      nama_product: name,
+      kategori_produk: category,
+      harga: price,
+      konten_base64: base64Image,
+      jumlah_stock: stock,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8000/api/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newItem),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Product created:", data);
+        onAddItem(data.data); // Update the parent component with the new item
+        toggleModal(); // Close the modal
+      } else {
+        console.error("Error creating product:", data);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
   };
 
   return (
@@ -44,6 +105,8 @@ function CreateItem({ onAddItem }) {
               type="text"
               id="name"
               name="name"
+              value={formData.name}
+              onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
@@ -59,6 +122,8 @@ function CreateItem({ onAddItem }) {
               type="text"
               id="category"
               name="category"
+              value={formData.category}
+              onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
@@ -74,8 +139,8 @@ function CreateItem({ onAddItem }) {
               type="file"
               id="imageUrl"
               name="imageUrl"
+              onChange={handleFileChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-              required
             />
           </div>
           <div className="col-span-6">
@@ -89,6 +154,8 @@ function CreateItem({ onAddItem }) {
               type="number"
               id="price"
               name="price"
+              value={formData.price}
+              onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
@@ -104,6 +171,8 @@ function CreateItem({ onAddItem }) {
               type="number"
               id="stock"
               name="stock"
+              value={formData.stock}
+              onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
@@ -127,19 +196,6 @@ function CreateItem({ onAddItem }) {
       </Modal>
     </>
   );
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    const formData = {
-      name: e.target.name.value,
-      category: e.target.category.value,
-      imageUrl: e.target.imageUrl.value,
-      price: parseFloat(e.target.price.value),
-      stock: parseInt(e.target.stock.value, 10),
-    };
-    addItem(formData);
-    toggleModal();
-  }
 }
 
 export default CreateItem;

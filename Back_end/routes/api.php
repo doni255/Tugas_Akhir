@@ -22,7 +22,11 @@
 
     //Route Resource
     Route::apiResource('/users', UserController::class);
-    // Rute untuk login
     Route::post('/login', [UserController::class, 'login']);
+
+
+    // Bagian Product
     Route::get('/product', [ProductController::class, 'getProducts']);
     Route::delete('/product/{id}', [ProductController::class, 'destroy']);
+    Route::post('/create', [ProductController::class, 'create']);
+    Route::put('/products/{id_product}', [ProductController::class, 'editProduct']);

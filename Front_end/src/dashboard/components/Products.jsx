@@ -78,19 +78,9 @@ export default function Products() {
     openEditModal(product.id);
   };
 
-  const handleDeleteClick = (productId) => {
-    setSelectedProduct(productId);
-    setIsModalOpen(true);
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
-  };
-
-  const handleDelete = () => {
-    setProducts(products.filter((product) => product.id !== selectedProduct));
-    handleCloseModal();
   };
 
   const handleAddItem = (newItem) => {
@@ -126,28 +116,42 @@ export default function Products() {
     }
   };
 
-  const destroyProduct = async (productId, setProducts, handleCloseModal) => {
+  const handleDeleteClick = (id_product) => {
+    console.log(`handleDeleteClick called with id_product: ${id_product}`);
+    setSelectedProduct(id_product);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    console.log(`handleDelete called with selectedProduct: ${selectedProduct}`);
+    if (selectedProduct) {
+      destroyProduct(selectedProduct);
+    }
+  };
+
+  const destroyProduct = async (id_product) => {
     try {
+      console.log(`destroyProduct called with id_product: ${id_product}`);
       // Send DELETE request to the backend
       await axios.delete(`http://localhost:8000/api/product/${id_product}`);
-  
+
       // Update the frontend state
-      setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
-  
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id_product !== id_product)
+      );
+
       // Close the confirmation modal
       handleCloseModal();
-  
+
       // Optionally, show a success message
-      console.log('Product deleted successfully');
+      console.log("Product deleted successfully");
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error("Error deleting product:", error);
       // Optionally, show an error message to the user
     }
   };
-  
-
   return (
-    <main className="relative">
+    <main className="relative ">
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
@@ -184,11 +188,11 @@ export default function Products() {
                     <span>ID</span>
                   </div>
                 </td>
-                <td className="">&nbsp; Gambar</td>
-                <td className="">Product Name</td>
-                <td className="">Kategori Produk</td>
-                <td className="">Pricing</td>
-                <td className="">Stock</td>
+                <td className="">&nbsp; &nbsp; Gambar</td>
+                <td className=" text-center">Product Name</td>
+                <td className="text-center">Kategori Produk</td>
+                <td className=" text-center">Pricing</td>
+                <td className=" text-center">Stock</td>
                 <td></td>
                 <td></td>
               </tr>
@@ -197,41 +201,38 @@ export default function Products() {
             <tbody>
               {currentItems.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-100">
-                  <td className="gap-x-4 items-center py-4 pl-10">
+                  <td className="gap-x-4 items-center py-4   pl-10">
                     <input
                       type="checkbox"
                       className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
                     />
-                    <span className="py-4 px-4 text-center"></span>
+                    <span className="py-3 px-4 text-center">
+                      {product.id_product}
+                    </span>
                     {/* <img
                     src={product.imageUrl}
                     alt={product.name}
                     className="w-48 aspect-[3/2 rounded-lg object-cover object-top border border-gray-200"
                   /> */}
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="">
                     <img
                       src={`data:image/png;base64,${product.gambar}`}
-                      className="w-14 justify-center aspect-auto rounded-lg object-cover object-top border border-gray-200"
+                      className="w-20 justify-center aspect-auto rounded-lg object-cover object-top border border-gray-200"
                     />
                   </td>
-                  <td className="py-4 px-4 text-center">
-                    {product.nama_product}
-                  </td>
-                  <td className="py-4 px-4 text-center">
-                    {product.kategori_produk}
-                  </td>
-                  <td className="py-4 px-4 text-center">${product.harga}</td>
-                  <td className="py-4 px-4 text-center">
-                    {product.jumlah_stock}
-                  </td>
+                  <td className="text-center">{product.nama_product}</td>
+                  <td className="text-center">{product.kategori_produk}</td>
+                  <td className=" text-center ">{product.harga}</td>
+                  <td className="text-center">{product.jumlah_stock}</td>
                   {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
                   <td className="py-4 px-4 text-center">
                     <EditButton onClick={() => handleEditClick(product)} />
                     <DeleteButton
-                      onClick={() => handleDeleteClick(product.id)}
+                      onClick={() => handleDeleteClick(product.id_product)}
                     />
                   </td>
+                  <td></td>
                 </tr>
               ))}
             </tbody>
@@ -244,6 +245,7 @@ export default function Products() {
           paginate={paginate}
           currentPage={currentPage}
         />
+        <div className="mb-16"></div>
       </div>
 
       {/* Modal for Edit Form */}
@@ -288,6 +290,21 @@ export default function Products() {
                 setEditedProduct({ ...editedProduct, category: e.target.value })
               }
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+            />
+          </div>
+
+          <div className="col-span-6">
+            <label
+              htmlFor="imageUrl"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Image URL
+            </label>
+            <input
+              type="file"
+              id="imageUrl"
+              name="imageUrl"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
             />
           </div>
 

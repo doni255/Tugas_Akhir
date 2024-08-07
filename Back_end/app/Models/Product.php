@@ -30,6 +30,8 @@ class Product extends Authenticatable
 
     protected $appends = ['konten_base64'];
 
+    public $timestamps = false; // Jika Anda tidak menggunakan created_at dan updated_at
+
     public function getKontenBase64Attribute()
     {
         return base64_encode($this->attributes['gambar']);
