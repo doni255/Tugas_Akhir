@@ -64,18 +64,32 @@ export default function Register() {
       });
 
       if (!response.ok) {
-        // Menangani kesalahan HTTP
-        const errorText = await response.text();
-        console.error("HTTP Error:", response.status, errorText);
+        const errorData = await response.json();
+
+        // Menangani kesalahan validasi
+        if (response.status === 422) {
+          // Set error state dengan pesan dari backend
+          const errorMessages = errorData.nama
+            ? errorData.nama.join(", ")
+            : "An unexpected error occurred.";
+          setError(errorMessages);
+        } else {
+          // Menangani kesalahan HTTP lainnya
+          const errorText = await response.text();
+          console.error("HTTP Error:", response.status, errorText);
+          setError("An unexpected error occurred.");
+        }
+
         return;
       }
 
-      // Redirect user to login section
+      // Redirect user to login section jika berhasil
       navigate("/login");
       const result = await response.json();
       console.log("Result:", result);
     } catch (error) {
       console.error("Error:", error);
+      setError("An unexpected error occurred.");
     }
   };
 
@@ -159,12 +173,6 @@ export default function Register() {
                   required
                 />
               </div>
-
-              {error && (
-                <div className="col-span-6 text-red-600">
-                  <p>{error}</p>
-                </div>
-              )}
 
               <div className="col-span-6 sm:col-span-6">
                 <label
