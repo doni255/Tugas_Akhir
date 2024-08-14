@@ -32,51 +32,85 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [editedProduct, setEditedProduct] = useState({
-    id: null,
-    category: "",
-    imageUrl: "",
-    price: 0,
-    stock: 0,
+    // id_product: null,
+    nama_product: "",
+    kategori_produk: "",
+    harga: 0,
+    jumlah_stock: 0,
+    gambar: null,
   });
 
   const openEditModal = (productId) => {
-    const productToEdit = products.find((product) => product.id === productId);
-    setEditedProduct(productToEdit);
-    setIsEditModalOpen(true);
-  };
-
-  const handleEditSubmit = (editedData) => {
-    // Update the product in the products state
-    const updatedProducts = products.map((product) =>
-      product.id === editedData.id ? editedData : product
+    const productToEdit = products.find(
+      (product) => product.id_product === productId
     );
-    setProducts(updatedProducts);
-    setIsEditModalOpen(false); // Mengubah menjadi setIsEditModalOpen
-    setEditedProduct({
-      id: null,
-      name: "",
-      category: "",
-      imageUrl: "",
-      price: 0,
-      stock: 0,
-    });
+
+    if (productToEdit) {
+      setEditedProduct(productToEdit);
+      setIsEditModalOpen(true);
+    } else {
+      console.error("Product not found");
+    }
   };
 
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false); // Mengubah menjadi setEditModalOpen
-    setEditedProduct({
-      id: null,
-      name: "",
-      category: "",
-      imageUrl: "",
-      price: 0,
-      stock: 0,
-    });
+  const handleEditSubmit = async (editedData) => {
+    try {
+      const formData = new FormData();
+      formData.append("nama_product", editedData.nama_product || "");
+      formData.append("kategori_produk", editedData.kategori_produk || "");
+      formData.append("harga", editedData.harga || "");
+      formData.append("jumlah_stock", editedData.jumlah_stock || "");
+
+      if (editedData.gambar) {
+        formData.append("gambar", editedData.gambar);
+      }
+
+      const response = await axios.put(
+        `http://localhost:8000/api/product/${editedData.id_product}`,
+        formData
+      );
+
+      const updatedProduct = response.data.data;
+
+      const updatedProducts = products.map((product) =>
+        product.id_product === updatedProduct.id_product
+          ? updatedProduct
+          : product
+      );
+      setProducts(updatedProducts);
+      setIsEditModalOpen(false);
+      setEditedProduct({
+        id_product: null,
+        nama_product: "",
+        kategori_produk: "",
+        harga: 0,
+        jumlah_stock: 0,
+        gambar: null,
+      });
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
   };
 
   const handleEditClick = (product) => {
-    openEditModal(product.id);
+    openEditModal(product.id_product);
   };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditedProduct({
+      id_product: null,
+      nama_product: "",
+      kategori_produk: "",
+      harga: 0,
+      jumlah_stock: 0,
+      gambar: null,
+    });
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -84,7 +118,8 @@ export default function Products() {
   };
 
   const handleAddItem = (newItem) => {
-    setProducts([...products, newItem]);
+    // Tambahkan produk baru ke array products dan perbarui state
+    setProducts((prevProducts) => [...prevProducts, newItem]);
   };
 
   // Bagian Paginasi
@@ -101,6 +136,8 @@ export default function Products() {
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // End of pagination
 
   useEffect(() => {
     fetchProducts();
@@ -200,7 +237,7 @@ export default function Products() {
 
             <tbody>
               {currentItems.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-100">
+                <tr key={product.id_product} className="hover:bg-gray-100">
                   <td className="gap-x-4 items-center py-4   pl-10">
                     <input
                       type="checkbox"
@@ -254,7 +291,11 @@ export default function Products() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleEditSubmit(editedProduct);
+            if (editedProduct) {
+              handleEditSubmit(editedProduct);
+            } else {
+              console.error("editedProduct is not defined");
+            }
           }}
           action="#"
           className="mt-8 grid grid-cols-6 gap-6"
@@ -268,9 +309,12 @@ export default function Products() {
             </label>
             <input
               type="text"
-              value={editedProduct.name}
+              value={editedProduct.nama_product}
               onChange={(e) =>
-                setEditedProduct({ ...editedProduct, name: e.target.value })
+                setEditedProduct({
+                  ...editedProduct,
+                  nama_product: e.target.value,
+                })
               }
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
             />
@@ -285,9 +329,12 @@ export default function Products() {
             </label>
             <input
               type="text"
-              value={editedProduct.category}
+              value={editedProduct.kategori_produk}
               onChange={(e) =>
-                setEditedProduct({ ...editedProduct, category: e.target.value })
+                setEditedProduct({
+                  ...editedProduct,
+                  kategori_produk: e.target.value,
+                })
               }
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
             />
@@ -304,6 +351,12 @@ export default function Products() {
               type="file"
               id="imageUrl"
               name="imageUrl"
+              onChange={(e) =>
+                setEditedProduct({
+                  ...editedProduct,
+                  gambar: e.target.files[0],
+                })
+              }
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
             />
           </div>
@@ -317,9 +370,9 @@ export default function Products() {
             </label>
             <input
               type="number"
-              value={editedProduct.price}
+              value={editedProduct.harga}
               onChange={(e) =>
-                setEditedProduct({ ...editedProduct, price: e.target.value })
+                setEditedProduct({ ...editedProduct, harga: e.target.value })
               }
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
             />
@@ -333,9 +386,12 @@ export default function Products() {
             </label>
             <input
               type="number"
-              value={editedProduct.stock}
+              value={editedProduct.jumlah_stock}
               onChange={(e) =>
-                setEditedProduct({ ...editedProduct, stock: e.target.value })
+                setEditedProduct({
+                  ...editedProduct,
+                  jumlah_stock: e.target.value,
+                })
               }
               className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
             />

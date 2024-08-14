@@ -78,51 +78,6 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
         </li>
       </ol>
     </div>
-
-    // <nav className="mt-4">
-    //   <ul className="inline-flex -space-x-px">
-    //     <li>
-    //       <button
-    //         onClick={() => paginate(currentPage - 1)}
-    //         disabled={currentPage === 1}
-    //         className={`px-3 py-2 ml-0 leading-tight ${
-    //           currentPage === 1
-    //             ? "cursor-not-allowed text-gray-400"
-    //             : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-    //         } border border-gray-300`}
-    //       >
-    //         Previous
-    //       </button>
-    //     </li>
-    //     {pageNumbers.map((number) => (
-    //       <li key={number}>
-    //         <button
-    //           onClick={() => paginate(number)}
-    //           className={`px-3 py-2 ml-0 leading-tight ${
-    //             currentPage === number
-    //               ? "bg-indigo-600 text-white"
-    //               : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-    //           } border border-gray-300`}
-    //         >
-    //           {number}
-    //         </button>
-    //       </li>
-    //     ))}
-    //     <li>
-    //       <button
-    //         onClick={() => paginate(currentPage + 1)}
-    //         disabled={currentPage === pageNumbers.length}
-    //         className={`px-3 py-2 ml-0 leading-tight ${
-    //           currentPage === pageNumbers.length
-    //             ? "cursor-not-allowed text-gray-400"
-    //             : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-    //         } border border-gray-300`}
-    //       >
-    //         Next
-    //       </button>
-    //     </li>
-    //   </ul>
-    // </nav>
   );
 };
 

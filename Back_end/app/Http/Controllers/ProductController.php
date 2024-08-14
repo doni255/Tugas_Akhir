@@ -51,7 +51,7 @@ class ProductController extends Controller
             'nama_product' => 'required|string|max:255',
             'kategori_produk' => 'required|string',
             'harga' => 'required|numeric', // Validasi harga sebagai angka
-            'konten_base64' => 'nullable|string', // Misalkan ini untuk gambar dalam format base64
+            'konten_base64' => 'required|string', // Misalkan ini untuk gambar dalam format base64
             'jumlah_stock' => 'required|string'
         ]);
 
@@ -76,9 +76,8 @@ class ProductController extends Controller
      $product->jumlah_stock = $request->jumlah_stock;
      $product->save();
 
-
     // Kembalikan respons sukses dengan data produk yang baru dibuat
-    return response([
+    return response()-> json([
         'message' => 'Product created successfully',
         'data' => $product
     ], 201);
@@ -127,11 +126,18 @@ class ProductController extends Controller
         $product->jumlah_stock = $validatedData['jumlah_stock'];
     
         // Jika ada gambar baru yang diupload
-        if ($request->hasFile('gambar')) {
-            $image = $request->file('gambar');
-            $imageContent = file_get_contents($image->getRealPath());
-            $product->gambar = $imageContent;
-        }
+        // if ($request->hasFile('gambar')) {
+        //     $image = $request->file('gambar');
+        //     $imageContent = file_get_contents($image->getRealPath());
+        //     $product->gambar = $imageContent;
+        // }
+
+         // Jika ada gambar baru yang diupload
+    if ($request->hasFile('gambar')) {
+        $image = $request->file('gambar');
+        $imagePath = $image->store('public/images'); // Menyimpan gambar dan mendapatkan path
+        $product->gambar = $imagePath; // Simpan path gambar ke database
+    }
     
         // Simpan perubahan
         $product->save();

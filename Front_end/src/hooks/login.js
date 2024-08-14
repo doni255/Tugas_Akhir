@@ -42,10 +42,13 @@ const login = () => {
         console.log(response.data.data.message); // Debug log
 
         if(response.data.data.role == "user") 
-          navigate("/e-commerce"); // Ubah ke rute tujuan Anda
+          navigate("/e-commerce"); // Ubah ke rute tujuan User
 
         if(response.data.data.role == "admin") 
-          navigate("/dashboard_admin/"); // Ubah ke rute tujuan Anda
+          navigate("/dashboard_admin/"); // Ubah ke rute tujuan Admin
+
+        if(response.data.data.role == "supplier")
+          navigate("/dashboard_admin/"); // Ubah ke rute tujuan Supplier
       }
     } catch (error) {
       if (error.response) {
@@ -60,6 +63,7 @@ const login = () => {
 
   return {
     users,
+    setUsers,
     nama,
     setNama,
     password,

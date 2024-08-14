@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "./index.css";
 import "./Login.css";
 
@@ -16,40 +16,67 @@ export default function Register() {
   const namaRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const roleRef = useRef();
   const no_telponRef = useRef();
   const kotaRef = useRef();
   const alamatRef = useRef();
 
-  const { setUser, setToken } = useStateContext();
+  // Register
 
-  const Submit = (ev) => {
-    ev.preventDefault();
-    console.log("Submit function called");
-    const payload = {
+  const [formData, setFormData] = useState({
+    nama: "",
+    email: "",
+    no_telpon: "",
+    role: "",
+    kota: "",
+    alamat: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
       nama: namaRef.current.value,
       email: emailRef.current.value,
-      password: passwordRef.current.value,
       no_telpon: no_telponRef.current.value,
+      role: roleRef.current.value,
       kota: kotaRef.current.value,
       alamat: alamatRef.current.value,
+      password: passwordRef.current.value,
     };
-    // Perhatikan bahwa metode POST digunakan di sini
-    axiosClient
-      .post("", payload)
-      .then(({ data }) => {
-        setUser(data.user);
-        setToken(data.token);
-        localStorage.setItem("ACCESS_TOKEN", data.token); // Menyimpan token di localStorage
-        navigate("/login"); // Alihkan ke halaman yang sesuai setelah login
-      })
-      .catch((err) => {
-        const response = err.response;
-        if (response && response.status === 422) {
-          console.log(response.data.errors);
-        } else {
-          console.error("Unexpected error:", err);
-        }
+
+    try {
+      const response = await fetch("http://localhost:8000/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        // Menangani kesalahan HTTP
+        const errorText = await response.text();
+        console.error("HTTP Error:", response.status, errorText);
+        return;
+      }
+
+      // Redirect user to login section
+      navigate("/login");
+      const result = await response.json();
+      console.log("Result:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -58,7 +85,7 @@ export default function Register() {
         <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
           <div className="m l lg:max-w-3xl">
             <form
-              onSubmit={Submit}
+              onSubmit={handleSubmit}
               className="grid grid-cols-6 gap-6 max-w-md mx-auto"
             >
               <div className="col-span-6 flex justify-center">
@@ -80,9 +107,18 @@ export default function Register() {
                   type="text"
                   id="Nama"
                   name="Nama"
+                  value={FormData.nama}
+                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
                 />
               </div>
+
+              {error && (
+                <div className="col-span-6 text-red-600">
+                  <p>{error}</p>
+                </div>
+              )}
 
               <div className="col-span-6">
                 <label
@@ -97,11 +133,14 @@ export default function Register() {
                   type="email"
                   id="Email"
                   name="email"
+                  value={FormData.email}
+                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
                 />
               </div>
 
-              <div className="col-span-6 sm:col-span-3">
+              <div className="col-span-6 sm:col-span-6">
                 <label
                   htmlFor="Password"
                   className="block text-sm font-medium text-gray-700"
@@ -114,11 +153,40 @@ export default function Register() {
                   type="password"
                   id="Password"
                   name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
                 />
               </div>
 
-              <div className="col-span-6 sm:col-span-3">
+              {error && (
+                <div className="col-span-6 text-red-600">
+                  <p>{error}</p>
+                </div>
+              )}
+
+              <div className="col-span-6 sm:col-span-6">
+                <label
+                  htmlFor="Password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
+                </label>
+
+                <input
+                  ref={roleRef}
+                  type="text"
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
+                />
+              </div>
+
+              {/* <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="PasswordConfirmation"
                   className="block text-sm font-medium text-gray-700"
@@ -126,13 +194,13 @@ export default function Register() {
                   Password Confirmation
                 </label>
 
-                {/* <input
+                <input
                   type="password"
                   id="PasswordConfirmation"
                   name="password_confirmation"
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                /> */}
-              </div>
+                />
+              </div> */}
 
               <div className="col-span-6">
                 <label
@@ -146,8 +214,11 @@ export default function Register() {
                   ref={no_telponRef}
                   type="text"
                   id="No_telpon"
-                  name="no_telpon "
+                  name="no_telpon"
+                  value={formData.no_telpon}
+                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
                 />
               </div>
 
@@ -164,7 +235,10 @@ export default function Register() {
                   type="text"
                   id="Kota"
                   name="kota"
+                  value={formData.kota}
+                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
                 />
               </div>
 
@@ -181,7 +255,10 @@ export default function Register() {
                   type="text"
                   id="Alamat"
                   name="alamat"
+                  value={formData.alamat}
+                  onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
                 />
               </div>
 
