@@ -68,11 +68,9 @@ export default function Register() {
 
         // Menangani kesalahan validasi
         if (response.status === 422) {
-          // Set error state dengan pesan dari backend
-          const errorMessages = errorData.nama
-            ? errorData.nama.join(", ")
-            : "An unexpected error occurred.";
-          setError(errorMessages);
+          // Asumsi errorData adalah objek yang berisi pesan kesalahan per field
+          const errorMessages = Object.values(errorData).flat().join(", ");
+          setError(errorMessages || "An unexpected error occurred.");
         } else {
           // Menangani kesalahan HTTP lainnya
           const errorText = await response.text();
@@ -120,7 +118,7 @@ export default function Register() {
                   ref={namaRef}
                   type="text"
                   id="Nama"
-                  name="Nama"
+                  name="nama"
                   value={FormData.nama}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"

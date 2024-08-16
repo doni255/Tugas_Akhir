@@ -7,55 +7,73 @@ import {
   HiOutlineAnnotation,
   HiOutlineQuestionMarkCircle,
   HiOutlineCog,
+  HiOutlineTruck,
 } from "react-icons/hi";
 
+import { useAuth } from "../../App";
+
 export const DASHBOARD_SIDEBAR_LINKS = [
+  
+
   {
     key: "dashboard",
     label: "Dashboard",
-    path: "/dashboard_admin",
+    path: "/dashboard",
     icon: <HiOutlineViewGrid />,
   },
   {
     key: "products",
     label: "Products",
-    path: "/dashboard_admin/products",
+    path: "/dashboard/products",
     icon: <HiOutlineCube />,
   },
   {
     key: "orders",
     label: "Orders",
-    path: "/dashboard_admin/orders",
+    path: "/dashboard/orders",
     icon: <HiOutlineShoppingCart />,
   },
   {
     key: "customers",
     label: "Data Users",
-    path: "/dashboard_admin/customers",
+    path: "/dashboard/customers",
     icon: <HiOutlineUsers />,
   },
   {
     key: "report",
     label: "Laporan",
-    path: "/dashboard_admin/report",
+    path: "/dashboard/report",
     icon: <HiOutlineDocumentText />,
     subLinks: [
       {
         key: "pendapatan",
         label: "Pendapatan",
-        path: "/dashboard_admin/pendapatan",
+        path: "/dashboard/pendapatan",
       },
       {
         key: "barang_masuk",
         label: "Barang Masuk",
-        path: "/dashboard_admin/barang_masuk",
+        path: "/dashboard/barang_masuk",
+      },
+    ],
+  },
+  {
+    key: "supplier",
+    label: "Supplier",
+    path: "/dashboard/supplier",
+    icon: <HiOutlineTruck />,
+    subLinks: [
+      {
+        key: "input_barang_masuk",
+        label: "Input Data Barang Masuk",
+        path: "/dashboard/supplier/input-barang-masuk",
       },
     ],
   },
   {
     key: "messages",
     label: "Messages",
-    path: "/dashboard_admin/messages",
+    path: "/dashboard/messages",
     icon: <HiOutlineAnnotation />,
   },
 ];

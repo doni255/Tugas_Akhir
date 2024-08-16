@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../App";
 
 const login = () => {
   const [users, setUsers] = useState([]);
@@ -8,6 +9,7 @@ const login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const { setRole } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,25 +40,26 @@ const login = () => {
       if (response.status === 200) {
         // Arahkan pengguna ke halaman setelah login sukses
         console.log(response.data.data);
-        console.log(response.data.data.role);
-        console.log(response.data.data.message); // Debug log
+        console.log("Received role:", response.data.data.role);
 
-        if(response.data.data.role == "user") 
-          navigate("/e-commerce"); // Ubah ke rute tujuan User
+        setRole(response.data.data.role);
 
-        if(response.data.data.role == "admin") 
-          navigate("/dashboard_admin/"); // Ubah ke rute tujuan Admin
-
-        if(response.data.data.role == "supplier")
-          navigate("/dashboard_admin/"); // Ubah ke rute tujuan Supplier
+        // Arahkan berdasarkan role
+        if (response.data.data.role === "admin") {
+          navigate("/dashboard");
+        } else if (response.data.data.role === "supplier") {
+          navigate("/dashboard/supplier");
+        } else {
+          navigate("/e-commerce"); // Jika role adalah 'user'
+        }
       }
     } catch (error) {
       if (error.response) {
         setError(error.response.data.message);
-        console.error("Login error:", error.response.data.message); // Debug log
+        console.error("Login error:", error.response.data.message);
       } else {
         setError("Terjadi kesalahan, coba lagi nanti.");
-        console.error("Unexpected error:", error); // Debug log
+        console.error("Unexpected error:", error);
       }
     }
   };
