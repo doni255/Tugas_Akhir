@@ -55,14 +55,12 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
+
 // Komponen ProtectedRoute untuk memeriksa akses berdasarkan peran
-const ProtectedRoute = ({ role, children }) => {
+const ProtectedRoute = ({ roles, children }) => {
   const { role: userRole } = useAuth();
 
-  console.log("Expected role:", role);
-  console.log("User role:", userRole);
-
-  if (role && role !== userRole) {
+  if (roles && !roles.includes(userRole)) {
     return <Navigate to="/login" />;
   }
 
@@ -79,7 +77,7 @@ function App() {
           <Routes>
             {/* Bagian Login & Register */}
             <Route
-              path="/login"
+              path="/"
               element={<Login onLogin={() => handleLogin(useAuth().setRole)} />} // Panggil handleLogin saat login berhasil
             />
             <Route path="/register" element={<Register />} />
@@ -111,7 +109,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Supplier />} />
+              {/* <Route index element={<Supplier />} /> */}
               <Route path="input-barang-masuk" element={<InputBarangMasuk />} />
             </Route>
 

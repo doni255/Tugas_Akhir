@@ -1,4 +1,3 @@
-// src/button/button_product/Modal.js
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
@@ -70,10 +69,13 @@ const Modal = ({ open, onClose, children, type, addItem }) => {
   );
 };
 
-Modal.PropTypes = {
+// Perbaikan: Mengganti `PropTypes` dengan `propTypes`
+Modal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node,
+  type: PropTypes.string,
+  addItem: PropTypes.func,
 };
 
 export default Modal;

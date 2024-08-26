@@ -12,83 +12,112 @@ import {
 
 import { useAuth } from "../../App";
 
-export const DASHBOARD_SIDEBAR_LINKS = [
-  
+export const DASHBOARD_SIDEBAR_LINKS = () => {
+  const { role } = useAuth(); // Get the user role from context
 
-  {
-    key: "dashboard",
-    label: "Dashboard",
-    path: "/dashboard",
-    icon: <HiOutlineViewGrid />,
-  },
-  {
-    key: "products",
-    label: "Products",
-    path: "/dashboard/products",
-    icon: <HiOutlineCube />,
-  },
-  {
-    key: "orders",
-    label: "Orders",
-    path: "/dashboard/orders",
-    icon: <HiOutlineShoppingCart />,
-  },
-  {
-    key: "customers",
-    label: "Data Users",
-    path: "/dashboard/customers",
-    icon: <HiOutlineUsers />,
-  },
-  {
-    key: "report",
-    label: "Laporan",
-    path: "/dashboard/report",
-    icon: <HiOutlineDocumentText />,
-    subLinks: [
-      {
-        key: "pendapatan",
-        label: "Pendapatan",
-        path: "/dashboard/pendapatan",
-      },
-      {
-        key: "barang_masuk",
-        label: "Barang Masuk",
-        path: "/dashboard/barang_masuk",
-      },
-    ],
-  },
-  {
-    key: "supplier",
-    label: "Supplier",
-    path: "/dashboard/supplier",
-    icon: <HiOutlineTruck />,
-    subLinks: [
-      {
-        key: "input_barang_masuk",
-        label: "Input Data Barang Masuk",
-        path: "/dashboard/supplier/input-barang-masuk",
-      },
-    ],
-  },
-  {
-    key: "messages",
-    label: "Messages",
-    path: "/dashboard/messages",
-    icon: <HiOutlineAnnotation />,
-  },
-];
+  const links = [
+    {
+      key: "dashboard",
+      label: "Dashboard",
+      path: "/dashboard",
+      icon: <HiOutlineViewGrid />,
+      roles: ["admin", "supplier"], // Roles allowed to view this link
+    },
+    {
+      key: "products",
+      label: "Products",
+      path: "/dashboard/products",
+      icon: <HiOutlineCube />,
+      roles: ["admin"],
+    },
+    {
+      key: "orders",
+      label: "Orders",
+      path: "/dashboard/orders",
+      icon: <HiOutlineShoppingCart />,
+      roles: ["admin"],
+    },
+    {
+      key: "customers",
+      label: "Data Users",
+      path: "/dashboard/customers",
+      icon: <HiOutlineUsers />,
+      roles: ["admin"],
+    },
+    {
+      key: "report",
+      label: "Laporan",
+      path: "/dashboard/report",
+      icon: <HiOutlineDocumentText />,
+      roles: ["admin"],
+      subLinks: [
+        {
+          key: "pendapatan",
+          label: "Pendapatan",
+          path: "/dashboard/pendapatan",
+          roles: ["admin"],
+        },
+        {
+          key: "barang_masuk",
+          label: "Barang Masuk",
+          path: "/dashboard/barang_masuk",
+          roles: ["admin"],
+        },
+      ],
+    },
+    {
+      key: "supplier",
+      label: "Supplier",
+      path: "/dashboard/supplier",
+      icon: <HiOutlineTruck />,
+      roles: ["supplier"],
+      subLinks: [
+        {
+          key: "input_barang_masuk",
+          label: "Input Data Barang Masuk",
+          path: "/dashboard/supplier/input-barang-masuk",
+          roles: ["supplier"],
+        },
+      ],
+    },
+    {
+      key: "messages",
+      label: "Messages",
+      path: "/dashboard/messages",
+      icon: <HiOutlineAnnotation />,
+      roles: ["admin"],
+    },
+  ];
 
-export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
-  {
-    key: "settings",
-    label: "Settings",
-    path: "/settings",
-    icon: <HiOutlineCog />,
-  },
-  {
-    key: "support",
-    label: "Help & Support",
-    path: "/support",
-    icon: <HiOutlineQuestionMarkCircle />,
-  },
-];
+  // Ensure the result is always an array
+  const filteredLinks = links.filter((link) => link.roles.includes(role)) || [];
+
+  return filteredLinks;
+};
+
+export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = () => {
+  const { role } = useAuth();
+
+  const bottomLinks = [
+    {
+      key: "settings",
+      label: "Settings",
+      path: "/settings",
+      icon: <HiOutlineCog />,
+      roles: ["admin", "supplier"],
+    },
+    {
+      key: "support",
+      label: "Help & Support",
+      path: "/support",
+      icon: <HiOutlineQuestionMarkCircle />,
+      roles: ["admin", "supplier"],
+    },
+  ];
+
+  // Ensure the result is always an array
+  const filteredBottomLinks =
+    bottomLinks.filter((link) => link.roles.includes(role)) || [];
+
+  return filteredBottomLinks;
+};

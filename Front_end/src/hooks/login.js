@@ -44,11 +44,13 @@ const login = () => {
 
         setRole(response.data.data.role);
 
+        
+
         // Arahkan berdasarkan role
         if (response.data.data.role === "admin") {
           navigate("/dashboard");
         } else if (response.data.data.role === "supplier") {
-          navigate("/dashboard/supplier");
+          navigate("/dashboard");
         } else {
           navigate("/e-commerce"); // Jika role adalah 'user'
         }

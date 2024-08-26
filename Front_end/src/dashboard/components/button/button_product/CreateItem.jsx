@@ -67,6 +67,8 @@ function CreateItem({ onAddItem }) {
       jumlah_stock: stock,
     };
 
+    
+
     try {
       const response = await axios.post(
         "http://localhost:8000/api/create",
@@ -77,6 +79,7 @@ function CreateItem({ onAddItem }) {
           },
         }
       );
+      console.log(response);
 
       // const data = response.data;
 
@@ -84,23 +87,24 @@ function CreateItem({ onAddItem }) {
         // Check if the response is OK
         console.log("Product created:", response.data.data);
         onAddItem(response.data.data); // Update the parent component with the new item
-        toggleModal(); // Close the modal
       } else {
         console.error("Error creating product:", response.data);
       }
     } catch (error) {
       console.error("Network error:", error);
-      if (error.response) {
-        // Server responded with a status other than 200 range
-        console.error("Response error:", error.response.data);
-        console.error("Response status:", error.response.status);
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error("Request error:", error.request);
-      } else {
-        // Something happened in setting up the request
-        console.error("Error message:", error.message);
-      }
+      console.log("gagal idiot");
+      onAddItem(response.data.data); // Update the parent component with the new item
+      // if (error.response) {
+      //   // Server responded with a status other than 200 range
+      //   console.error("Response error:", error.response.data);
+      //   console.error("Response status:", error.response.status);
+      // } else if (error.request) {
+      //   // Request was made but no response received
+      //   console.error("Request error:", error.request);
+      // } else {
+      //   // Something happened in setting up the request
+      //   console.error("Error message:", error.message);
+      // }
     } finally {
       // Ensure modal is closed regardless of success or failure
       toggleModal();

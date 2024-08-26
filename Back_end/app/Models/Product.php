@@ -21,12 +21,14 @@ class Product extends Authenticatable
     protected $table = 'products';
     protected $primaryKey = 'id_product';
     protected $fillable = [
+        'barang',
         'gambar',
         'nama_product',
         'kategori_produk',
         'harga',
         'jumlah_stock',
     ];
+    
 
     protected $appends = ['konten_base64'];
 

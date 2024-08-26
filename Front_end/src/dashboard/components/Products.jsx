@@ -27,85 +27,50 @@ const status = [
 ];
 
 export default function Products() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const [editedProduct, setEditedProduct] = useState({
-    // id_product: null,
-    nama_product: "",
-    kategori_produk: "",
-    harga: 0,
-    jumlah_stock: 0,
-    gambar: null,
-  });
-
-  const openEditModal = (productId) => {
-    const productToEdit = products.find(
-      (product) => product.id_product === productId
-    );
-
-    if (productToEdit) {
-      setEditedProduct(productToEdit);
-      setIsEditModalOpen(true);
-    } else {
-      console.error("Product not found");
-    }
-  };
-
-  const handleEditSubmit = async (editedData) => {
-    try {
-      const formData = new FormData();
-      formData.append("nama_product", editedData.nama_product || "");
-      formData.append("kategori_produk", editedData.kategori_produk || "");
-      formData.append("harga", editedData.harga || "");
-      formData.append("jumlah_stock", editedData.jumlah_stock || "");
-
-      if (editedData.gambar) {
-        formData.append("gambar", editedData.gambar);
-      }
-
-      const response = await axios.put(
-        `http://localhost:8000/api/product/${editedData.id_product}`,
-        formData
-      );
-
-      const updatedProduct = response.data.data;
-
-      const updatedProducts = products.map((product) =>
-        product.id_product === updatedProduct.id_product
-          ? updatedProduct
-          : product
-      );
-      setProducts(updatedProducts);
-      setIsEditModalOpen(false);
-      setEditedProduct({
-        id_product: null,
-        nama_product: "",
-        kategori_produk: "",
-        harga: 0,
-        jumlah_stock: 0,
-        gambar: null,
-      });
-    } catch (error) {
-      console.error("Error updating product:", error);
-    }
-  };
-
   const handleEditClick = (product) => {
-    openEditModal(product.id_product);
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
   };
 
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-    setEditedProduct({
-      id_product: null,
-      nama_product: "",
-      kategori_produk: "",
-      harga: 0,
-      jumlah_stock: 0,
-      gambar: null,
-    });
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append("nama_product", selectedProduct.nama_product);
+    formData.append("kategori_produk", selectedProduct.kategori_produk);
+    formData.append("harga", selectedProduct.harga);
+    formData.append("jumlah_stock", selectedProduct.jumlah_stock);
+    if (selectedProduct.gambar instanceof File) {
+      formData.append("gambar", selectedProduct.gambar);
+    }
+  
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/product/${selectedProduct.id_product}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        console.log("Product updated successfully", response.data);
+        setIsEditModalOpen(false);
+        await fetchProducts(); // Refetch products after successful update
+      } else {
+        console.error("Failed to update product");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+      }
+    }
   };
 
   useEffect(() => {
@@ -120,7 +85,10 @@ export default function Products() {
   const handleAddItem = (newItem) => {
     // Tambahkan produk baru ke array products dan perbarui state
     setProducts((prevProducts) => [...prevProducts, newItem]);
+
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Bagian Paginasi
   // Menginisialisasi products sebagai array kosong untuk menghindari undefined
@@ -187,6 +155,7 @@ export default function Products() {
       // Optionally, show an error message to the user
     }
   };
+
   return (
     <main className="relative ">
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
@@ -199,7 +168,7 @@ export default function Products() {
               Let's grow to your business! Create your product and upload here
             </p>
           </div>
-          <CreateItem onAddItem={handleAddItem} />
+          <CreateItem onAddItem={handleAddItem} fetchProducts={fetchProducts} />
         </div>
         {/* <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
         {status.map((Published, index) => (
@@ -286,131 +255,127 @@ export default function Products() {
       </div>
 
       {/* Modal for Edit Form */}
-      <Modal open={isEditModalOpen} onClose={handleCloseEditModal}>
+      <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <h2 className="text-lg font-semibold mb-4">Edit Product</h2>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (editedProduct) {
-              handleEditSubmit(editedProduct);
-            } else {
-              console.error("editedProduct is not defined");
-            }
-          }}
-          action="#"
-          className="mt-8 grid grid-cols-6 gap-6"
-        >
-          <div className="col-span-6 sm:col-span-6 ">
-            <label
-              htmlFor="ProductName"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Product Name:
-            </label>
-            <input
-              type="text"
-              value={editedProduct.nama_product}
-              onChange={(e) =>
-                setEditedProduct({
-                  ...editedProduct,
-                  nama_product: e.target.value,
-                })
-              }
-              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-            />
-          </div>
+        {selectedProduct && (
+          <form
+            onSubmit={handleEditSubmit}
+            className="mt-8 grid grid-cols-6 gap-6"
+          >
+            <div className="col-span-6 sm:col-span-6 ">
+              <label
+                htmlFor="ProductName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Product Name:
+              </label>
+              <input
+                type="text"
+                value={selectedProduct.nama_product}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    nama_product: e.target.value,
+                  })
+                }
+                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+              />
+            </div>
 
-          <div className="col-span-6 sm:col-span-6 ">
-            <label
-              htmlFor="Category"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Kategori Produk:
-            </label>
-            <input
-              type="text"
-              value={editedProduct.kategori_produk}
-              onChange={(e) =>
-                setEditedProduct({
-                  ...editedProduct,
-                  kategori_produk: e.target.value,
-                })
-              }
-              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-            />
-          </div>
+            <div className="col-span-6 sm:col-span-6 ">
+              <label
+                htmlFor="Category"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Kategori Produk:
+              </label>
+              <input
+                type="text"
+                value={selectedProduct.kategori_produk}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    kategori_produk: e.target.value,
+                  })
+                }
+                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+              />
+            </div>
 
-          <div className="col-span-6">
-            <label
-              htmlFor="imageUrl"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Image URL
-            </label>
-            <input
-              type="file"
-              id="imageUrl"
-              name="imageUrl"
-              onChange={(e) =>
-                setEditedProduct({
-                  ...editedProduct,
-                  gambar: e.target.files[0],
-                })
-              }
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
+            <div className="col-span-6">
+              <label
+                htmlFor="imageUrl"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Image URL
+              </label>
+              <input
+                type="file"
+                id="imageUrl"
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    gambar: e.target.files[0],
+                  })
+                }
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
 
-          <div className="col-span-6">
-            <label
-              htmlFor="Price"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Price:
-            </label>
-            <input
-              type="number"
-              value={editedProduct.harga}
-              onChange={(e) =>
-                setEditedProduct({ ...editedProduct, harga: e.target.value })
-              }
-              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-            />
-          </div>
-          <div className="col-span-6">
-            <label
-              htmlFor="Stock"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Stock:
-            </label>
-            <input
-              type="number"
-              value={editedProduct.jumlah_stock}
-              onChange={(e) =>
-                setEditedProduct({
-                  ...editedProduct,
-                  jumlah_stock: e.target.value,
-                })
-              }
-              className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-            />
-          </div>
-          <div className="flex gap-2.5">
-            <button
-              type="submit"
-              className="inline-block rounded bg-blue-500 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
-            >
-              Update
-            </button>
-            <button
-              onClick={handleCloseEditModal}
-              className="inline-block rounded border border-current px-8 py-3 text-sm font-medium text-indigo-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+            <div className="col-span-6">
+              <label
+                htmlFor="Price"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Price:
+              </label>
+              <input
+                type="number"
+                value={selectedProduct.harga}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    harga: e.target.value,
+                  })
+                }
+                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+              />
+            </div>
+            <div className="col-span-6">
+              <label
+                htmlFor="Stock"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Stock:
+              </label>
+              <input
+                type="number"
+                value={selectedProduct.jumlah_stock}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    jumlah_stock: e.target.value,
+                  })
+                }
+                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+              />
+            </div>
+            <div className="flex gap-2.5">
+              <button
+                type="submit"
+                className="inline-block rounded bg-blue-500 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
+              >
+                Update
+              </button>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="inline-block rounded border border-current px-8 py-3 text-sm font-medium text-indigo-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
       </Modal>
 
       {/* Modal untuk konfirmasi delete */}

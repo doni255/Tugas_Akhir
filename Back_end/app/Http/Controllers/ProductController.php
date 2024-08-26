@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+
 
 class ProductController extends Controller
 {
@@ -21,6 +22,15 @@ class ProductController extends Controller
         
         // Mengembalikan data dalam bentuk JSON response
         return response()->json($product);
+    }
+
+    public function getTotalStock()
+    {
+        // Menghitung total jumlah_stock dari semua produk
+        $totalStock = Product::sum('jumlah_stock');
+
+        // Mengembalikan hasil dalam format JSON
+        return response()->json(['totalStock' => $totalStock]);
     }
 
     public function getProducts()
@@ -69,6 +79,7 @@ class ProductController extends Controller
     
      // Buat produk baru dengan data yang diberikan
      $product = new Product();
+     $product->id_barang_masuk = null;
      $product->nama_product = $request->nama_product;
      $product->kategori_produk = $request->kategori_produk;
      $product->harga = $request->harga; // Ini harus menerima harga sebagai string tanpa simbol dolar
@@ -105,55 +116,45 @@ class ProductController extends Controller
         ], 200);
     }
     
-    public function editProduct(Request $request, $id_product)
+    public function update(Request $request, $id_product)
     {
-        // Validasi input
-        $validatedData = $request->validate([
-            'nama_product' => 'required|string|max:255',
-            'kategori_produk' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
-            'jumlah_stock' => 'required|integer|min:0',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-    
-        // Cari produk berdasarkan id_product
-        $product = Product::findOrFail($id_product);
-    
-        // Update data produk
-        $product->nama_product = $validatedData['nama_product'];
-        $product->kategori_produk = $validatedData['kategori_produk'];
-        $product->harga = $validatedData['harga'];
-        $product->jumlah_stock = $validatedData['jumlah_stock'];
-    
-        // Jika ada gambar baru yang diupload
-        // if ($request->hasFile('gambar')) {
-        //     $image = $request->file('gambar');
-        //     $imageContent = file_get_contents($image->getRealPath());
-        //     $product->gambar = $imageContent;
-        // }
 
-         // Jika ada gambar baru yang diupload
-    if ($request->hasFile('gambar')) {
-        $image = $request->file('gambar');
-        $imagePath = $image->store('public/images'); // Menyimpan gambar dan mendapatkan path
-        $product->gambar = $imagePath; // Simpan path gambar ke database
-    }
+            $product = Product::find($id_product);
     
-        // Simpan perubahan
-        $product->save();
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
+            }
     
+            // Validasi data
+            $request->validate([
+                'nama_product' => 'required|string|max:255',
+                'kategori_produk' => 'required|string|max:255',
+                'harga' => 'required|string|max:255',
+                'jumlah_stock' => 'required|string|max:255',
+                'gambar' => 'sometimes|file|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+    
+            // Mengupdate data produk
+            $product->nama_product = $request->input('nama_product');
+            $product->kategori_produk = $request->input('kategori_produk');
+            $product->harga = $request->input('harga');
+            $product->jumlah_stock = $request->input('jumlah_stock');
+    
+            // Jika ada file gambar yang diunggah, update gambar
+            if ($request->hasFile('gambar')) {
+                $image = $request->file('gambar');
+                $imageContent = file_get_contents($image->getRealPath());
+                $product->gambar = $imageContent; // Simpan sebagai biner
+            }
 
-         // Kirim response sukses
-        return response()->json([
-            'success' => true,
-            'message' => 'Produk berhasil diperbarui',
-            'data' => json_decode(json_encode($product, JSON_UNESCAPED_UNICODE), true)
-        ], 200);
+            $product->save();
+    
+            return response()->json([
+                'message' => 'Product updated successfully', 
+                'product' => $product
+            ], 200);
+    
         
     }
-    
-
-
-
-
+   
 }

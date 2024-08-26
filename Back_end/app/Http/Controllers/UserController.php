@@ -23,6 +23,15 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function getTotalUsers()
+    {
+        // Menghitung total user berdasarkan id_user
+        $totalUsers = User::count();
+
+        // Mengembalikan hasil dalam format JSON
+        return response()->json(['totalUsers' => $totalUsers]);
+    }
+
     public function update(Request $request, $id)
     {
         // Input Validation

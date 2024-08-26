@@ -5,21 +5,28 @@ import TransactionChart from "./TransactionChart";
 import BuyerProfileChart from "./BuyerProfileChart";
 import RecentOrders from "./RecentOrders";
 import PopularProducts from "./PopularProducts";
+import { useAuth } from "../../App";
 
 export default function Dashboard() {
+  const { role } = useAuth(); // Dapatkan role pengguna
+
   return (
     <div className="h-screen flex flex-col overflow-hidden gap- 4">
       <div className="flex flex-col gap-4 h-full overflow-y-auto p-4">
         <DashboardStatsGrid />
-        <div className="flex flex-row gap-4 w-full">
-          <TransactionChart />
-        <BuyerProfileChart />
-        </div>
-        <div className="flex flex-row gap-4 w-full">
-          <RecentOrders />
-        <PopularProducts />
-        </div>
-        {/* <p>this is dashboard</p> <Link to="/products">go to products</Link> */}
+
+        {role == "admin" && (
+          <>
+            <div className="flex flex-row gap-4 w-full">
+              <TransactionChart />
+              <BuyerProfileChart />
+            </div>
+            <div className="flex flex-row gap-4 w-full">
+              <RecentOrders />
+              <PopularProducts />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

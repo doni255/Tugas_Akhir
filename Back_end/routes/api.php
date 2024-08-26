@@ -26,14 +26,13 @@
     Route::post('/store', [UserController::class, 'store']);
 
     // Bagian Users
-
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::get('/total-users', [UserController::class, 'getTotalUsers']);
     
-
-
     // Bagian Product
+    Route::get('/total-stock', [ProductController::class, 'getTotalStock']);
     Route::get('/product', [ProductController::class, 'getProducts']);
     Route::delete('/product/{id}', [ProductController::class, 'destroy']);
     Route::post('/create', [ProductController::class, 'create']);
-    Route::put('/product/{id_product}', [ProductController::class, 'editProduct']);
+    Route::put('/product/{id_product}', [ProductController::class, 'update']);
