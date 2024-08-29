@@ -1,5 +1,5 @@
 // hooks/useBarangMasukData.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { barangMasuk } from "./dataBarangMasuk";
 
 const formatDateForInput = (dateString) => {
@@ -137,6 +137,21 @@ const useBarangMasukData = () => {
   currentItems.forEach((item) => {
     console.log("Current item:", item);
   });
+
+
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchBarangMasuk = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/barang_masuk'); // Sesuaikan endpoint sesuai dengan backend Anda
+        setBarangMasukData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch barang masuk data", error);
+      }
+    };
+
+    fetchBarangMasuk();
+  }, []);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import { CartContextProvider } from "./e-commerce/context/cartContext";
 // Import Login & Register
 import Login from "./Login";
@@ -42,7 +42,21 @@ import Cart from "./e-commerce/components/Cart";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [role, setRole] = useState(null); // Simpan peran pengguna
+  // const [role, setRole] = useState(null); // Simpan peran pengguna
+
+  const [role, setRole] = useState(() => {
+    // Ambil peran dari localStorage saat inisialisasi
+    return localStorage.getItem("userRole") || null;
+  });
+
+  useEffect(() => {
+    // Simpan peran ke localStorage setiap kali berubah
+    if (role) {
+      localStorage.setItem("userRole", role);
+    } else {
+      localStorage.removeItem("userRole");
+    }
+  }, [role]);
 
   return (
     <AuthContext.Provider value={{ role, setRole }}>
@@ -54,7 +68,6 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
 
 // Komponen ProtectedRoute untuk memeriksa akses berdasarkan peran
 const ProtectedRoute = ({ roles, children }) => {
@@ -69,6 +82,13 @@ const ProtectedRoute = ({ roles, children }) => {
 
 function App() {
   const [showCart, setShowCart] = useState(false);
+
+  const handleLogin = (setRole) => {
+    // Misalnya, lakukan autentikasi dan dapatkan peran pengguna
+    const userRole = "admin"; // Ini seharusnya didapatkan dari respon server setelah login berhasil
+    setRole(userRole);
+    // Lakukan navigasi ke halaman dashboard atau halaman lain setelah login berhasil
+  };
 
   return (
     <Router>

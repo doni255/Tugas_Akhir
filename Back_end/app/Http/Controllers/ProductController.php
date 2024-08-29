@@ -61,7 +61,7 @@ class ProductController extends Controller
             'nama_product' => 'required|string|max:255',
             'kategori_produk' => 'required|string',
             'harga' => 'required|numeric', // Validasi harga sebagai angka
-            'konten_base64' => 'required|string', // Misalkan ini untuk gambar dalam format base64
+            'konten_base64' => 'nullable|string', // Misalkan ini untuk gambar dalam format base64
             'jumlah_stock' => 'required|string'
         ]);
 
@@ -79,7 +79,6 @@ class ProductController extends Controller
     
      // Buat produk baru dengan data yang diberikan
      $product = new Product();
-     $product->id_barang_masuk = null;
      $product->nama_product = $request->nama_product;
      $product->kategori_produk = $request->kategori_produk;
      $product->harga = $request->harga; // Ini harus menerima harga sebagai string tanpa simbol dolar
@@ -91,7 +90,7 @@ class ProductController extends Controller
     return response()-> json([
         'message' => 'Product created successfully',
         'data' => $product
-    ], 201);
+    ], 200);
 
     }
 

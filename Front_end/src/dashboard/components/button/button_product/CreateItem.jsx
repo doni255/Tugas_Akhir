@@ -16,7 +16,7 @@ function CreateItem({ onAddItem }) {
   const [imageError, setImageError] = useState("");
 
   const addItem = (newItem) => {
-    console.log("New Item Added:", newItem);
+    // console.log("New Item Added:", newItem);
     // Logika untuk menambahkan item baru ke daftar produk
     // Bisa menambahkan item ke state produk di komponen induk
   };
@@ -67,48 +67,22 @@ function CreateItem({ onAddItem }) {
       jumlah_stock: stock,
     };
 
-    
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/create",
-        newItem,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response);
-
-      // const data = response.data;
-
-      if (response.status === 200 || response.status === 201) {
-        // Check if the response is OK
-        console.log("Product created:", response.data.data);
-        onAddItem(response.data.data); // Update the parent component with the new item
-      } else {
-        console.error("Error creating product:", response.data);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      console.log("gagal idiot");
-      onAddItem(response.data.data); // Update the parent component with the new item
-      // if (error.response) {
-      //   // Server responded with a status other than 200 range
-      //   console.error("Response error:", error.response.data);
-      //   console.error("Response status:", error.response.status);
-      // } else if (error.request) {
-      //   // Request was made but no response received
-      //   console.error("Request error:", error.request);
-      // } else {
-      //   // Something happened in setting up the request
-      //   console.error("Error message:", error.message);
-      // }
-    } finally {
-      // Ensure modal is closed regardless of success or failure
-      toggleModal();
-    }
+    axios
+      .post("http://localhost:8000/api/create", newItem, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        toggleModal();
+        // onAddItem(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        toggleModal();
+      });
   };
 
   return (

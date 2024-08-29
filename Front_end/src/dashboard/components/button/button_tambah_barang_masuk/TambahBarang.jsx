@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import Modal from "../../Modal";
 
-
 function TambahBarang() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -81,8 +80,21 @@ function TambahBarang() {
               type="text"
               id="name"
               name="name"
-              value={formData.name}
-              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              required
+            />
+          </div>
+          <div className="col-span-6">
+            <label
+              htmlFor="harga_beli"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Kategori Produk
+            </label>
+            <input
+              type="text"
+              id="kategori_produk"
+              name="kategori_produk"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
@@ -98,25 +110,6 @@ function TambahBarang() {
               type="text"
               id="harga_beli"
               name="harga_beli"
-              value={formData.harga_beli}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-              required
-            />
-          </div>
-          <div className="col-span-6">
-            <label
-              htmlFor="harga_jual"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Harga Jual
-            </label>
-            <input
-              type="text"
-              id="harga_jual"
-              name="harga_jual"
-              value={formData.harga_jual}
-              onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
@@ -126,31 +119,12 @@ function TambahBarang() {
               htmlFor="jumlah_masuk"
               className="block text-sm font-medium text-gray-700"
             >
-              Jumlah Masuk
+              Jumlah Stock
             </label>
             <input
               type="number"
-              id="jumlah_masuk"
-              name="jumlah_masuk"
-              value={formData.jumlah_masuk}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-              required
-            />
-          </div>
-          <div className="col-span-6">
-            <label
-              htmlFor="nama_supplier"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Nama Supplier
-            </label>
-            <input
-              type="text"
-              id="nama_supplier"
-              name="nama_supplier"
-              value={formData.nama_supplier}
-              onChange={handleChange}
+              id="jumlah_stock"
+              name="jumlah_stock"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               required
             />
