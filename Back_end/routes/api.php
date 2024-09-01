@@ -36,7 +36,7 @@ use App\Http\Controllers\ProductController;
     Route::get('/product', [ProductController::class, 'getProducts']);
     Route::delete('/product/{id}', [ProductController::class, 'destroy']);
     Route::post('/create', [ProductController::class, 'create']);
-    Route::put('/product/{id_product}', [ProductController::class, 'update']);
+    Route::post('/product/{id_product}', [ProductController::class, 'update']);
 
     // Barang Masuk Untuk Supplier
     Route::get('/barang_masuk', [BarangMasukController::class, 'getBarangMasuk']);

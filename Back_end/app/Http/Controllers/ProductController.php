@@ -63,7 +63,7 @@ class ProductController extends Controller
             'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
             'harga_jual' => 'required|numeric', // Validasi harga sebagai angka
             'konten_base64' => 'nullable|string', // Misalkan ini untuk gambar dalam format base64
-            'jumlah_stock' => 'required|string'
+            'jumlah_stock' => 'required|string',            
         ]);
 
         // Jika validasi gagal, kembalikan respons error
@@ -119,47 +119,82 @@ class ProductController extends Controller
     
     public function update(Request $request, $id_product)
     {
+        $product = Product::find($id_product);
+    
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+    
+        // Validasi data
+        $request->validate([
+            'nama_product' => 'required|string|max:255',
+            'kategori_produk' => 'required|string|max:255',
+            'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
+            'harga_jual' => 'required|numeric', // Validasi harga sebagai angka
+            'jumlah_stock' => 'required|string|max:255',
+            'gambar' => 'nullable',
+            // 'gambar' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-            $product = Product::find($id_product);
-    
-            if (!$product) {
-                return response()->json(['message' => 'Product not found'], 404);
-            }
-    
-            // Validasi data
-            $request->validate([
-                'nama_product' => 'required|string|max:255',
-                'kategori_produk' => 'required|string|max:255',
-                'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
-                'harga_jual' => 'required|numeric', // Validasi harga sebagai angka
-                'harga' => 'required|string|max:255',
-                'jumlah_stock' => 'required|string|max:255',
-                'gambar' => 'sometimes|file|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
-    
-            // Mengupdate data produk
-            $product->nama_product = $request->input('nama_product');
-            $product->kategori_produk = $request->input('kategori_produk');
-            $product->harga_beli = $request->input('harga_beli');
-            $product->harga_jual = $request->input('harga_jual');
-            $product->harga = $request->input('harga');
-            $product->jumlah_stock = $request->input('jumlah_stock');
-    
-            // Jika ada file gambar yang diunggah, update gambar
-            if ($request->hasFile('gambar')) {
-                $image = $request->file('gambar');
-                $imageContent = file_get_contents($image->getRealPath());
-                $product->gambar = $imageContent; // Simpan sebagai biner
-            }
+        // if ( $request->file('gambar')->getMimeType() != 'image/jpeg' && $request->file('gambar')->getMimeType() != 'image/png') {
+        //     return response()->json([
+        //         'message' => 'Gambar must be an image',
+        //         'data' => null
+        //     ], 400);
+        // }
 
-            $product->save();
+        // if (!$request->hasFile('gambar')) {
+        //     return response()->json([
+        //         'message' => 'Gambar is required',
+               
+        //     ], 400);
+        // }
     
+        try{
+        // $product->nama_product = $request->input('nama_product');
+        // $product->kategori_produk = $request->input('kategori_produk');
+        // $product->harga_beli = $request->input('harga_beli');
+        // $product->harga_jual = $request->input('harga_jual');
+        // $product->jumlah_stock = $request->input('jumlah_stock');
+
+        $storeData = $request->all();
+        $storeData['nama_product'] = $storeData['nama_product'];
+        $storeData['kategori_produk'] = $storeData['kategori_produk'];
+        $storeData['harga_beli'] = $storeData['harga_beli'];
+        $storeData['harga_jual'] = $storeData['harga_jual'];
+        $storeData['jumlah_stock'] = $storeData['jumlah_stock'];
+
+        // Jika ada file gambar yang diunggah, update gambar
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $storeData['gambar'] = file_get_contents($file->getRealPath());
+            // $product->gambar = base64_encode($imageContent); // Encode sebagai base64
+        }
+    
+        $product->update($storeData);
+    
+        // Return response without binary image data to avoid encoding errors
+        return response()->json([
+            'message' => 'Product updated successfully', 
+            'product' => [
+                'id_product' => $product->id_product,
+                'nama_product' => $product->nama_product,
+                'kategori_produk' => $product->kategori_produk,
+                'harga_beli' => $product->harga_beli,
+                'harga_jual' => $product->harga_jual,
+                'jumlah_stock' => $product->jumlah_stock,
+                'konten_base64' => $product->konten_base64,
+                // Avoid returning the raw image; use URL or path if available
+            ]
+        ], 200);
+        }catch (\Exception $e) {
+            Log::error('Error updating event: ' . $e->getMessage());
             return response()->json([
-                'message' => 'Product updated successfully', 
-                'product' => $product
-            ], 200);
-    
-        
+                'message' => 'Server Error',
+                'data' => $e->getMessage()
+            ], 500);
+        }
     }
+    
    
 }

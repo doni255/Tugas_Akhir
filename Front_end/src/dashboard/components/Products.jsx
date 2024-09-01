@@ -43,6 +43,7 @@ export default function Products() {
   const [isModalOpenCreate, setIsModalOpenCreate] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   // const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -68,6 +69,22 @@ export default function Products() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData({ ...formData, imageUrl: reader.result });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImageError("Image file is required");
+    }
+  };
+
+  const handleFileChangeEdit = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedProduct({
+          ...selectedProduct,
+          gambar: reader.result.split(",")[1], // Simpan hanya bagian base64
+        });
       };
       reader.readAsDataURL(file);
     } else {
@@ -147,15 +164,14 @@ export default function Products() {
     setImageError("");
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const [selectedCategory, setSelectedCategory] = useState("");
-
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setFormData({ ...formData, category });
+  };
+
+  const handleCategoryChangeEdit = (category) => {
+    setSelectedCategory(category);
+    setFormData({ ...formData, kategori_produk: category }); // Ensure the correct field name is used
   };
 
   const handleEditClick = (product) => {
@@ -166,19 +182,22 @@ export default function Products() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
 
+    // Membuat FormData baru
     const formData = new FormData();
     formData.append("nama_product", selectedProduct.nama_product);
-    formData.append("kategori_produk", selectedProduct.kategori_produk);
+    formData.append("kategori_produk", selectedCategory);
     formData.append("harga_beli", selectedProduct.harga_beli);
     formData.append("harga_jual", selectedProduct.harga_jual);
-    formData.append("harga", selectedProduct.harga);
     formData.append("jumlah_stock", selectedProduct.jumlah_stock);
-    if (selectedProduct.gambar instanceof File) {
-      formData.append("gambar", selectedProduct.gambar);
+
+    // Hanya menambahkan file gambar jika ada
+    if (selectedProduct.gambar) {
+      formData.append("gambar", selectedProduct.gambar); // Mengirim file sebagai file
     }
 
     try {
-      const response = await axios.put(
+      // Mengirim FormData melalui axios
+      const response = await axios.post(
         `http://localhost:8000/api/product/${selectedProduct.id_product}`,
         formData,
         {
@@ -188,17 +207,14 @@ export default function Products() {
         }
       );
 
-      if (response.status === 200) {
-        console.log("Product updated successfully", response.data);
-        setIsEditModalOpen(false);
-        await fetchProducts(); // Refetch products after successful update
-      } else {
-        console.error("Failed to update product");
-      }
+      console.log("Response data:", response.data);
+      setIsEditModalOpen(false);
     } catch (error) {
-      console.error("Error:", error);
       if (error.response) {
-        console.error("Response data:", error.response.data);
+        console.log("Error response data:", error.response.data);
+        alert(`Error: ${error.response.data.message || "Validation failed"}`);
+      } else {
+        console.error("Error:", error.message);
       }
     }
   };
@@ -581,7 +597,7 @@ export default function Products() {
               </label>
               <input
                 type="text"
-                value={selectedProduct.nama_product}
+                value={selectedProduct.nama_product || ""}
                 onChange={(e) =>
                   setSelectedProduct({
                     ...selectedProduct,
@@ -625,7 +641,7 @@ export default function Products() {
                         {({ active }) => (
                           <button
                             type="button"
-                            onClick={() => handleCategoryChange(category)}
+                            onClick={() => handleCategoryChangeEdit(category)}
                             className={`block px-4 py-2 text-sm ${
                               active
                                 ? "bg-gray-100 text-gray-900"
@@ -653,7 +669,7 @@ export default function Products() {
                 type="number"
                 id="harga_beli"
                 name="harga_beli"
-                value={formData.harga_beli}
+                value={selectedProduct.harga_beli || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 required
@@ -671,7 +687,7 @@ export default function Products() {
                 type="number"
                 id="harga_jual"
                 name="harga_jual"
-                value={formData.harga_jual}
+                value={selectedProduct.harga_jual || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 required
@@ -691,32 +707,13 @@ export default function Products() {
                 onChange={(e) =>
                   setSelectedProduct({
                     ...selectedProduct,
-                    gambar: e.target.files[0],
+                    gambar: e.target.files[0], // Mendapatkan file dari input
                   })
                 }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
 
-            <div className="col-span-6">
-              <label
-                htmlFor="Price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Price:
-              </label>
-              <input
-                type="number"
-                value={selectedProduct.harga}
-                onChange={(e) =>
-                  setSelectedProduct({
-                    ...selectedProduct,
-                    harga: e.target.value,
-                  })
-                }
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
-            </div>
             <div className="col-span-6">
               <label
                 htmlFor="Stock"
@@ -726,7 +723,7 @@ export default function Products() {
               </label>
               <input
                 type="number"
-                value={selectedProduct.jumlah_stock}
+                value={selectedProduct.jumlah_stock || ""}
                 onChange={(e) =>
                   setSelectedProduct({
                     ...selectedProduct,
