@@ -17,12 +17,12 @@ import Products from "./dashboard/components/Products";
 import Orders from "./dashboard/components/Orders";
 import Customers from "./dashboard/components/Customers";
 import Pendapatan from "./dashboard/components/Pendapatan";
-import BarangMasuk from "./dashboard/components/Barang_Masuk";
+import BarangMasuk from "./dashboard/components/supplier/BarangMasuk";
 import Messages from "./dashboard/components/Messages";
 
 // Import Supplier Components
 import Supplier from "./dashboard/components/supplier/supplier";
-import { InputBarangMasuk } from "./dashboard/components/supplier/InputBarangMasuk";
+
 
 // Import E-commerce
 import Navbar from "./e-commerce/components/Navbar";
@@ -130,7 +130,7 @@ function App() {
               }
             >
               {/* <Route index element={<Supplier />} /> */}
-              <Route path="input-barang-masuk" element={<InputBarangMasuk />} />
+              <Route path="barangmasuk" element={<BarangMasuk />} />
             </Route>
 
             {/* Bagian E-commerce */}

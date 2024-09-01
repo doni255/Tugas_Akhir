@@ -73,9 +73,9 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
       roles: ["supplier"],
       subLinks: [
         {
-          key: "input_barang_masuk",
+          key: "barangmasuk",
           label: "Input Data Barang Masuk",
-          path: "/dashboard/supplier/input-barang-masuk",
+          path: "/dashboard/supplier/barangmasuk",
           roles: ["supplier"],
         },
       ],

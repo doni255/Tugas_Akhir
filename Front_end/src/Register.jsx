@@ -10,7 +10,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   const namaRef = useRef();
@@ -82,7 +82,7 @@ export default function Register() {
       }
 
       // Redirect user to login section jika berhasil
-      navigate("/login");
+      navigate("/");
       const result = await response.json();
       console.log("Result:", result);
     } catch (error) {

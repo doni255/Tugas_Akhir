@@ -77,7 +77,7 @@ function CreateItem({ onAddItem }) {
       .then((response) => {
         console.log(response);
         toggleModal();
-        // onAddItem(response.data.data);
+        onAddItem(response.data.data);
       })
       .catch((error) => {
         console.log(error);

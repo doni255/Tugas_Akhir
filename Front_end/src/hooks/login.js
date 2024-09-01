@@ -34,17 +34,16 @@ const login = () => {
     console.log("Login button clicked"); // Debug log
     try {
       const response = await axios.post("http://localhost:8000/api/login", {
-        nama: nama, // Nama pengguna
-        password: password, // Password pengguna
+        nama: nama.trim(), // Nama pengguna
+        password: password.trim(), // Password pengguna
       });
+      
       if (response.status === 200) {
         // Arahkan pengguna ke halaman setelah login sukses
         console.log(response.data.data);
         console.log("Received role:", response.data.data.role);
 
         setRole(response.data.data.role);
-
-        
 
         // Arahkan berdasarkan role
         if (response.data.data.role === "admin") {
@@ -56,12 +55,12 @@ const login = () => {
         }
       }
     } catch (error) {
+      console.error("Full error:", error);
       if (error.response) {
+        console.error("Error response data:", error.response.data);
         setError(error.response.data.message);
-        console.error("Login error:", error.response.data.message);
       } else {
         setError("Terjadi kesalahan, coba lagi nanti.");
-        console.error("Unexpected error:", error);
       }
     }
   };
