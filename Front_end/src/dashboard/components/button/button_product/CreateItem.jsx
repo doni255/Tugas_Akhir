@@ -3,11 +3,25 @@ import { HiPlus } from "react-icons/hi";
 import Modal from "../../Modal";
 import axios from "axios";
 
+import { Menu } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  // DropdownSection,
+  DropdownItem,
+} from "@nextui-org/dropdown";
+import { Button } from "@nextui-org/react";
+
 function CreateItem({ onAddItem }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     category: "",
+    harga_beli: "",
+    harga_jual: "",
     imageUrl: null,
     price: "",
     stock: "",
@@ -45,10 +59,10 @@ function CreateItem({ onAddItem }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, category, imageUrl, price, stock } = formData;
+    const { name, category, imageUrl, harga_beli, harga_jual, stock } = formData;
 
     // Validasi input kosong termasuk gambar
-    if (!name || !category || !price || !stock || !imageUrl) {
+    if (!name || !category || !harga_beli || !harga_jual || !stock || !imageUrl) {
       if (!imageUrl) {
         setImageError("Image file is required");
       }
@@ -62,7 +76,8 @@ function CreateItem({ onAddItem }) {
     const newItem = {
       nama_product: name,
       kategori_produk: category,
-      harga: price,
+      harga_beli: harga_beli,
+      harga_jual: harga_jual, 
       konten_base64: base64Image,
       jumlah_stock: stock,
     };
@@ -83,6 +98,13 @@ function CreateItem({ onAddItem }) {
         console.log(error);
         toggleModal();
       });
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setFormData({ ...formData, category });
   };
 
   return (
@@ -121,7 +143,7 @@ function CreateItem({ onAddItem }) {
                 required
               />
             </div>
-            <div className="col-span-6">
+            {/* <div className="col-span-6">
               <label
                 htmlFor="category"
                 className="block text-sm font-medium text-gray-700"
@@ -137,7 +159,87 @@ function CreateItem({ onAddItem }) {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 required
               />
+            </div> */}
+
+            <div className="col-span-6 sm:col-span-6">
+              <label
+                htmlFor="category"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Category
+              </label>
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="inline-flex w-72 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    {selectedCategory || "Select Category"}
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className="-mr-1 h-5 w-5 text-gray-400"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Menu.Items className="absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="text-center">
+                    {["Genset", "Speed Boat", "Pompa Air", "Gergaji", "Spare Part Genset", "Spare Part Speed Boat", "Spare Part Gergaji"].map((category) => (
+                      <Menu.Item key={category}>
+                        {({ active }) => (
+                          <button
+                            type="button"
+                            onClick={() => handleCategoryChange(category)}
+                            className={`block px-4 py-2 text-sm ${
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </div>
+                </Menu.Items>
+              </Menu>
             </div>
+
+            <div className="col-span-6">
+              <label
+                htmlFor="harga_beli"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Harga Beli
+              </label>
+              <input
+                type="number"
+                id="harga_beli"
+                name="harga_beli"
+                value={formData.harga_beli}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                required
+              />
+            </div>
+
+            
+            <div className="col-span-6">
+              <label
+                htmlFor="harga_beli"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Harga Jual
+              </label>
+              <input
+                type="number"
+                id="harga_jual"
+                name="harga_jual"
+                value={formData.harga_jual}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                required
+              />
+            </div>
+
             <div className="col-span-6">
               <label
                 htmlFor="imageUrl"
@@ -156,23 +258,7 @@ function CreateItem({ onAddItem }) {
                 <p className="text-red-600 text-sm mt-1">{imageError}</p>
               )}
             </div>
-            <div className="col-span-6">
-              <label
-                htmlFor="price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Price
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                required
-              />
-            </div>
+            
             <div className="col-span-6">
               <label
                 htmlFor="stock"

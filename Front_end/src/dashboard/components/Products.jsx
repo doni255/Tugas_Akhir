@@ -16,6 +16,7 @@ import {
   HiOutlineXCircle,
   HiPlus,
 } from "react-icons/hi";
+
 import Pagination from "../consts/Pagination";
 
 const status = [
@@ -37,16 +38,18 @@ export default function Products() {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("nama_product", selectedProduct.nama_product);
     formData.append("kategori_produk", selectedProduct.kategori_produk);
+    formData.append("harga_beli", selectedProduct.harga_beli);
+    formData.append("harga_jual", selectedProduct.harga_jual);
     formData.append("harga", selectedProduct.harga);
     formData.append("jumlah_stock", selectedProduct.jumlah_stock);
     if (selectedProduct.gambar instanceof File) {
       formData.append("gambar", selectedProduct.gambar);
     }
-  
+
     try {
       const response = await axios.put(
         `http://localhost:8000/api/product/${selectedProduct.id_product}`,
@@ -57,7 +60,7 @@ export default function Products() {
           },
         }
       );
-  
+
       if (response.status === 200) {
         console.log("Product updated successfully", response.data);
         setIsEditModalOpen(false);
@@ -85,7 +88,6 @@ export default function Products() {
   const handleAddItem = (newItem) => {
     // Tambahkan produk baru ke array products dan perbarui state
     setProducts((prevProducts) => [...prevProducts, newItem]);
-
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -197,6 +199,8 @@ export default function Products() {
                 <td className="">&nbsp; &nbsp; Gambar</td>
                 <td className=" text-center">Product Name</td>
                 <td className="text-center">Kategori Produk</td>
+                <td className="text-center">Harga Beli</td>
+                <td className="text-center">Harga Jual</td>
                 <td className=" text-center">Pricing</td>
                 <td className=" text-center">Stock</td>
                 <td></td>
@@ -229,7 +233,8 @@ export default function Products() {
                   </td>
                   <td className="text-center">{product.nama_product}</td>
                   <td className="text-center">{product.kategori_produk}</td>
-                  <td className=" text-center ">{product.harga}</td>
+                  <td className="text-center">{product.harga_beli}</td>
+                  <td className="text-center">{product.harga_jual}</td>
                   <td className="text-center">{product.jumlah_stock}</td>
                   {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
                   <td className="py-4 px-4 text-center">
