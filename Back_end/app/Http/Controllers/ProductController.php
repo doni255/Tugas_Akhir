@@ -130,6 +130,8 @@ class ProductController extends Controller
             $request->validate([
                 'nama_product' => 'required|string|max:255',
                 'kategori_produk' => 'required|string|max:255',
+                'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
+                'harga_jual' => 'required|numeric', // Validasi harga sebagai angka
                 'harga' => 'required|string|max:255',
                 'jumlah_stock' => 'required|string|max:255',
                 'gambar' => 'sometimes|file|mimes:jpeg,png,jpg,gif|max:2048',
@@ -138,6 +140,8 @@ class ProductController extends Controller
             // Mengupdate data produk
             $product->nama_product = $request->input('nama_product');
             $product->kategori_produk = $request->input('kategori_produk');
+            $product->harga_beli = $request->input('harga_beli');
+            $product->harga_jual = $request->input('harga_jual');
             $product->harga = $request->input('harga');
             $product->jumlah_stock = $request->input('jumlah_stock');
     

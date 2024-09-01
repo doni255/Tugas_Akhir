@@ -37,11 +37,12 @@ const login = () => {
         nama: nama.trim(), // Nama pengguna
         password: password.trim(), // Password pengguna
       });
-      
+
       if (response.status === 200) {
         // Arahkan pengguna ke halaman setelah login sukses
-        console.log(response.data.data);
-        console.log("Received role:", response.data.data.role);
+        
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("id_user", response.data.data.id_user);
 
         setRole(response.data.data.role);
 

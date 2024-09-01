@@ -4,7 +4,9 @@ import { FiLayers } from "react-icons/fi";
 import EditButton from "./button/button_product/EditButton";
 import DeleteButton from "./button/button_product/DeleteButton";
 import Modal from "./Modal";
-import CreateItem from "./button/button_product/CreateItem";
+
+import { Menu } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 import axios from "axios";
 
@@ -16,6 +18,14 @@ import {
   HiOutlineXCircle,
   HiPlus,
 } from "react-icons/hi";
+
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  // DropdownSection,
+  DropdownItem,
+} from "@nextui-org/dropdown";
 
 import Pagination from "../consts/Pagination";
 
@@ -30,6 +40,123 @@ const status = [
 export default function Products() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpenCreate, setIsModalOpenCreate] = useState(false);
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [imageError, setImageError] = useState("");
+
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    harga_beli: "",
+    harga_jual: "",
+    imageUrl: null,
+    price: "",
+    stock: "",
+  });
+
+  const toggleModalCreate = () => {
+    setIsModalOpenCreate(!isModalOpenCreate);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, imageUrl: reader.result });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImageError("Image file is required");
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, category, imageUrl, harga_beli, harga_jual, stock } =
+      formData;
+
+    // Validasi input kosong termasuk gambar
+    if (
+      !name ||
+      !category ||
+      !harga_beli ||
+      !harga_jual ||
+      !stock ||
+      !imageUrl
+    ) {
+      if (!imageUrl) {
+        setImageError("Image file is required");
+      }
+      alert("Please fill in all the fields.");
+      return;
+    }
+
+    // Convert base64 image data from data URL
+    const base64Image = imageUrl ? imageUrl.split(",")[1] : "";
+
+    const newItem = {
+      nama_product: name,
+      kategori_produk: category,
+      harga_beli: harga_beli,
+      harga_jual: harga_jual,
+      konten_base64: base64Image,
+      jumlah_stock: stock,
+    };
+
+    axios
+      .post("http://localhost:8000/api/create", newItem, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        toggleModalCreate();
+        fetchProducts();
+        resetForm();
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+        toggleModalCreate();
+        window.location.reload();
+      });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      category: "",
+      harga_beli: "",
+      harga_jual: "",
+      imageUrl: null,
+      stock: "",
+    });
+    setSelectedCategory("");
+    setImageError("");
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setFormData({ ...formData, category });
+  };
 
   const handleEditClick = (product) => {
     setSelectedProduct(product);
@@ -90,7 +217,11 @@ export default function Products() {
     setProducts((prevProducts) => [...prevProducts, newItem]);
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const addItem = (newItem) => {
+    // console.log("New Item Added:", newItem);
+    // Logika untuk menambahkan item baru ke daftar produk
+    // Bisa menambahkan item ke state produk di komponen induk
+  };
 
   // Bagian Paginasi
   // Menginisialisasi products sebagai array kosong untuk menghindari undefined
@@ -106,12 +237,6 @@ export default function Products() {
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // End of pagination
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -170,7 +295,188 @@ export default function Products() {
               Let's grow to your business! Create your product and upload here
             </p>
           </div>
-          <CreateItem onAddItem={handleAddItem} fetchProducts={fetchProducts} />
+
+          {/* BUTTON CREATE ITEM */}
+          <button
+            onClick={toggleModalCreate}
+            className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+          >
+            <HiPlus className="w-4 h-4 fill-current" />
+            <span className="text-sm font-semibold tracking-wide">
+              Create Item
+            </span>
+          </button>
+
+          {isModalOpenCreate && (
+            <Modal
+              open={isModalOpenCreate}
+              onClose={toggleModalCreate}
+              type="create"
+              addItem={addItem}
+            >
+              <h2 className="text-lg font-semibold mb-4">Create New Item</h2>
+              <form
+                onSubmit={handleSubmit}
+                className="mt-8 grid grid-cols-6 gap-6"
+              >
+                <div className="col-span-6 sm:col-span-6">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Product Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                    required
+                  />
+                </div>
+
+                <div className="col-span-6 sm:col-span-6">
+                  <label
+                    htmlFor="category"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Category
+                  </label>
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <Menu.Button className="inline-flex w-72 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                        {selectedCategory || "Select Category"}
+                        <ChevronDownIcon
+                          aria-hidden="true"
+                          className="-mr-1 h-5 w-5 text-gray-400"
+                        />
+                      </Menu.Button>
+                    </div>
+
+                    <Menu.Items className="absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="text-center">
+                        {[
+                          "Genset",
+                          "Speed Boat",
+                          "Pompa Air",
+                          "Gergaji",
+                          "Spare Part Genset",
+                          "Spare Part Speed Boat",
+                          "Spare Part Gergaji",
+                        ].map((category) => (
+                          <Menu.Item key={category}>
+                            {({ active }) => (
+                              <button
+                                type="button"
+                                onClick={() => handleCategoryChange(category)}
+                                className={`block px-4 py-2 text-sm ${
+                                  active
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                {category}
+                              </button>
+                            )}
+                          </Menu.Item>
+                        ))}
+                      </div>
+                    </Menu.Items>
+                  </Menu>
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="harga_beli"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Harga Beli
+                  </label>
+                  <input
+                    type="number"
+                    id="harga_beli"
+                    name="harga_beli"
+                    value={formData.harga_beli}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                    required
+                  />
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="harga_beli"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Harga Jual
+                  </label>
+                  <input
+                    type="number"
+                    id="harga_jual"
+                    name="harga_jual"
+                    value={formData.harga_jual}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                    required
+                  />
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="imageUrl"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Image URL
+                  </label>
+                  <input
+                    type="file"
+                    id="imageUrl"
+                    name="imageUrl"
+                    onChange={handleFileChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                  />
+                  {imageError && (
+                    <p className="text-red-600 text-sm mt-1">{imageError}</p>
+                  )}
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="stock"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Stock
+                  </label>
+                  <input
+                    type="number"
+                    id="stock"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                    required
+                  />
+                </div>
+                <div className="flex gap-2.5">
+                  <button
+                    type="button"
+                    onClick={toggleModalCreate}
+                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
+                  >
+                    Create
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          )}
         </div>
         {/* <ul className="flex gap-x-24 items-center px-4 border-y border-gray-200">
         {status.map((Published, index) => (
@@ -201,7 +507,6 @@ export default function Products() {
                 <td className="text-center">Kategori Produk</td>
                 <td className="text-center">Harga Beli</td>
                 <td className="text-center">Harga Jual</td>
-                <td className=" text-center">Pricing</td>
                 <td className=" text-center">Stock</td>
                 <td></td>
                 <td></td>
@@ -287,23 +592,89 @@ export default function Products() {
               />
             </div>
 
-            <div className="col-span-6 sm:col-span-6 ">
+            <div className="col-span-6 sm:col-span-6">
               <label
-                htmlFor="Category"
+                htmlFor="category"
                 className="block text-sm font-medium text-gray-700"
               >
-                Kategori Produk:
+                Category
+              </label>
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="inline-flex w-72 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    {selectedCategory || "Select Category"}
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className="-mr-1 h-5 w-5 text-gray-400"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Menu.Items className="absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="text-center">
+                    {[
+                      "Genset",
+                      "Speed Boat",
+                      "Pompa Air",
+                      "Gergaji",
+                      "Spare Part Genset",
+                      "Spare Part Speed Boat",
+                      "Spare Part Gergaji",
+                    ].map((category) => (
+                      <Menu.Item key={category}>
+                        {({ active }) => (
+                          <button
+                            type="button"
+                            onClick={() => handleCategoryChange(category)}
+                            className={`block px-4 py-2 text-sm ${
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </div>
+                </Menu.Items>
+              </Menu>
+            </div>
+
+            <div className="col-span-6">
+              <label
+                htmlFor="harga_beli"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Harga Beli
               </label>
               <input
-                type="text"
-                value={selectedProduct.kategori_produk}
-                onChange={(e) =>
-                  setSelectedProduct({
-                    ...selectedProduct,
-                    kategori_produk: e.target.value,
-                  })
-                }
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                type="number"
+                id="harga_beli"
+                name="harga_beli"
+                value={formData.harga_beli}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                required
+              />
+            </div>
+
+            <div className="col-span-6">
+              <label
+                htmlFor="harga_beli"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Harga Jual
+              </label>
+              <input
+                type="number"
+                id="harga_jual"
+                name="harga_jual"
+                value={formData.harga_jual}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                required
               />
             </div>
 

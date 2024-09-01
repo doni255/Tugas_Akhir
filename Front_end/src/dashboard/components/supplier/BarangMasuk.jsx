@@ -15,6 +15,8 @@ import {
   HiPlus,
 } from "react-icons/hi";
 import Pagination from "../../consts/Pagination";
+import { Menu } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
@@ -27,6 +29,21 @@ const status = [
 export default function BarangMasuk() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedBarangMasuk] = useState(null);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+   const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setFormData({ ...formData, category });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      category: "",
+      harga_beli: "",
+      stock: "",
+    });
+  };
 
   const handleEditClick = (product) => {
     setSelectedBarangMasuk(product);
@@ -116,8 +133,7 @@ export default function BarangMasuk() {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
-    imageUrl: null,
-    price: "",
+    harga_beli: "",
     stock: "",
   });
 
@@ -131,43 +147,42 @@ export default function BarangMasuk() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, category, imageUrl, price, stock } = formData;
+    const { name, category, harga_beli, stock } = formData;
 
     // Validasi input kosong termasuk gambar
-    if (!name || !category || !price || !stock || !imageUrl) {
-      if (!imageUrl) {
-        setImageError("Image file is required");
-      }
+    if (!name || !category || !harga_beli || !stock) {
       alert("Please fill in all the fields.");
       return;
     }
 
-    // Convert base64 image data from data URL
-    const base64Image = imageUrl ? imageUrl.split(",")[1] : "";
-
     const newItem = {
       nama_product: name,
       kategori_produk: category,
-      harga: price,
-      konten_base64: base64Image,
+      harga_beli: harga_beli,
       jumlah_stock: stock,
     };
 
     axios
-      .post("http://localhost:8000/api/create", newItem, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .post(
+        "http://localhost:8000/api/barang_masuk/create/" +
+          localStorage.getItem("id_user"),
+        newItem,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((response) => {
         console.log(response);
-        toggleModal();
-        // onAddItem(response.data.data);
+        toggleModalCreate();
+        fetchProducts();
+        resetForm();
       })
       .catch((error) => {
         console.log(error);
-        toggleModal();
+        toggleModalCreate();
       });
   };
 
@@ -283,7 +298,7 @@ export default function BarangMasuk() {
                     required
                   />
                 </div>
-                <div className="col-span-6">
+                {/* <div className="col-span-6">
                   <label
                     htmlFor="category"
                     className="block text-sm font-medium text-gray-700"
@@ -299,20 +314,70 @@ export default function BarangMasuk() {
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     required
                   />
+                </div> */}
+
+                <div className="col-span-6 sm:col-span-6">
+                  <label
+                    htmlFor="category"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Category
+                  </label>
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <Menu.Button className="inline-flex w-72 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                        {selectedCategory || "Select Category"}
+                        <ChevronDownIcon
+                          aria-hidden="true"
+                          className="-mr-1 h-5 w-5 text-gray-400"
+                        />
+                      </Menu.Button>
+                    </div>
+
+                    <Menu.Items className="absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="text-center">
+                        {[
+                          "Genset",
+                          "Speed Boat",
+                          "Pompa Air",
+                          "Gergaji",
+                          "Spare Part Genset",
+                          "Spare Part Speed Boat",
+                          "Spare Part Gergaji",
+                        ].map((category) => (
+                          <Menu.Item key={category}>
+                            {({ active }) => (
+                              <button
+                                type="button"
+                                onClick={() => handleCategoryChange(category)}
+                                className={`block px-4 py-2 text-sm ${
+                                  active
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                {category}
+                              </button>
+                            )}
+                          </Menu.Item>
+                        ))}
+                      </div>
+                    </Menu.Items>
+                  </Menu>
                 </div>
 
                 <div className="col-span-6">
                   <label
-                    htmlFor="price"
+                    htmlFor="harga_beli"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Harga Beli
                   </label>
                   <input
                     type="number"
-                    id="price"
-                    name="price"
-                    value={formData.price}
+                    id="harga_beli"
+                    name="harga_beli"
+                    value={formData.harga_beli}
                     onChange={handleChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     required
@@ -338,7 +403,7 @@ export default function BarangMasuk() {
                 <div className="flex gap-2.5">
                   <button
                     type="button"
-                    onClick={toggleModal}
+                    onClick={toggleModalCreate}
                     className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring"
                   >
                     Cancel

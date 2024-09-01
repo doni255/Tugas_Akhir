@@ -11,6 +11,11 @@ import { useNavigate } from "react-router-dom";
 export default function Header() {
   const navigate = useNavigate();
 
+  const logoutFunction = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("id_user");
+  };
+
   return (
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-color-gray-200">
       <div className="relative">
@@ -162,7 +167,10 @@ export default function Header() {
                       active && "bg-gray-100",
                       "text-gray-700 focus:bg-gray-200 cursor-pointer rounded-sm px-4 py-2"
                     )}
-                    onClick={() => navigate("/")}
+                    onClick={() => {
+                      logoutFunction(); // Panggil fungsi logout
+                      navigate("/"); // Setelah logout, arahkan pengguna ke halaman beranda
+                    }}
                   >
                     Logout
                   </div>

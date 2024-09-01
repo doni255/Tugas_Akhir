@@ -33,41 +33,48 @@ class BarangMasukController extends Controller
         ], 200);
     }
 
-    public function create(Request $request){
-        // Validasi input dari permintaa
-        $validator = Validator::make($request -> all(), [
-            'id_user' => 'required',
-            'nama_product' => 'required|string|max:255',
-            'kategori_produk' => 'required|string',
-            'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
-            'jumlah_stock' => 'required'
-        ]);
+    public function create(Request $request, $id_user){
 
-        // Jika validasi gagal, kembalikan respons error
-        if ($validator->fails()) {
-            return response([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 400);
-        }
-    
+        $user = User::find($id_user);
 
+        if($user){
+                    // Validasi input dari permintaa
+            $validator = Validator::make($request -> all(), [
+                'nama_product' => 'required|string|max:255',
+                'kategori_produk' => 'required|string',
+                'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
+                'jumlah_stock' => 'required'
+            ]);
 
-     // Buat produk baru dengan data yang diberikan
-     $barang_masuk = new Barang_Masuk();
-     $barang_masuk->id_user = $request->id_user;
-     $barang_masuk->nama_product = $request->nama_product;
-     $barang_masuk->kategori_produk = $request->kategori_produk;
-     $barang_masuk->harga_beli = $request->harga_beli; // Ini harus menerima harga sebagai string tanpa simbol dolar
-     $barang_masuk->tanggal_kirim = Carbon::now();
-     $barang_masuk->jumlah_stock = $request->jumlah_stock;
-     $barang_masuk->save();
+                // Jika validasi gagal, kembalikan respons error
+                if ($validator->fails()) {
+                    return response([
+                        'message' => 'Validation failed',
+                        'errors' => $validator->errors()
+                    ], 400);
+                }
 
-    // Kembalikan respons sukses dengan data produk yang baru dibuat
-    return response()-> json([
-        'message' => 'Product created successfully',
-        'data' => $barang_masuk
-    ], 200);
+            // Buat produk baru dengan data yang diberikan
+            $barang_masuk = new Barang_Masuk();
+            $barang_masuk->id_user = $request->id_user;
+            $barang_masuk->nama_product = $request->nama_product;
+            $barang_masuk->kategori_produk = $request->kategori_produk;
+            $barang_masuk->harga_beli = $request->harga_beli; // Ini harus menerima harga sebagai string tanpa simbol dolar
+            $barang_masuk->tanggal_kirim = Carbon::now();
+            $barang_masuk->jumlah_stock = $request->jumlah_stock;
+            $barang_masuk->save();
+
+            // Kembalikan respons sukses dengan data produk yang baru dibuat
+            return response()-> json([
+                'message' => 'Product created successfully',
+                'data' => $barang_masuk
+            ], 200);
+                }
+
+                return response([
+                    'message' => 'Not Found',
+                    'data' => null
+                ], 404);
 
     }
 

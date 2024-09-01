@@ -40,6 +40,6 @@ use App\Http\Controllers\ProductController;
 
     // Barang Masuk Untuk Supplier
     Route::get('/barang_masuk', [BarangMasukController::class, 'getBarangMasuk']);
-    Route::post('/barang_masuk/create', [BarangMasukController::class, 'create']);
+    Route::post('/barang_masuk/create/{id_user}', [BarangMasukController::class, 'create']);
     Route::put('/barang_masuk/update/{id_barang_masuk}', [BarangMasukController::class, 'edit']);
     Route::delete('/barang_masuk/{id_barang_masuk}', [BarangMasukController::class, 'destroy']);
