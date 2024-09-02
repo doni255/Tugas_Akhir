@@ -85,7 +85,7 @@ class BarangMasukController extends Controller
         if($barang_masuk){
              // Validasi input dari permintaa
             $validator = Validator::make($request -> all(), [
-                'id_user' => 'required',
+           
                 'nama_product' => 'required|string|max:255',
                 'kategori_produk' => 'required|string',
                 'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
@@ -100,7 +100,7 @@ class BarangMasukController extends Controller
                 ], 400);
             }
 
-            $barang_masuk->id_user = $request->id_user;
+          
             $barang_masuk->nama_product = $request->nama_product;
             $barang_masuk->kategori_produk = $request->kategori_produk;
             $barang_masuk->harga_beli = $request->harga_beli; // Ini harus menerima harga sebagai string tanpa simbol dolar

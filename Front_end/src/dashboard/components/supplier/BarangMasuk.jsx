@@ -31,7 +31,7 @@ export default function BarangMasuk() {
   const [selectedProduct, setSelectedBarangMasuk] = useState(null);
 
   const [selectedCategory, setSelectedCategory] = useState("");
-   const handleCategoryChange = (category) => {
+  const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setFormData({ ...formData, category });
   };
@@ -501,60 +501,70 @@ export default function BarangMasuk() {
               />
             </div>
 
-            <div className="col-span-6 sm:col-span-6 ">
+            <div className="col-span-6 sm:col-span-6">
               <label
-                htmlFor="Category"
+                htmlFor="category"
                 className="block text-sm font-medium text-gray-700"
               >
-                Kategori Produk:
+                Category
               </label>
-              <input
-                type="text"
-                value={selectedProduct.kategori_produk}
-                onChange={(e) =>
-                  setSelectedBarangMasuk({
-                    ...selectedProduct,
-                    kategori_produk: e.target.value,
-                  })
-                }
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="inline-flex w-72 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    {selectedCategory || "Select Category"}
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className="-mr-1 h-5 w-5 text-gray-400"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Menu.Items className="absolute mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="text-center">
+                    {[
+                      "Genset",
+                      "Speed Boat",
+                      "Pompa Air",
+                      "Gergaji",
+                      "Spare Part Genset",
+                      "Spare Part Speed Boat",
+                      "Spare Part Gergaji",
+                    ].map((category) => (
+                      <Menu.Item key={category}>
+                        {({ active }) => (
+                          <button
+                            type="button"
+                            onClick={() => handleCategoryChange(category)}
+                            className={`block px-4 py-2 text-sm ${
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </div>
+                </Menu.Items>
+              </Menu>
             </div>
 
             <div className="col-span-6">
               <label
-                htmlFor="imageUrl"
+                htmlFor="Harga_Beli"
                 className="block text-sm font-medium text-gray-700"
               >
-                Image URL
-              </label>
-              <input
-                type="file"
-                id="imageUrl"
-                onChange={(e) =>
-                  setSelectedBarangMasuk({
-                    ...selectedProduct,
-                    gambar: e.target.files[0],
-                  })
-                }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-              />
-            </div>
-
-            <div className="col-span-6">
-              <label
-                htmlFor="Price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Price:
+                Harga Beli
               </label>
               <input
                 type="number"
-                value={selectedProduct.harga}
+                value={selectedProduct.harga_beli}
                 onChange={(e) =>
                   setSelectedBarangMasuk({
                     ...selectedProduct,
-                    harga: e.target.value,
+                    harga_beli: e.target.value,
                   })
                 }
                 className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
