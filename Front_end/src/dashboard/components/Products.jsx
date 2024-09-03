@@ -108,12 +108,9 @@ export default function Products() {
       !category ||
       !harga_beli ||
       !harga_jual ||
-      !stock ||
-      !imageUrl
+      !stock 
     ) {
-      if (!imageUrl) {
-        setImageError("Image file is required");
-      }
+   
       alert("Please fill in all the fields.");
       return;
     }

@@ -1,5 +1,6 @@
     <?php
 
+use App\Http\Controllers\BarangMasukAdminController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\ProductController;
     use Illuminate\Http\Request;
@@ -39,7 +40,11 @@ use App\Http\Controllers\ProductController;
     Route::post('/product/{id_product}', [ProductController::class, 'update']);
 
     // Barang Masuk Untuk Supplier
-    Route::get('/barang_masuk', [BarangMasukController::class, 'getBarangMasuk']);
+    Route::get('/barang_masuk/{id_user}', [BarangMasukController::class, 'getBarangMasuk']);
     Route::post('/barang_masuk/create/{id_user}', [BarangMasukController::class, 'create']);
-    Route::put('/barang_masuk/update/{id_barang_masuk}', [BarangMasukController::class, 'edit']);
+    Route::post('/barang_masuk/update/{id_barang_masuk}', [BarangMasukController::class, 'edit']);
     Route::delete('/barang_masuk/{id_barang_masuk}', [BarangMasukController::class, 'destroy']);
+
+    // Barnag Masuk Konfirmasi untuk admin
+    Route::get('/barang_masuk_admin', [BarangMasukAdminController::class, 'getBarangMasuk']);
+    Route::post('/barang_masuk/konfirmasi_barang_masuk', [BarangMasukAdminController::class, 'konfirmasiBarangMasuk']);

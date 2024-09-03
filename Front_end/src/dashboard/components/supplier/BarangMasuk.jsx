@@ -29,11 +29,16 @@ const status = [
 export default function BarangMasuk() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedBarangMasuk] = useState(null);
-
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [barangMasuk, setBarangMasuk] = useState([]);
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setFormData({ ...formData, category });
+  };
+
+  const handleCategoryChangeEdit = (category) => {
+    setSelectedCategory(category);
+    setFormData({ ...formData, kategori_produk: category });
   };
 
   const resetForm = () => {
@@ -54,17 +59,15 @@ export default function BarangMasuk() {
     e.preventDefault();
 
     const formData = new FormData();
+    // formData.append("_method", "PUT");
     formData.append("nama_product", selectedProduct.nama_product);
-    formData.append("kategori_produk", selectedProduct.kategori_produk);
-    formData.append("harga", selectedProduct.harga);
+    formData.append("kategori_produk", selectedCategory);
+    formData.append("harga_beli", selectedProduct.harga_beli);
     formData.append("jumlah_stock", selectedProduct.jumlah_stock);
-    if (selectedProduct.gambar instanceof File) {
-      formData.append("gambar", selectedProduct.gambar);
-    }
 
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/barang_masuk/${selectedProduct.id_barang_masuk}`,
+      const response = await axios.post(
+        `http://localhost:8000/api/barang_masuk/update/${selectedProduct.id_barang_masuk}`,
         formData,
         {
           headers: {
@@ -73,24 +76,35 @@ export default function BarangMasuk() {
         }
       );
 
-      if (response.status === 200) {
-        console.log("Product updated successfully", response.data);
-        setIsEditModalOpen(false);
-        await fetchProducts(); // Refetch products after successful update
+      console.log("Full response:", response); // Debugging response object
+      console.log("Response data:", response.data); // Debugging response data
+
+      // Periksa apakah response data memiliki id_barang_masuk
+      if (response.data && response.data.id_barang_masuk) {
+        // Perbarui state barangMasuk
+        setBarangMasuk((prevBarangMasuk) =>
+          prevBarangMasuk.map((item) =>
+            item.id_barang_masuk === selectedProduct.id_barang_masuk
+              ? { ...item, ...response.data } // Menggabungkan data lama dengan data baru
+              : item
+          )
+        );
       } else {
-        console.error("Failed to update product");
+        console.error(
+          "Response data tidak memiliki id_barang_masuk yang valid"
+        );
       }
+
+      setIsEditModalOpen(false);
     } catch (error) {
-      console.error("Error:", error);
       if (error.response) {
-        console.error("Response data:", error.response.data);
+        console.log("Error response data:", error.response.data);
+        alert(`Error: ${error.response.data.message || "Validation failed"}`);
+      } else {
+        console.error("Error:", error.message);
       }
     }
   };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -193,9 +207,11 @@ export default function BarangMasuk() {
   }, []);
 
   const fetchProducts = async () => {
+    console.log(localStorage.getItem("id_user"));
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/barang_masuk"
+        "http://localhost:8000/api/barang_masuk/" +
+        localStorage.getItem("id_user"),
       );
       setProducts(response.data.data || []); // Mengakses array produk di dalam response.data.data
     } catch (error) {
@@ -534,7 +550,7 @@ export default function BarangMasuk() {
                         {({ active }) => (
                           <button
                             type="button"
-                            onClick={() => handleCategoryChange(category)}
+                            onClick={() => handleCategoryChangeEdit(category)}
                             className={`block px-4 py-2 text-sm ${
                               active
                                 ? "bg-gray-100 text-gray-900"

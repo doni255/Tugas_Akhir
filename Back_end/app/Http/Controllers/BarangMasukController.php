@@ -11,10 +11,16 @@ use carbon\Carbon;
 class BarangMasukController extends Controller
 {
     //
-    
-    public function getBarangMasuk()
-    {
-        $barang_masuk = Barang_Masuk::all();
+   
+
+
+    public function getBarangMasuk($id_user)
+{
+    $user = User::find($id_user);
+
+    if ($user) {
+        // Filter barang_masuk berdasarkan id_user
+        $barang_masuk = Barang_Masuk::where('id_user', $id_user)->get();
 
         if ($barang_masuk->isEmpty()) {
             return response([
@@ -23,15 +29,51 @@ class BarangMasukController extends Controller
             ], 404);
         }
 
-        $productsArray = $barang_masuk->map(function($barang_masuk) {
-            return $barang_masuk;
-        })->values()->all();
-
         return response([
             'message' => 'Retrieve data success',
-            'data' => $productsArray
+            'data' => $barang_masuk
         ], 200);
     }
+
+    return response([
+        'message' => 'User Not Found :(',
+        'data' => []
+    ], 404);
+}
+
+
+    
+//     public function getBarangMasuk($id_user)
+// {
+//     // Cari pengguna berdasarkan id_user
+//     $user = User::find($id_user);
+
+//     // Jika pengguna tidak ditemukan, kembalikan respons error
+//     if (!$user) {
+//         return response([
+//             'message' => 'User not found',
+//             'data' => []
+//         ], 404);
+//     }
+
+//     // Dapatkan barang_masuk yang terkait dengan pengguna
+//     $barang_masuk = Barang_Masuk::with('user')->where('id_user', $id_user)->get();
+
+//     // Jika tidak ada barang_masuk, kembalikan respons "No data"
+//     if ($barang_masuk->isEmpty()) {
+//         return response([
+//             'message' => 'No data',
+//             'data' => []
+//         ], 404);
+//     }
+
+//     // Mengembalikan data barang_masuk yang ditemukan
+//     return response([
+//         'message' => 'Retrieve data success',
+//         'data' => $barang_masuk
+//     ], 200);
+// }
+
 
     public function create(Request $request, $id_user){
 

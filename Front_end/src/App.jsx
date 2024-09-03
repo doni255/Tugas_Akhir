@@ -37,6 +37,7 @@ import BlogSection from "./e-commerce/components/BlogSection";
 import NewsLetter from "./e-commerce/components/NewsLetter";
 import Feature from "./e-commerce/components/Feature";
 import Cart from "./e-commerce/components/Cart";
+import BarangMasukAdmin from "./dashboard/components/BarangMasukAdmin";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -117,6 +118,7 @@ function App() {
               <Route path="customers" element={<Customers />} />
               <Route path="pendapatan" element={<Pendapatan />} />
               <Route path="barang_masuk" element={<BarangMasuk />} />
+              <Route path="barang_masuk_admin" element={<BarangMasukAdmin/>} />
               <Route path="messages" element={<Messages />} />
             </Route>
 
