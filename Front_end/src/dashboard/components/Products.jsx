@@ -7,6 +7,7 @@ import Modal from "./Modal";
 
 import { Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { useAuth } from "../../App";
 
 import axios from "axios";
 
@@ -29,6 +30,8 @@ import {
 
 import Pagination from "../consts/Pagination";
 
+const role = localStorage.getItem("role"); // Ambil role dari localStorage
+
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
   { name: "Draft", icon: <HiOutlinePencilAlt className="w-6 h-6" /> },
@@ -37,7 +40,7 @@ const status = [
   { name: "Under Review", icon: <HiOutlineMail className="w-6 h-6" /> },
 ];
 
-export default function Products() {
+export default function Products( children ) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpenCreate, setIsModalOpenCreate] = useState(false);
@@ -45,7 +48,18 @@ export default function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [existingImage, setExistingImage] = useState(""); // State untuk menyimpan gambar yang ada
+  const [userRole, setUserRole] = useState(null);
 
+  useEffect(() => {
+    // Fetch user role from an API or some source
+    fetchUserRole().then((role) => setUserRole(role));
+  }, []);
+
+  // Define fetchUserRole function or import it
+  const fetchUserRole = async () => {
+    // Mock function: Replace with actual API call
+    return "supplier"; // Or 'admin'
+  };
   // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [imageError, setImageError] = useState("");
@@ -509,9 +523,7 @@ export default function Products() {
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                 <td className="pl-10 py-4">
-                  <div className="gap-x-4 items-center py-4 pl-5">
-                    ID
-                  </div>
+                  <div className="gap-x-4 items-center py-4 pl-5">ID</div>
                 </td>
                 <td className="">&nbsp; &nbsp; Gambar</td>
                 <td className=" text-center">Product Name</td>
@@ -550,10 +562,25 @@ export default function Products() {
                   <td className="text-center">{product.jumlah_stock}</td>
                   {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
                   <td className="py-4 px-4 text-center">
-                    <EditButton onClick={() => handleEditClick(product)} />
-                    <DeleteButton
-                      onClick={() => handleDeleteClick(product.id_product)}
-                    />
+                    {role === "admin" && (
+                      <EditButton onClick={() => handleEditClick(product)} />
+                    )}
+                    {role === "admin" && (
+                      <DeleteButton
+                        onClick={() => handleDeleteClick(product.id_product)}
+                      />
+                    )}
+                    {/* BUTTON CREATE ITEM */}
+                    {role === "supplier" && (
+                      <button
+                        onClick={toggleModalCreate}
+                        className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-yellow-400 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+                      >
+                        <span className="text-sm font-semibold tracking-wide">
+                          Tambah Stock
+                        </span>
+                      </button>
+                    )}
                   </td>
                   <td></td>
                 </tr>

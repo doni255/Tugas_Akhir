@@ -73,6 +73,13 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
       roles: ["supplier"],
       subLinks: [
         {
+          key: "products",
+          label: "Products",
+          path: "/dashboard/products",
+          icon: <HiOutlineCube />,
+          roles: ["admin"],
+        },
+        {
           key: "barangmasuk",
           label: "Input Data Barang Masuk",
           path: "/dashboard/supplier/barangmasuk",

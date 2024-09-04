@@ -6,6 +6,8 @@ import DeleteButton from "../button/button_product/DeleteButton";
 import Modal from "../Modal";
 import axios from "axios";
 
+import toast, { Toaster } from "react-hot-toast";
+
 import {
   HiFilter,
   HiOutlineEyeOff,
@@ -17,6 +19,8 @@ import {
 import Pagination from "../../consts/Pagination";
 import { Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+
+const notify = () => toast("Here is your toast.");
 
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
@@ -94,7 +98,9 @@ export default function BarangMasuk() {
           "Response data tidak memiliki id_barang_masuk yang valid"
         );
       }
-
+      toast.success("Product berhasil di edit !", {
+        duration: 5000,
+      });
       setIsEditModalOpen(false);
     } catch (error) {
       if (error.response) {
@@ -193,11 +199,17 @@ export default function BarangMasuk() {
         toggleModalCreate();
         fetchProducts();
         resetForm();
+        toast.success("Product berhasil ditambahkan !", {
+          duration: 5000,
+        });
       })
       .catch((error) => {
-        alert(error.response.data.message || "Error occurred"); 
+        // alert(error.response.data.message || "Error occurred");
         console.log(error);
         toggleModalCreate();
+        toast.error(error.response.data.message, {
+          duration: 5000,
+        });
       });
   };
 
@@ -258,6 +270,9 @@ export default function BarangMasuk() {
 
       // Optionally, show a success message
       console.log("Product deleted successfully");
+      toast.error("Product berhasil dihapus!", {
+        duration: 5000,
+      });
     } catch (error) {
       console.error("Error deleting product:", error);
       // Optionally, show an error message to the user
@@ -266,6 +281,7 @@ export default function BarangMasuk() {
 
   return (
     <main className="relative ">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>

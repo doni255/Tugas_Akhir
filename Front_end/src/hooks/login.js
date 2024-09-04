@@ -39,10 +39,12 @@ const login = () => {
       });
 
       if (response.status === 200) {
+        console.log(response.data.data)
         // Arahkan pengguna ke halaman setelah login sukses
         
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("id_user", response.data.data.id_user);
+        localStorage.setItem("role", response.data.data.role);
 
         setRole(response.data.data.role);
 
@@ -54,6 +56,7 @@ const login = () => {
         } else {
           navigate("/e-commerce"); // Jika role adalah 'user'
         }
+        window.location.reload();
       }
     } catch (error) {
       console.error("Full error:", error);
