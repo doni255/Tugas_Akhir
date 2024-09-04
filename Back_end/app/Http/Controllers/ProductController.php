@@ -60,8 +60,8 @@ class ProductController extends Controller
         $validator = Validator::make($request -> all(), [
             'nama_product' => 'required|string|max:255',
             'kategori_produk' => 'required|string',
-            'harga_beli' => 'required|numeric', // Validasi harga sebagai angka
-            'harga_jual' => 'required|numeric', // Validasi harga sebagai angka
+            'harga_beli' => 'required', // Validasi harga sebagai angka
+            'harga_jual' => 'required', // Validasi harga sebagai angka
             'konten_base64' => 'nullable|string', // Misalkan ini untuk gambar dalam format base64
             'jumlah_stock' => 'required|string',            
         ]);

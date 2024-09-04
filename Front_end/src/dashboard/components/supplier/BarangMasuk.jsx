@@ -189,12 +189,13 @@ export default function BarangMasuk() {
         }
       )
       .then((response) => {
-        console.log(response);
+        console.log(response.data.message);
         toggleModalCreate();
         fetchProducts();
         resetForm();
       })
       .catch((error) => {
+        alert(error.response.data.message || "Error occurred"); 
         console.log(error);
         toggleModalCreate();
       });
@@ -211,7 +212,7 @@ export default function BarangMasuk() {
     try {
       const response = await axios.get(
         "http://localhost:8000/api/barang_masuk/" +
-        localStorage.getItem("id_user"),
+          localStorage.getItem("id_user")
       );
       setProducts(response.data.data || []); // Mengakses array produk di dalam response.data.data
     } catch (error) {

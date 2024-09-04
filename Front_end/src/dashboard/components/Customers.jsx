@@ -36,7 +36,7 @@ export default function Customers() {
       <div className="flex items-center justify-between py-7 px-10">
         <div>
           <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
-            Data Users Baby 😁
+            Data Users 😁
           </h1>
         </div>
       </div>

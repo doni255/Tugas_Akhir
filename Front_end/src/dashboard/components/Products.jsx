@@ -44,6 +44,7 @@ export default function Products() {
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [existingImage, setExistingImage] = useState(""); // State untuk menyimpan gambar yang ada
 
   // const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -94,7 +95,11 @@ export default function Products() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setSelectedProduct((prevProduct) => ({
+      ...prevProduct,
+      [name]: value,
+    }));
+    console.log(selectedProduct); // Tambahkan ini untuk memeriksa perubahan state
   };
 
   const handleSubmit = async (e) => {
@@ -103,14 +108,7 @@ export default function Products() {
       formData;
 
     // Validasi input kosong termasuk gambar
-    if (
-      !name ||
-      !category ||
-      !harga_beli ||
-      !harga_jual ||
-      !stock 
-    ) {
-   
+    if (!name || !category || !harga_beli || !harga_jual || !stock) {
       alert("Please fill in all the fields.");
       return;
     }
@@ -172,8 +170,10 @@ export default function Products() {
   };
 
   const handleEditClick = (product) => {
-    setSelectedProduct(product);
-    setIsEditModalOpen(true);
+    setSelectedProduct(product); // Set produk yang dipilih
+    setSelectedCategory(product.kategori_produk); // Set kategori produk
+    setExistingImage(product.gambar); // Set gambar yang sudah ada
+    setIsEditModalOpen(true); // Buka modal edit
   };
 
   const handleEditSubmit = async (e) => {
@@ -205,6 +205,7 @@ export default function Products() {
       );
 
       console.log("Response data:", response.data);
+      fetchProducts();
       setIsEditModalOpen(false);
     } catch (error) {
       if (error.response) {
@@ -375,6 +376,7 @@ export default function Products() {
                           "Speed Boat",
                           "Pompa Air",
                           "Gergaji",
+                          "Pemotong Rumput",
                           "Spare Part Genset",
                           "Spare Part Speed Boat",
                           "Spare Part Gergaji",
@@ -420,7 +422,7 @@ export default function Products() {
 
                 <div className="col-span-6">
                   <label
-                    htmlFor="harga_beli"
+                    htmlFor="harga_jual"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Harga Jual
@@ -507,12 +509,8 @@ export default function Products() {
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                 <td className="pl-10 py-4">
-                  <div className="flex items-center gap-x-4">
-                    <input
-                      type="checkbox"
-                      className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
-                    />
-                    <span>ID</span>
+                  <div className="gap-x-4 items-center py-4 pl-5">
+                    ID
                   </div>
                 </td>
                 <td className="">&nbsp; &nbsp; Gambar</td>
@@ -530,10 +528,6 @@ export default function Products() {
               {currentItems.map((product) => (
                 <tr key={product.id_product} className="hover:bg-gray-100">
                   <td className="gap-x-4 items-center py-4   pl-10">
-                    <input
-                      type="checkbox"
-                      className="w-6 h-6 text-indigo-600 rounded-md border-gray-300"
-                    />
                     <span className="py-3 px-4 text-center">
                       {product.id_product}
                     </span>
@@ -630,6 +624,7 @@ export default function Products() {
                       "Speed Boat",
                       "Pompa Air",
                       "Gergaji",
+                      "Pemotong Rumput",
                       "Spare Part Genset",
                       "Spare Part Speed Boat",
                       "Spare Part Gergaji",
@@ -665,7 +660,7 @@ export default function Products() {
               <input
                 type="number"
                 id="harga_beli"
-                name="harga_beli"
+                name="harga_beli" // Pastikan name sesuai
                 value={selectedProduct.harga_beli || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
