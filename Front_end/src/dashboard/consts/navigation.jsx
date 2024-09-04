@@ -38,6 +38,12 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
       roles: ["admin"],
     },
     {
+      key: "konfirmasi_tambah_stock",
+      label: "Konfirmasi Stock",
+      path: "/dashboard/konfirmasi_stock",
+      roles: ["admin"],
+    },
+    {
       key: "customers",
       label: "Data Users",
       path: "/dashboard/customers",

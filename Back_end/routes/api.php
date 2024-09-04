@@ -3,7 +3,8 @@
 use App\Http\Controllers\BarangMasukAdminController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\ProductController;
-    use Illuminate\Http\Request;
+use App\Http\Controllers\TambahStockController;
+use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\UserController;
 
@@ -45,6 +46,10 @@ use App\Http\Controllers\ProductController;
     Route::post('/barang_masuk/update/{id_barang_masuk}', [BarangMasukController::class, 'edit']);
     Route::delete('/barang_masuk/{id_barang_masuk}', [BarangMasukController::class, 'destroy']);
 
-    // Barnag Masuk Konfirmasi untuk admin
+    // Barang Masuk Konfirmasi untuk admin
     Route::get('/barang_masuk_admin', [BarangMasukAdminController::class, 'getBarangMasuk']);
     Route::post('/barang_masuk/konfirmasi_barang_masuk', [BarangMasukAdminController::class, 'konfirmasiBarangMasuk']);
+
+    // Tambah Stock
+    Route::get('/tambah_stock/', [TambahStockController::class, 'getTambahStock']);
+    Route::post('/tambah_stock/create/{id_user}', [TambahStockController::class, 'create']);

@@ -23,7 +23,6 @@ import Messages from "./dashboard/components/Messages";
 // Import Supplier Components
 import Supplier from "./dashboard/components/supplier/supplier";
 
-
 // Import E-commerce
 import Navbar from "./e-commerce/components/Navbar";
 import MobNavBar from "./e-commerce/components/MobNavbar";
@@ -38,6 +37,7 @@ import NewsLetter from "./e-commerce/components/NewsLetter";
 import Feature from "./e-commerce/components/Feature";
 import Cart from "./e-commerce/components/Cart";
 import BarangMasukAdmin from "./dashboard/components/BarangMasukAdmin";
+import KonfirmasiStock from "./dashboard/components/KonfirmasiStock";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -115,10 +115,11 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="products" element={<Products />} />
               <Route path="orders" element={<Orders />} />
+              <Route path="konfirmasi_stock" element={<KonfirmasiStock />} />
               <Route path="customers" element={<Customers />} />
               <Route path="pendapatan" element={<Pendapatan />} />
               <Route path="barang_masuk" element={<BarangMasuk />} />
-              <Route path="barang_masuk_admin" element={<BarangMasukAdmin/>} />
+              <Route path="barang_masuk_admin" element={<BarangMasukAdmin />} />
               <Route path="messages" element={<Messages />} />
             </Route>
 
