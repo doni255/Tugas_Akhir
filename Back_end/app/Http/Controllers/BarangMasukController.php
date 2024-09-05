@@ -12,8 +12,6 @@ use carbon\Carbon;
 class BarangMasukController extends Controller
 {
     //
-   
-
 
     public function getBarangMasuk($id_user)
 {

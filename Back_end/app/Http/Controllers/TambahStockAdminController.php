@@ -8,15 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use carbon\Carbon;
 
-class TambahStockController extends Controller
+class TambahStockAdminController extends Controller
 {
     //
+    public function getTambahStock(){
 
-    public function getTambahStock()
-    {
         // Mengambil data Tambah_Stock beserta relasi id_user dan id_product
         $getTambahStock = Tambah_Stock::with(['product', 'user'])->get();
-    
+
         // Memeriksa apakah data kosong
         if ($getTambahStock->isEmpty()) {
             return response([
@@ -25,9 +24,6 @@ class TambahStockController extends Controller
             ], 404);
         };
 
-        // Mengihtung total jumlah_stock dari seluruh data
-        $totalJumlahStock = $getTambahStock->sum('jumlah_stock');
-    
         // Memproses data untuk ditampilkan
         $productsArray = $getTambahStock->map(function($stock) {
             return [
@@ -58,58 +54,80 @@ class TambahStockController extends Controller
             ];
         })->all();
 
-        // Mengembalikan response dengan data yang diproses
-        return response([
+          // Mengembalikan response dengan data yang diproses
+          return response([
             'message' => 'Retrieve data success',
-            'data' => $productsArray,   
-            'total_jumlah_stock' => $totalJumlahStock // Menambahkan total jumlah stock dalam respons
+            'data' => $productsArray,
         ], 200);
     }
     
-    public function create(Request $request, $id_user){
-        $user = User::find($id_user);
-        $product = Product::all();
+    public function destroy($id)
+    {
+        // Find the stock record by its ID
+        $tambahStock = Tambah_Stock::find($id);
 
-        if ($user) {
-            // Validasi input dari permintaan
-            $validator = Validator::make($request->all(), [
-                'jumlah_stock' => 'required|numeric', // Ensure stock is also numeric
-                'id_product' => 'required'
-            ]);
-
-            if (!$product){
-                return response([
-                    'message' => 'Product not found',
-                ], 404);
-            }
-
-            // Jika validasi gagal, kembalikan respons error
-            if ($validator->fails()) {
-                return response([
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 400);
-            }
-
-            // Buat produk baru dengan data yang diberikan
-            $tambah_stock = new Tambah_Stock();
-            $tambah_stock->id_product = $request->id_product;
-            $tambah_stock->jumlah_stock = $request->jumlah_stock;
-            $tambah_stock->tanggal_kirim = Carbon::now();
-            $tambah_stock->id_user = $request->id_user;
-            $tambah_stock->save();
-
-            // Kembalikan respons sukses dengan data produk yang baru dibuat
-            return response()->json([
-                'message' => 'Tambah Stock berhasil',
-                'data' => $tambah_stock
-            ], 200);
+        // Check if the stock record exists
+        if (!$tambahStock) {
+            return response([
+                'message' => 'Stock record not found',
+            ], 404);
         }
 
+        // Delete the record from the database
+        $tambahStock->delete();
+
+        // Return success response
         return response([
-            'message' => 'User not found',
-            'data' => null
-        ], 404);
+            'message' => 'Stock has been successfully rejected and deleted.',
+        ], 200);
     }
 
+    public function konfirmasiTambahStock(Request $request)
+    {
+        // Validasi Input
+        $validator = Validator::make($request->all(), [
+            'id_tambah_stock' => 'required|exists:tambah_stock,id_tambah_stock',
+        ]);
+
+
+        // Jika validasi gagal, kembalikan respons error
+        if ($validator->fails()) {
+            return response([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+
+        $tambahStock = Tambah_Stock::find($request->id_tambah_stock);
+        
+
+
+        // if ($tambahStock->status == 'confirmed') {
+        //     return response([
+        //         'message' => 'Stock has already been confirmed.'
+        //     ], 400);
+        // }
+
+        // Ambil produk yang bersangkutan
+        $product = Product::find($tambahStock->id_product);
+
+        // Tambahkan jumlah stock produk
+        $product->jumlah_stock += $tambahStock->jumlah_stock;
+
+        // Simpan perubahan pada produk
+        $product->save();
+
+   
+        // $tambahStock->status = 'confirmed'; // Misalnya, tambahkan field 'status' untuk penanda konfirmasi
+        $tambahStock->save();
+
+        $tambahStock->delete();
+
+        return response([
+            'message' => 'Stock confirmed and updated successfully.',
+            'updated_stock' => $product->jumlah_stock
+        ], 200);
+        
+    }
 }

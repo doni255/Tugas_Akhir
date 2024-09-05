@@ -7,6 +7,7 @@ import Modal from "./Modal";
 
 import { Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import toast, { Toaster } from "react-hot-toast";
 import { useAuth } from "../../App";
 
 import axios from "axios";
@@ -29,6 +30,7 @@ import {
 } from "@nextui-org/dropdown";
 
 import Pagination from "../consts/Pagination";
+import TambahStockProduct from "./button/button_product/TambahStockProduct";
 
 const role = localStorage.getItem("role"); // Ambil role dari localStorage
 
@@ -40,15 +42,19 @@ const status = [
   { name: "Under Review", icon: <HiOutlineMail className="w-6 h-6" /> },
 ];
 
-export default function Products( children ) {
+export default function Products({ productId, userId }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpenCreate, setIsModalOpenCreate] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalTambahStokOpen, setisModalTambahStockOpen] = useState(false);
+  const [selectedTambahStock, setSelectedTambahStock] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [existingImage, setExistingImage] = useState(""); // State untuk menyimpan gambar yang ada
   const [userRole, setUserRole] = useState(null);
+
+  // const [userId, setUserId] = useState(""); // Replace with actual user ID retrieval logic
 
   useEffect(() => {
     // Fetch user role from an API or some source
@@ -74,8 +80,25 @@ export default function Products( children ) {
     stock: "",
   });
 
+  const [formDataStock, setFormDataStock] = useState({
+    jumlah_stock: "",
+  });
+
+  // Handle form input changes
+  const handleStockChange = (e) => {
+    const { name, value } = e.target;
+    setFormDataStock((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const toggleModalCreate = () => {
     setIsModalOpenCreate(!isModalOpenCreate);
+  };
+
+  const toggleModalTambahStock = () => {
+    setisModalTambahStockOpen(isModalTambahStokOpen);
   };
 
   const handleFileChange = (e) => {
@@ -107,15 +130,14 @@ export default function Products( children ) {
     }
   };
 
+  // Function to handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSelectedProduct((prevProduct) => ({
-      ...prevProduct,
+    setFormData((prevState) => ({
+      ...prevState,
       [name]: value,
     }));
-    console.log(selectedProduct); // Tambahkan ini untuk memeriksa perubahan state
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, category, imageUrl, harga_beli, harga_jual, stock } =
@@ -150,8 +172,11 @@ export default function Products( children ) {
         console.log(response);
         toggleModalCreate();
         fetchProducts();
-        resetForm();
-        window.location.reload();
+        toast.success("Product berhasil di tambahkan !", {
+          duration: 5000,
+        });
+        // resetForm();
+        // window.location.reload();
       })
       .catch((error) => {
         console.log(error);
@@ -160,6 +185,46 @@ export default function Products( children ) {
       });
   };
 
+  const handleSubmitStock = async (e) => {
+    e.preventDefault();
+    const { jumlah_stock } = formDataStock;
+
+    // Validate inputs
+    if (!jumlah_stock) {
+      alert("Semua field harus diisi!");
+      return;
+    }
+
+    const newItem = {
+      jumlah_stock: jumlah_stock,
+      id_product: productId,
+    };
+
+    try {
+      // Make the POST request to your API endpoint
+      const response = await axios.post(
+        `http://local:8000/api/tambah_stock/create/${userId}`, // Adjust the endpoint URL as needed
+        newItem,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // Handle successful response
+      if (response.status === 200) {
+        alert("Stock berhasil ditambahkan");
+        setFormDataStock({
+          jumlah_stock: "",
+          id_product: "",
+        });
+      }
+    } catch (error) {
+      // Handle errors (network issues, server errors, etc.)
+      console.error("Error updating stock:", error);
+      alert("Terjadi kesalahan saat menambahkan stock");
+    }
+  };
   const resetForm = () => {
     setFormData({
       name: "",
@@ -220,6 +285,9 @@ export default function Products( children ) {
 
       console.log("Response data:", response.data);
       fetchProducts();
+      toast.success("Product berhasil di edit !", {
+        duration: 5000,
+      });
       setIsEditModalOpen(false);
     } catch (error) {
       if (error.response) {
@@ -238,17 +306,6 @@ export default function Products( children ) {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
-  };
-
-  const handleAddItem = (newItem) => {
-    // Tambahkan produk baru ke array products dan perbarui state
-    setProducts((prevProducts) => [...prevProducts, newItem]);
-  };
-
-  const addItem = (newItem) => {
-    // console.log("New Item Added:", newItem);
-    // Logika untuk menambahkan item baru ke daftar produk
-    // Bisa menambahkan item ke state produk di komponen induk
   };
 
   // Bagian Paginasi
@@ -276,6 +333,16 @@ export default function Products( children ) {
     }
   };
 
+  const handleTambahStockClick = (id_product) => {
+    console.log(`handleTambahStockClick called with id_product: ${id_product}`);
+    setSelectedProduct(id_product);
+    setisModalTambahStockOpen(true);
+  };
+
+  const closeTambahStockClick = () => {
+    setisModalTambahStockOpen(false);
+  };
+
   const handleDeleteClick = (id_product) => {
     console.log(`handleDeleteClick called with id_product: ${id_product}`);
     setSelectedProduct(id_product);
@@ -299,7 +366,9 @@ export default function Products( children ) {
       setProducts((prevProducts) =>
         prevProducts.filter((product) => product.id_product !== id_product)
       );
-
+      toast.success("Product berhasil di hapus !", {
+        duration: 5000,
+      });
       // Close the confirmation modal
       handleCloseModal();
 
@@ -313,6 +382,7 @@ export default function Products( children ) {
 
   return (
     <main className="relative ">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
@@ -324,23 +394,71 @@ export default function Products( children ) {
             </p>
           </div>
 
-          {/* BUTTON CREATE ITEM */}
-          <button
-            onClick={toggleModalCreate}
-            className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
-          >
-            <HiPlus className="w-4 h-4 fill-current" />
-            <span className="text-sm font-semibold tracking-wide">
-              Create Item
-            </span>
-          </button>
+          {role === "admin" && (
+            <button
+              onClick={toggleModalCreate}
+              className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+            >
+              <HiPlus className="w-4 h-4 fill-current" />
+              <span className="text-sm font-semibold tracking-wide">
+                Create Item
+              </span>
+            </button>
+          )}
+
+          {isModalTambahStokOpen && (
+            <Modal
+              open={isModalTambahStokOpen}
+              onClose={closeTambahStockClick}
+              type="tambah_stock"
+            >
+              <h2 className="text-lg font-semibold mb-4">
+                Tambah Jumlah Stock
+              </h2>
+              <form
+                onSubmit={handleSubmitStock}
+                className="mt-8 grid grid-cols-6 gap-6"
+              >
+                <div className="col-span-6">
+                  <label
+                    htmlFor="stock"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Jumlah Stock
+                  </label>
+                  <input
+                    type="number"
+                    id="jumlah_stock"
+                    name="jumlah_stock"
+                    value={formData.jumlah_stock}
+                    onChange={handleStockChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                  />
+                </div>
+                <div className="flex gap-2.5">
+                  <button
+                    type="button"
+                    onClick={closeTambahStockClick}
+                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
+                  >
+                    Tambah
+                  </button>
+                </div>
+              </form>
+            </Modal>
+          )}
 
           {isModalOpenCreate && (
             <Modal
               open={isModalOpenCreate}
               onClose={toggleModalCreate}
               type="create"
-              addItem={addItem}
             >
               <h2 className="text-lg font-semibold mb-4">Create New Item</h2>
               <form
@@ -387,12 +505,12 @@ export default function Products( children ) {
                       <div className="text-center">
                         {[
                           "Genset",
-                          "Speed Boat",
+                          "Mesin Kapal",
                           "Pompa Air",
                           "Gergaji",
                           "Pemotong Rumput",
                           "Spare Part Genset",
-                          "Spare Part Speed Boat",
+                          "Spare Part Mesin Kapal",
                           "Spare Part Gergaji",
                         ].map((category) => (
                           <Menu.Item key={category}>
@@ -523,14 +641,16 @@ export default function Products( children ) {
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                 <td className="pl-10 py-4">
-                  <div className="gap-x-4 items-center py-4 pl-5">ID</div>
+                  <div className="gap-x-4 items-center py-4 pl-5 font-semibold">
+                    ID
+                  </div>
                 </td>
-                <td className="">&nbsp; &nbsp; Gambar</td>
-                <td className=" text-center">Product Name</td>
-                <td className="text-center">Kategori Produk</td>
-                <td className="text-center">Harga Beli</td>
-                <td className="text-center">Harga Jual</td>
-                <td className=" text-center">Stock</td>
+                <td className="font-semibold">&nbsp; &nbsp; Gambar</td>
+                <td className=" text-center font-semibold">Product Name</td>
+                <td className="text-center font-semibold">Kategori Produk</td>
+                <td className="text-center font-semibold">Harga Beli</td>
+                <td className="text-center font-semibold">Harga Jual</td>
+                <td className=" text-center font-semibold">Stock</td>
                 <td></td>
                 <td></td>
               </tr>
@@ -572,14 +692,11 @@ export default function Products( children ) {
                     )}
                     {/* BUTTON CREATE ITEM */}
                     {role === "supplier" && (
-                      <button
-                        onClick={toggleModalCreate}
-                        className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-yellow-400 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
-                      >
-                        <span className="text-sm font-semibold tracking-wide">
-                          Tambah Stock
-                        </span>
-                      </button>
+                      <TambahStockProduct
+                        onClick={() =>
+                          handleTambahStockClick(product.id_product)
+                        }
+                      />
                     )}
                   </td>
                   <td></td>

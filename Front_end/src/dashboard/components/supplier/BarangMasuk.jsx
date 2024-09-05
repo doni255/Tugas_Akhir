@@ -98,6 +98,8 @@ export default function BarangMasuk() {
           "Response data tidak memiliki id_barang_masuk yang valid"
         );
       }
+      // Optionally, you may want to fetch products again to ensure consistency
+      fetchProducts();
       toast.success("Product berhasil di edit !", {
         duration: 5000,
       });

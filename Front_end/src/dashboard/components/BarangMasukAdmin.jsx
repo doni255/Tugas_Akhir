@@ -18,6 +18,8 @@ import ConfirmButton from "./button/button_product/ConfirmButton";
 import ConfirmProduct from "./button/button_product/ConfirmProduct";
 import RejectedButton from "./button/button_product/RejectedButton";
 
+import toast, { Toaster } from "react-hot-toast";
+
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
   { name: "Draft", icon: <HiOutlinePencilAlt className="w-6 h-6" /> },
@@ -53,6 +55,9 @@ export default function BarangMasukAdmin() {
       );
       console.log("Response data:", response.data);
       fetchProducts();
+      toast.success("Product berhasil di terima 😁 !", {
+        duration: 5000,
+      });
       // Menutup modal jika konfirmasi berhasil
       setisConfirmationModalOpen(false);
     } catch (error) {
@@ -150,7 +155,9 @@ export default function BarangMasukAdmin() {
           (product) => product.id_barang_masuk !== id_barang_masuk
         )
       );
-
+      toast.success("Product berhasil di tolak !", {
+        duration: 5000,
+      });
       // Close the confirmation modal
       handleCloseModal();
 
@@ -164,6 +171,7 @@ export default function BarangMasukAdmin() {
 
   return (
     <main className="relative ">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
@@ -188,14 +196,14 @@ export default function BarangMasukAdmin() {
                     <span>ID</span>
                   </div>
                 </td> */}
-                <td className=" text-center">Product Name</td>
-                <td className="text-center">Kategori Produk</td>
-                <td className=" text-center">Harga Beli</td>
-                <td className=" text-center">Jumlah</td>
-                <td className=" text-center">Tanggal Kirim</td>
-                <td className=" text-center">Kontak Pengirim</td>
-                <td className=" text-center">Actions</td>
-                <td className=" text-center"></td>
+                <td className=" text-center font-semibold">Product Name</td>
+                <td className="text-center font-semibold">Kategori Produk</td>
+                <td className=" text-center font-semibold">Harga Beli</td>
+                <td className=" text-center font-semibold">Jumlah</td>
+                <td className=" text-center font-semibold">Tanggal Kirim</td>
+                <td className=" text-center font-semibold">Kontak Pengirim</td>
+                <td className=" text-center font-semibold">Actions</td>
+                <td className=" text-center font-semibold"></td>
               </tr>
             </thead>
 
@@ -349,13 +357,13 @@ export default function BarangMasukAdmin() {
                 />
               </svg>
             </div>
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4">
+            <div className="mt-3 sm:mt-0 sm:ml-4">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
                 Account Information
               </h3>
               <div className="mt-2">
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
+                <div className="mt-2 ">
+                  <p className="text-sm text-gray-500 ">
                     <strong>Nama: </strong>
                     {selectedUserConfirm.nama}
                     <br />
@@ -373,8 +381,9 @@ export default function BarangMasukAdmin() {
                   </p>
                 </div>
               </div>
-              <ConfirmProduct onClick={konfirmasiBarangMasuk} />
-              <RejectedButton />
+              <div className="mt-3">
+                <ConfirmProduct onClick={konfirmasiBarangMasuk} />
+              </div>
             </div>
           </div>
         )}

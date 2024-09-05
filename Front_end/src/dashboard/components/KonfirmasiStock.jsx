@@ -17,6 +17,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import ConfirmButton from "./button/button_product/ConfirmButton";
 import ConfirmProduct from "./button/button_product/ConfirmProduct";
 import RejectedButton from "./button/button_product/RejectedButton";
+import toast, { Toaster } from "react-hot-toast";
 
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
@@ -29,7 +30,7 @@ const status = [
 export default function KonfirmasiStock() {
   const [isOpenInformasiKontak, setIsOpenInformasiKontak] = useState(false);
   const [isConfirmationModalOpen, setisConfirmationModalOpen] = useState(false);
-  const [selectedProduct, setSelectedBarangMasuk] = useState(null);
+  const [selectedBarangMasuk, setSelectedBarangMasuk] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserConfirm, setSelectedUserConfirm] = useState(null);
 
@@ -98,7 +99,7 @@ export default function KonfirmasiStock() {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/tambah_stock/`
+        `http://localhost:8000/api/tambah_stock_admin/`
       );
       setProducts(response.data.data || []); // Mengakses array produk di dalam response.data.data
     } catch (error) {
@@ -119,51 +120,39 @@ export default function KonfirmasiStock() {
     setSelectedUser(null); // Clear the selected user data when closing the modal
   };
 
-  const handleDeleteClick = (id_barang_masuk) => {
-    console.log(
-      `handleDeleteClick called with id_barang_masuk: ${id_barang_masuk}`
-    );
-    setSelectedBarangMasuk(id_barang_masuk);
-    setIsModalOpen(true);
+  const handleDeleteClick = (product) => {
+    console.log(`handleDeleteClick called with product:`, product);
+    console.log(`Product name: ${product.product_name}`); // Adjust the property name as necessary
+    setSelectedBarangMasuk(product); // Set the entire product object
+    setIsModalOpen(true); // Open the modal
   };
 
-  const handleDelete = () => {
-    console.log(`handleDelete called with selectedProduct: ${selectedProduct}`);
-    if (selectedProduct) {
-      destroyProduct(selectedProduct);
-    }
-  };
+  const handleDelete = async () => {
+    if (selectedBarangMasuk) {
+      try {
+        console.log(
+          `handleDelete called with id_tambah_stock: ${selectedBarangMasuk.id_tambah_stock}`
+        );
+        await axios.delete(
+          `http://localhost:8000/api/tambah_stock/destroy/${selectedBarangMasuk.id_tambah_stock}`
+        );
+        toast.success("Product berhasil di tolak !", {
+          duration: 5000,
+        });
+        // Optionally refresh the products list
+        fetchProducts();
 
-  const destroyProduct = async (id_barang_masuk) => {
-    try {
-      console.log(
-        `destroyProduct called with id_barang_masuk: ${id_barang_masuk}`
-      );
-      // Send DELETE request to the backend
-      await axios.delete(
-        `http://localhost:8000/api/barang_masuk/${id_barang_masuk}`
-      );
-
-      // Update the frontend state
-      setProducts((prevProducts) =>
-        prevProducts.filter(
-          (product) => product.id_barang_masuk !== id_barang_masuk
-        )
-      );
-
-      // Close the confirmation modal
-      handleCloseModal();
-
-      // Optionally, show a success message
-      console.log("Product deleted successfully");
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      // Optionally, show an error message to the user
+        // Close the modal
+        handleCloseModal();
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
     }
   };
 
   return (
     <main className="relative ">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
@@ -188,61 +177,71 @@ export default function KonfirmasiStock() {
                     <span>ID</span>
                   </div>
                 </td> */}
-                <td className=" text-center">Product Name</td>
-                <td className="text-center">Kategori Produk</td>
-                <td className=" text-center">Jumlah</td>
-                <td className=" text-center">Tanggal Kirim</td>
-                <td className=" text-center">Kontak Pengirim</td>
-                <td className=" text-center">Actions</td>
-                <td className=" text-center"></td>
+                <td className=" text-center font-semibold">Product Name</td>
+                <td className="text-center font-semibold">Kategori Produk</td>
+                <td className=" text-center font-semibold">Jumlah</td>
+                <td className=" text-center font-semibold">Tanggal Kirim</td>
+                <td className=" text-center font-semibold">Kontak Pengirim</td>
+                <td className=" text-center font-semibold">Actions</td>
+                <td className=" text-center font-semibold"></td>
               </tr>
             </thead>
 
             <tbody>
-              {currentItems.map((tambah_stock) => (
-                <tr key={tambah_stock.id_barang_masuk} className="hover:bg-gray-100">
-                  <td className="text-center">{tambah_stock.product.nama_product}</td>
-                  <td className="text-center">{tambah_stock.product.kategori_produk}</td>
-                  <td className="text-center">{tambah_stock.product.jumlah_stock}</td>
-                  {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
-                  <td className=" text-center ">{tambah_stock.tanggal_kirim}</td>
-                  <td>
-                    <a
-                      href="#"
-                      onClick={() => handleOpenModalKontak(tambah_stock)}
-                      className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="size-5 opacity-75"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
+              {currentItems
+                .filter((tambah_stock) => tambah_stock.status !== "confirmed") // Filter hanya yang belum "confirmed"
+                .map((tambah_stock) => (
+                  <tr
+                    key={tambah_stock.id_tambah_stock}
+                    className="hover:bg-gray-100"
+                  >
+                    <td className="text-center">
+                      {tambah_stock.product.nama_product}
+                    </td>
+                    <td className="text-center">
+                      {tambah_stock.product.kategori_produk}
+                    </td>
+                    <td className="text-center">{tambah_stock.jumlah_stock}</td>
+                    <td className=" text-center">
+                      {tambah_stock.tanggal_kirim}
+                    </td>
+                    <td>
+                      <a
+                        href="#"
+                        onClick={() => handleOpenModalKontak(tambah_stock)}
+                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="size-5 opacity-75"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
 
-                      <span className="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible">
-                        Account
-                      </span>
-                    </a>
-                  </td>
-                  <td className="py-4 px-4 text-center">
-                    <ConfirmButton
-                      onClick={() => handleConfirmButton(product)}
-                    />
-                    <RejectedButton
-                      onClick={() => handleDeleteClick(product.id_barang_masuk)}
-                    />
-                  </td>
-                  <td></td>
-                </tr>
-              ))}
+                        <span className="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible">
+                          Account
+                        </span>
+                      </a>
+                    </td>
+                    <td className="py-4 px-4 text-center">
+                      <ConfirmButton
+                        onClick={() => handleConfirmButton(product)}
+                      />
+                      <RejectedButton
+                        onClick={() => handleDeleteClick(tambah_stock)}
+                      />
+                    </td>
+                    <td></td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -372,7 +371,7 @@ export default function KonfirmasiStock() {
                 </div>
               </div>
               <ConfirmProduct onClick={konfirmasiBarangMasuk} />
-              <RejectedButton />
+              <RejectedButton onClick={handleDelete} />
             </div>
           </div>
         )}

@@ -40,6 +40,7 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
     {
       key: "konfirmasi_tambah_stock",
       label: "Konfirmasi Stock",
+      icon: <HiOutlineShoppingCart />,
       path: "/dashboard/konfirmasi_stock",
       roles: ["admin"],
     },

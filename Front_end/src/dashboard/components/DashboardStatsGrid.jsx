@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 function DashboardStatsGrid() {
   const [totalStock, setTotalStock] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [totalTambahStock, setTotalTambahStock] = useState(0);
 
   useEffect(() => {
     const fetchTotalUsers = async () => {
@@ -34,6 +35,20 @@ function DashboardStatsGrid() {
     fetchTotalStock();
   }, []);
 
+  useEffect(() => {
+    const fetchTotalTambahStock = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/tambah_stock/");
+        const data = await response.json();
+        setTotalTambahStock(data.total_jumlah_stock);
+      } catch (error) {
+        console.error("Error fetching total tambah stock: ", error);
+      }
+    };
+
+    fetchTotalTambahStock();
+  }, []);
+
   return (
     <div className="flex gap-4 w-full ">
       <BoxWrapper>
@@ -52,6 +67,7 @@ function DashboardStatsGrid() {
           </div>
         </div>
       </BoxWrapper>
+
       <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-sky-500">
           <IoBagHandle className="text-2xl text-white" />
@@ -68,21 +84,24 @@ function DashboardStatsGrid() {
           </div>
         </div>
       </BoxWrapper>
+
       <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-sky-500">
-          <IoBagHandle />
+          <IoBagHandle className="text-2xl text-white" />
         </div>
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-light">
-            Total Stok Barang
+            Permintaan Barang Masuk Supplier
           </span>
           <div className="flex items-center">
-            <strong className="text-xl text-gray-700 font-semibold"></strong>
-            <span className="text-sm text-green-500 pl-2">+234</span>
+            <strong className="text-xl text-gray-700 font-semibold">
+              {totalTambahStock}
+            </strong>
+            {/* <span className="text-sm text-green-500 pl-2">+234</span> */}
           </div>
         </div>
       </BoxWrapper>
-      <BoxWrapper>
+      {/* <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-sky-500">
           <IoBagHandle />
         </div>
@@ -93,7 +112,7 @@ function DashboardStatsGrid() {
             <span className="text-sm text-green-500 pl-2">+234</span>
           </div>
         </div>
-      </BoxWrapper>
+      </BoxWrapper> */}
     </div>
   );
 }

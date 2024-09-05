@@ -17,6 +17,7 @@ class Tambah_Stock extends Model
         'id_user',
         'jumlah_stock',
         'tanggal_kirim',
+
     ];
 
     public function product()
