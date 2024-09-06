@@ -65,6 +65,73 @@ class TambahStockController extends Controller
             'total_jumlah_stock' => $totalJumlahStock // Menambahkan total jumlah stock dalam respons
         ], 200);
     }
+
+    public function getTambahStockSupplier($id_user)
+    {
+        $user = User::find($id_user);
+
+    if ($user) {
+        // Mengambil data Tambah_Stock beserta relasi id_user dan id_product
+        // Mengambil data Tambah_Stock beserta relasi 'product' dan 'user' yang sesuai dengan id_user tertentu
+        $getTambahStock = Tambah_Stock::with(['product', 'user'])
+        ->where('id_user', $id_user) // Menyaring data sesuai dengan id_user
+        ->get();
+
+    
+        // Memeriksa apakah data kosong
+        if ($getTambahStock->isEmpty()) {
+            return response([
+                'message' => 'No data',
+                'data' => []
+            ], 404);
+        };
+
+        // Mengihtung total jumlah_stock dari seluruh data
+        $totalJumlahStock = $getTambahStock->sum('jumlah_stock');
+    
+        // Memproses data untuk ditampilkan
+        $productsArray = $getTambahStock->map(function($stock) {
+            return [
+                'id_tambah_stock' => $stock->id_tambah_stock,
+                'id_product' => $stock->id_product,
+                'id_user' => $stock->id_user,
+                'jumlah_stock' => $stock->jumlah_stock,
+                'tanggal_kirim' => $stock->tanggal_kirim,
+                'product' => [
+                    'id_product' => $stock->product->id_product,
+                    'gambar' => $stock->product->konten_base64, // Mengakses gambar dalam bentuk base64
+                    'nama_product' => $stock->product->nama_product,
+                    'harga_beli' => $stock->product->harga_beli,
+                    'harga_jual' => $stock->product->harga_jual,
+                    'kategori_produk' => $stock->product->kategori_produk,
+                    'jumlah_stock' => $stock->product->jumlah_stock,
+                ],
+                'user' => [
+                    'id_user' => $stock->user->id_user,
+                    'nama' => $stock->user->nama,
+                    'email' => $stock->user->email,
+                    'no_telpon' => $stock->user->no_telpon,
+                    'role' => $stock->user->role,
+                    'kota' => $stock->user->kota,
+                    'alamat' => $stock->user->alamat,
+                    'password' => $stock->user->password,
+                ],
+            ];
+        })->all();
+
+        // Mengembalikan response dengan data yang diproses
+        return response([
+            'message' => 'Retrieve data success',
+            'data' => $productsArray,   
+            'total_jumlah_stock' => $totalJumlahStock // Menambahkan total jumlah stock dalam respons
+        ], 200);
+    }
+    return response([
+        'message' => 'User not found',
+        'data' => null
+    ], 404);
+
+    }
     
     public function create(Request $request, $id_user){
         $user = User::find($id_user);

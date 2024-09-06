@@ -92,6 +92,12 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
           path: "/dashboard/supplier/barangmasuk",
           roles: ["supplier"],
         },
+        {
+          key: "data_tambah_stock",
+          label: "Data Tambah Stock",
+          path: "/dashboard/supplier/data_tambah_stock",
+          roles: ["supplier"],
+        },
       ],
     },
     {

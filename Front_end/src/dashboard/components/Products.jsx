@@ -84,15 +84,6 @@ export default function Products({ productId, userId }) {
     jumlah_stock: "",
   });
 
-  // Handle form input changes
-  const handleStockChange = (e) => {
-    const { name, value } = e.target;
-    setFormDataStock((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
   const toggleModalCreate = () => {
     setIsModalOpenCreate(!isModalOpenCreate);
   };
@@ -185,62 +176,68 @@ export default function Products({ productId, userId }) {
       });
   };
 
+  const handleTambahStockClick = (id_product) => {
+    console.log(`handleTambahStockClick called with id_product: ${id_product}`);
+    setSelectedProduct(id_product);
+    setisModalTambahStockOpen(true);
+  };
+
+  const closeTambahStockClick = () => {
+    setisModalTambahStockOpen(false);
+  };
+
   const handleSubmitStock = async (e) => {
     e.preventDefault();
-    const { jumlah_stock } = formDataStock;
+    const { jumlah_stock, id_product } = formDataStock;
 
     // Validate inputs
     if (!jumlah_stock) {
-      alert("Semua field harus diisi!");
+      alert("Jumlah stock harus di isi!");
       return;
     }
 
     const newItem = {
       jumlah_stock: jumlah_stock,
-      id_product: productId,
+      id_product: selectedProduct,
     };
+    console.log(newItem);
 
     try {
       // Make the POST request to your API endpoint
       const response = await axios.post(
-        `http://local:8000/api/tambah_stock/create/${userId}`, // Adjust the endpoint URL as needed
+        "http://localhost:8000/api/tambah_stock/create/" + // Adjust the endpoint URL as needed
+          localStorage.getItem("id_user"),
         newItem,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
           },
         }
       );
       // Handle successful response
-      if (response.status === 200) {
-        alert("Stock berhasil ditambahkan");
-        setFormDataStock({
-          jumlah_stock: "",
-          id_product: "",
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Jumlah stock berhasil ditambahkan !", {
+          duration: 5000,
         });
+        setisModalTambahStockOpen(false);
       }
+      // Optionally refresh the list or fetch updated data
+      fetchProducts(); // Ensure this function is defined and works correctly
     } catch (error) {
       // Handle errors (network issues, server errors, etc.)
       console.error("Error updating stock:", error);
       alert("Terjadi kesalahan saat menambahkan stock");
     }
   };
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      category: "",
-      harga_beli: "",
-      harga_jual: "",
-      imageUrl: null,
-      stock: "",
-    });
-    setSelectedCategory("");
-    setImageError("");
-  };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setFormData({ ...formData, category });
+  // Ensure `handleStockChange` updates the correct state
+  const handleStockChange = (e) => {
+    const { name, value } = e.target;
+    setFormDataStock((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleCategoryChangeEdit = (category) => {
@@ -333,16 +330,6 @@ export default function Products({ productId, userId }) {
     }
   };
 
-  const handleTambahStockClick = (id_product) => {
-    console.log(`handleTambahStockClick called with id_product: ${id_product}`);
-    setSelectedProduct(id_product);
-    setisModalTambahStockOpen(true);
-  };
-
-  const closeTambahStockClick = () => {
-    setisModalTambahStockOpen(false);
-  };
-
   const handleDeleteClick = (id_product) => {
     console.log(`handleDeleteClick called with id_product: ${id_product}`);
     setSelectedProduct(id_product);
@@ -430,7 +417,7 @@ export default function Products({ productId, userId }) {
                     type="number"
                     id="jumlah_stock"
                     name="jumlah_stock"
-                    value={formData.jumlah_stock}
+                    value={formDataStock.jumlah_stock}
                     onChange={handleStockChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                   />

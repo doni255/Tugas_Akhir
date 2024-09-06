@@ -38,6 +38,7 @@ import Feature from "./e-commerce/components/Feature";
 import Cart from "./e-commerce/components/Cart";
 import BarangMasukAdmin from "./dashboard/components/BarangMasukAdmin";
 import KonfirmasiStock from "./dashboard/components/KonfirmasiStock";
+import DataTambahStock from "./dashboard/components/supplier/DataTambahStock";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -133,6 +134,7 @@ function App() {
               }
             >
               {/* <Route index element={<Supplier />} /> */}
+              <Route path="data_tambah_stock" element={<DataTambahStock  />} />
               <Route path="barangmasuk" element={<BarangMasuk />} />
             </Route>
 

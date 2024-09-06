@@ -100,14 +100,6 @@ class TambahStockAdminController extends Controller
 
 
         $tambahStock = Tambah_Stock::find($request->id_tambah_stock);
-        
-
-
-        // if ($tambahStock->status == 'confirmed') {
-        //     return response([
-        //         'message' => 'Stock has already been confirmed.'
-        //     ], 400);
-        // }
 
         // Ambil produk yang bersangkutan
         $product = Product::find($tambahStock->id_product);

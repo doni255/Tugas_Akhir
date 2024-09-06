@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { FiLayers } from "react-icons/fi";
-import Modal from "./Modal";
+import Modal from "../Modal";
 import axios from "axios";
 
 import {
@@ -11,12 +11,12 @@ import {
   HiOutlineXCircle,
   HiPlus,
 } from "react-icons/hi";
-import Pagination from "../consts/Pagination";
+import Pagination from "../../consts/Pagination";
 import { Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import ConfirmButton from "./button/button_product/ConfirmButton";
-import ConfirmProduct from "./button/button_product/ConfirmProduct";
-import RejectedButton from "./button/button_product/RejectedButton";
+import ConfirmButton from "../button/button_product/ConfirmButton";
+import ConfirmProduct from "../button/button_product/ConfirmProduct";
+import RejectedButton from "../button/button_product/RejectedButton";
 import toast, { Toaster } from "react-hot-toast";
 
 const status = [
@@ -27,48 +27,12 @@ const status = [
   { name: "Under Review", icon: <HiOutlineMail className="w-6 h-6" /> },
 ];
 
-export default function KonfirmasiStock() {
+export default function DataTambahStock() {
   const [isOpenInformasiKontak, setIsOpenInformasiKontak] = useState(false);
   const [isConfirmationModalOpen, setisConfirmationModalOpen] = useState(false);
   const [selectedBarangMasuk, setSelectedBarangMasuk] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserConfirm, setSelectedUserConfirm] = useState(null);
-
-  const konfirmasiBarangMasuk = () => {
-    console.log("memek");
-
-    const formData = new FormData();
-    formData.append("id_barang_masuk", selectedProduct.id_barang_masuk);
-
-    console.log(selectedProduct.id_barang_masuk);
-
-    try {
-      const response = axios.post(
-        `http://localhost:8000/api/barang_masuk/konfirmasi_barang_masuk`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Response data:", response.data);
-      fetchProducts();
-      // Menutup modal jika konfirmasi berhasil
-      setisConfirmationModalOpen(false);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      // setProducts([]); // Menghindari products menjadi undefined
-    }
-  };
-
-  const handleConfirmButton = (product) => {
-    console.log("Selected Product:", product);
-    console.log("Selected User:", selectedUser);
-    setSelectedUserConfirm(product.user);
-    setSelectedBarangMasuk(product);
-    setisConfirmationModalOpen(true);
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -97,21 +61,18 @@ export default function KonfirmasiStock() {
   }, []);
 
   const fetchProducts = async () => {
+    console.log(localStorage.getItem("id_user"));
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/tambah_stock_admin/`
+        "http://localhost:8000/api/tambah_stock/data_stock_supplier/" + 
+        localStorage.getItem("id_user"),
       );
+    console.log(response.data.data);
       setProducts(response.data.data || []); // Mengakses array produk di dalam response.data.data
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]); // Menghindari products menjadi undefined
     }
-  };
-
-  // Fungsi untuk membuka modal
-  const handleOpenModalKontak = (product) => {
-    setSelectedUser(product.user); // Set the specific user's data when clicking the contact icon
-    setIsOpenInformasiKontak(true); // Assuming this is the state that controls the modal visibility
   };
 
   // Fungsi untuk menutup modal
@@ -136,7 +97,7 @@ export default function KonfirmasiStock() {
         await axios.delete(
           `http://localhost:8000/api/tambah_stock/destroy/${selectedBarangMasuk.id_tambah_stock}`
         );
-        toast.success("Product berhasil di tolak !", {
+        toast.success("Product berhasil di batal !", {
           duration: 5000,
         });
         // Optionally refresh the products list
@@ -157,11 +118,8 @@ export default function KonfirmasiStock() {
         <div className="flex items-center justify-between py-7 px-10">
           <div>
             <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
-              Barang Masuk
+              Konfirmasi Stock
             </h1>
-            <p className="text-sm font-medium text-gray-500">
-              Let's grow to your business! Create your product and upload here
-            </p>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -181,7 +139,6 @@ export default function KonfirmasiStock() {
                 <td className="text-center font-semibold">Kategori Produk</td>
                 <td className=" text-center font-semibold">Jumlah</td>
                 <td className=" text-center font-semibold">Tanggal Kirim</td>
-                <td className=" text-center font-semibold">Kontak Pengirim</td>
                 <td className=" text-center font-semibold">Actions</td>
                 <td className=" text-center font-semibold"></td>
               </tr>
@@ -205,36 +162,7 @@ export default function KonfirmasiStock() {
                     <td className=" text-center">
                       {tambah_stock.tanggal_kirim}
                     </td>
-                    <td>
-                      <a
-                        href="#"
-                        onClick={() => handleOpenModalKontak(tambah_stock)}
-                        className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="size-5 opacity-75"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-
-                        <span className="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible">
-                          Account
-                        </span>
-                      </a>
-                    </td>
                     <td className="py-4 px-4 text-center">
-                      <ConfirmButton
-                        onClick={() => handleConfirmButton(tambah_stock)}
-                      />
                       <RejectedButton
                         onClick={() => handleDeleteClick(tambah_stock)}
                       />
@@ -320,61 +248,6 @@ export default function KonfirmasiStock() {
           </div>
         </div>
       )}
-
-      {/* Modal for Konfirmasi */}
-      <Modal
-        open={isConfirmationModalOpen}
-        onClose={() => setisConfirmationModalOpen(false)}
-      >
-        {console.log("Rendering Modal with selectedUser:", selectedUser)}
-
-        {selectedUserConfirm && (
-          <div className="sm:flex sm:items-start w-80">
-            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-red-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </div>
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Account Information
-              </h3>
-              <div className="mt-2">
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    <strong>Nama: </strong>
-                    {selectedUserConfirm.nama}
-                    <br />
-                    <strong>Email: </strong>
-                    {selectedUserConfirm.email}
-                    <br />
-                    <strong>No Telepon: </strong>
-                    {selectedUserConfirm.no_telpon}
-                    <br />
-                    <strong>Kota: </strong>
-                    {selectedUserConfirm.kota}
-                    <br />
-                    <strong>Alamat: </strong>
-                    {selectedUserConfirm.alamat}
-                  </p>
-                </div>
-              </div>
-              <ConfirmProduct onClick={handleConfirmButton} />
-            </div>
-          </div>
-        )}
-      </Modal>
 
       {/* Modal untuk konfirmasi menolak produk dari supplier */}
       <Modal open={isModalOpen} onClose={handleCloseModal}>

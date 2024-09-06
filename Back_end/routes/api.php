@@ -54,6 +54,7 @@ use Illuminate\Http\Request;
     // Tambah Stock Untuk Supplier
     Route::get('/tambah_stock/', [TambahStockController::class, 'getTambahStock']);
     Route::post('/tambah_stock/create/{id_user}', [TambahStockController::class, 'create']);
+    Route::get('/tambah_stock/data_stock_supplier/{user_id}', [TambahStockController::class, 'getTambahStockSupplier']);
 
     // Tambah Stock Konfirmasi untuk admin
     Route::get('/tambah_stock_admin', [TambahStockAdminController::class, 'getTambahStock']);
