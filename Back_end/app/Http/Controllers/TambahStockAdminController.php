@@ -84,12 +84,11 @@ class TambahStockAdminController extends Controller
 
     public function konfirmasiTambahStock(Request $request)
     {
-        // Validasi Input
+        // Validasi input
         $validator = Validator::make($request->all(), [
-            'id_tambah_stock' => 'required|exists:tambah_stock,id_tambah_stock',
+            'id_product' => 'required',
         ]);
-
-
+    
         // Jika validasi gagal, kembalikan respons error
         if ($validator->fails()) {
             return response([
@@ -97,29 +96,34 @@ class TambahStockAdminController extends Controller
                 'errors' => $validator->errors()
             ], 400);
         }
-
-
-        $tambahStock = Tambah_Stock::find($request->id_tambah_stock);
-
-        // Ambil produk yang bersangkutan
-        $product = Product::find($tambahStock->id_product);
-
+    
+        // Ambil data tambah stock berdasarkan id_product
+        $tambahStock = Tambah_Stock::where('id_product', $request->id_product)->first();
+    
+        // Cek apakah tambahStock ada
+        if (!$tambahStock) {
+            return response([
+                'message' => 'Data tambah stok tidak ditemukan'
+            ], 404);
+        }
+    
+        // Ambil data produk
+        $product = Product::where('id_product', $request->id_product)->first();
+    
         // Tambahkan jumlah stock produk
         $product->jumlah_stock += $tambahStock->jumlah_stock;
-
+    
         // Simpan perubahan pada produk
         $product->save();
-
-   
-        // $tambahStock->status = 'confirmed'; // Misalnya, tambahkan field 'status' untuk penanda konfirmasi
-        $tambahStock->save();
-
+    
+        // Hapus data dari tabel tambah_stock setelah konfirmasi
         $tambahStock->delete();
-
+    
+        // Kembalikan respons sukses
         return response([
-            'message' => 'Stock confirmed and updated successfully.',
-            'updated_stock' => $product->jumlah_stock
-        ], 200);
-        
+            'message' => 'Tambah stok produk success',
+            'data' => $product->jumlah_stock
+        ], 201);
     }
+    
 }

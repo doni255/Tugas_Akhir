@@ -30,7 +30,7 @@ const status = [
 export default function KonfirmasiStock() {
   const [isOpenInformasiKontak, setIsOpenInformasiKontak] = useState(false);
   const [isConfirmationModalOpen, setisConfirmationModalOpen] = useState(false);
-  const [selectedBarangMasuk, setSelectedBarangMasuk] = useState(null);
+  const [selectedProduct, setSelectedBarangMasuk] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserConfirm, setSelectedUserConfirm] = useState(null);
 
@@ -38,35 +38,46 @@ export default function KonfirmasiStock() {
     console.log("memek");
 
     const formData = new FormData();
-    formData.append("id_barang_masuk", selectedProduct.id_barang_masuk);
+    formData.append("id_product", selectedProduct);
 
-    console.log(selectedProduct.id_barang_masuk);
+    // console.log(formData, "aoi");
 
-    try {
-      const response = axios.post(
-        `http://localhost:8000/api/barang_masuk/konfirmasi_barang_masuk`,
+    console.log(selectedProduct)
+
+
+   axios
+      .post("http://localhost:8000/api/tambah_stock_admin/konfirmasi_tambah_stock",
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        // fetchProducts();
+        toast.success("Product berhasil di tambahkan !", {
+          duration: 5000,
+        });
+        // resetForm();
+        // window.location.reload();
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.data); // Pesan error dari server
+          console.log(error.response.status); // Status HTTP (400)
+          console.log(error.response.headers); // Header respons
+        } else {
+          console.log(error.message); // Pesan error umum
         }
-      );
-      console.log("Response data:", response.data);
-      fetchProducts();
-      // Menutup modal jika konfirmasi berhasil
-      setisConfirmationModalOpen(false);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      // setProducts([]); // Menghindari products menjadi undefined
-    }
+      });
   };
 
   const handleConfirmButton = (product) => {
-    console.log("Selected Product:", product);
-    console.log("Selected User:", selectedUser);
+    console.log(product)
     setSelectedUserConfirm(product.user);
-    setSelectedBarangMasuk(product);
+    setSelectedBarangMasuk(product.id_product);
     setisConfirmationModalOpen(true);
   };
 
@@ -326,7 +337,6 @@ export default function KonfirmasiStock() {
         open={isConfirmationModalOpen}
         onClose={() => setisConfirmationModalOpen(false)}
       >
-        {console.log("Rendering Modal with selectedUser:", selectedUser)}
 
         {selectedUserConfirm && (
           <div className="sm:flex sm:items-start w-80">
@@ -346,7 +356,7 @@ export default function KonfirmasiStock() {
                 />
               </svg>
             </div>
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4">
+            <div className="mt-3  sm:mt-0 sm:ml-4">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
                 Account Information
               </h3>
@@ -370,7 +380,9 @@ export default function KonfirmasiStock() {
                   </p>
                 </div>
               </div>
-              <ConfirmProduct onClick={handleConfirmButton} />
+              <div className="mt-3">
+                <ConfirmProduct onClick={konfirmasiBarangMasuk} />
+              </div>
             </div>
           </div>
         )}
