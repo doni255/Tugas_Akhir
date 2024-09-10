@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pendapatan;
 use App\Models\Product;
 use App\Models\Uang;
+use App\Models\Pengeluaran;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -125,10 +127,17 @@ class ProductController extends Controller
      $product->jumlah_stock = $request->jumlah_stock;
      $product->save();
 
+     $pengeluaran = new Pengeluaran();
+     $pengeluaran->nama_product = $request->nama_product;
+     $pengeluaran->harga_total = $request->harga_beli;
+     $pengeluaran->tanggal = date('Y-m-d');
+     $pengeluaran->save();
+
     // Kembalikan respons sukses dengan data produk yang baru dibuat
     return response()-> json([
         'message' => 'Product created successfully',
-        'data' => $product
+        'data' => $product,
+        'pengeluaran' => $pengeluaran
     ], 200);
 
     }
@@ -255,10 +264,17 @@ class ProductController extends Controller
         $product->jumlah_stock = $product->jumlah_stock - $request->jumlah_stock;
         $product->save();
         $uang->save();
+
+        $pendapatan = new Pendapatan();
+        $pendapatan->nama_product = $product->nama_product;
+        $pendapatan->harga_total = $product->harga_beli * $request->jumlah_stock;
+        $pendapatan->tanggal = date('Y-m-d');
+        $pendapatan->save();
     
         return response()->json([
             'message' => 'Product stock updated successfully',
             'product' => $product->jumlah_stock,
+            'pendapatan' => $pendapatan,
             'uang' => $uang
         ], 200);
     }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Barang_Masuk;
 use App\Models\Product;
 use App\Models\Uang;
+use App\Models\Pendapatan;
+use App\Models\Pengeluaran;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -93,6 +95,16 @@ class BarangMasukAdminController extends Controller
     $product->jumlah_stock = $barang_masuk->jumlah_stock;
     $uang->jumlah_uang = $uang->jumlah_uang - ($barang_masuk->harga_beli * $barang_masuk->jumlah_stock);
 
+
+
+    $pengeluaran = new Pengeluaran();
+    $pengeluaran->nama_product = $barang_masuk->nama_product;
+    $pengeluaran->harga_total = $barang_masuk->harga_beli * $barang_masuk->jumlah_stock;
+    $pengeluaran->tanggal = date('Y-m-d');
+    $pengeluaran->save();
+    
+    
+
     // Simpan data ke tabel uang
     $uang->save();
 
@@ -106,7 +118,8 @@ class BarangMasukAdminController extends Controller
         'message' => 'Product confirmation success and Barang Masuk deleted',
         'data' => [
             'product' => $product,
-            'uang' => $uang
+            'uang' => $uang,
+            'pengeluaran' => $pengeluaran
         ]
     ], 201);
 }

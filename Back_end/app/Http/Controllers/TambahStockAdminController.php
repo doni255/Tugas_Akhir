@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Tambah_Stock;
 use App\Models\Uang;
+use App\Models\Pengeluaran;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -113,7 +114,13 @@ class TambahStockAdminController extends Controller
     
         // Ambil data produk
         $product = Product::where('id_product', $request->id_product)->first();
-    
+
+        $pengeluaran = new Pengeluaran();
+        $pengeluaran->nama_product = $product->nama_product;
+        $pengeluaran->harga_total = $product->harga_beli * $tambahStock->jumlah_stock;
+        $pengeluaran->tanggal = date('Y-m-d');
+        $pengeluaran->save();
+
         // Tambahkan jumlah stock produk
         $product->jumlah_stock += $tambahStock->jumlah_stock;
 
@@ -132,7 +139,8 @@ class TambahStockAdminController extends Controller
             'message' => 'Tambah stok produk success',
             'data' => [
                 'product' => $product->jumlah_stock,
-                'uang' => $uang
+                'uang' => $uang,
+                'pengeluaran' => $pengeluaran
             ]
         ], 201);
     }

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BarangMasukAdminController;
 use App\Http\Controllers\BarangMasukController;
+use App\Http\Controllers\PendapatanController;
+use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TambahStockAdminController;
 use App\Http\Controllers\TambahStockController;
@@ -62,6 +64,16 @@ use Illuminate\Http\Request;
     Route::get('/tambah_stock_admin', [TambahStockAdminController::class, 'getTambahStock']);
     Route::post('/tambah_stock_admin/konfirmasi_tambah_stock', [TambahStockAdminController::class, 'konfirmasiTambahStock']);     
     Route::delete('/tambah_stock/destroy/{id}', [TambahStockAdminController::class, 'destroy']);
+
+    // Pendapatan 
+    Route::get('/pendapatan', [PendapatanController::class, 'getPendapatan']);
+    Route::get('/grafik_pendapatan', [PendapatanController::class, 'getGrafikPendapatanPerbulanDiTahunIni']);
+    Route::get('/grafik_pendapatan_pertahun', [PendapatanController::class, 'getGrafikPendapatanPertahun']);
+
+    // Pengeluaran
+    Route::get('/pengeluaran', [PengeluaranController::class, 'getPengeluaran']);
+    Route::get('/grafik_pengeluaran', [PengeluaranController::class, 'getGrafikPengeluaranPerbulanDiTahunIni']);
+    Route::get('/grafik_pengeluaran_pertahun', [PengeluaranController::class, 'getGrafikPengeluaranPertahun']);
   
 
 
