@@ -30,7 +30,7 @@ const status = [
 export default function KonfirmasiStock() {
   const [isOpenInformasiKontak, setIsOpenInformasiKontak] = useState(false);
   const [isConfirmationModalOpen, setisConfirmationModalOpen] = useState(false);
-  const [selectedProduct, setSelectedBarangMasuk] = useState(null);
+  const [selectedKonfirmasiStock, setSelectedKonfirmasiStock] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserConfirm, setSelectedUserConfirm] = useState(null);
 
@@ -38,11 +38,11 @@ export default function KonfirmasiStock() {
     console.log("memek");
 
     const formData = new FormData();
-    formData.append("id_product", selectedProduct);
+    formData.append("id_product", selectedKonfirmasiStock);
 
     // console.log(formData, "aoi");
 
-    console.log(selectedProduct)
+    console.log(selectedKonfirmasiStock)
 
 
    axios
@@ -56,7 +56,8 @@ export default function KonfirmasiStock() {
       })
       .then((response) => {
         console.log(response);
-        // fetchProducts();
+        // fetchTambahStock();
+        setisConfirmationModalOpen(false);
         toast.success("Product berhasil di tambahkan !", {
           duration: 5000,
         });
@@ -77,45 +78,45 @@ export default function KonfirmasiStock() {
   const handleConfirmButton = (product) => {
     console.log(product)
     setSelectedUserConfirm(product.user);
-    setSelectedBarangMasuk(product.id_product);
+    setSelectedKonfirmasiStock(product.id_product);
     setisConfirmationModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedBarangMasuk(null);
+    setSelectedKonfirmasiStock(null);
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Bagian Paginasi
   // Menginisialisasi products sebagai array kosong untuk menghindari undefined
-  const [products, setProducts] = useState([]);
+  const [tambahStocks, setTambahStocks] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = Array.isArray(products)
-    ? products.slice(indexOfFirstItem, indexOfLastItem)
+  const currentItems = Array.isArray(tambahStocks)
+    ? tambahStocks.slice(indexOfFirstItem, indexOfLastItem)
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    fetchProducts();
+    fetchTambahStock();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchTambahStock = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8000/api/tambah_stock_admin/`
       );
-      setProducts(response.data.data || []); // Mengakses array produk di dalam response.data.data
+      setTambahStocks(response.data.data || []); // Mengakses array produk di dalam response.data.data
     } catch (error) {
       console.error("Error fetching products:", error);
-      setProducts([]); // Menghindari products menjadi undefined
+      setTambahStocks([]); // Menghindari products menjadi undefined
     }
   };
 
@@ -134,24 +135,24 @@ export default function KonfirmasiStock() {
   const handleDeleteClick = (product) => {
     console.log(`handleDeleteClick called with product:`, product);
     console.log(`Product name: ${product.product_name}`); // Adjust the property name as necessary
-    setSelectedBarangMasuk(product); // Set the entire product object
+    setSelectedKonfirmasiStock(product); // Set the entire product object
     setIsModalOpen(true); // Open the modal
   };
 
   const handleDelete = async () => {
-    if (selectedBarangMasuk) {
+    if (selectedKonfirmasiStock) {
       try {
         console.log(
-          `handleDelete called with id_tambah_stock: ${selectedBarangMasuk.id_tambah_stock}`
+          `handleDelete called with id_tambah_stock: ${selectedKonfirmasiStock.id_tambah_stock}`
         );
         await axios.delete(
-          `http://localhost:8000/api/tambah_stock/destroy/${selectedBarangMasuk.id_tambah_stock}`
+          `http://localhost:8000/api/tambah_stock/destroy/${selectedKonfirmasiStock.id_tambah_stock}`
         );
         toast.success("Product berhasil di tolak !", {
           duration: 5000,
         });
         // Optionally refresh the products list
-        fetchProducts();
+        fetchTambahStock();
 
         // Close the modal
         handleCloseModal();
@@ -259,7 +260,7 @@ export default function KonfirmasiStock() {
 
         <Pagination
           itemsPerPage={itemsPerPage}
-          totalItems={products.length}
+          totalItems={tambahStocks.length}
           paginate={paginate}
           currentPage={currentPage}
         />

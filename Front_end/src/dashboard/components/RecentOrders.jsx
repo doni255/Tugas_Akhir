@@ -2,78 +2,25 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { getOrderStatus } from "../utils/index";
 
-const recentOrderData = [
-  {
-    id: "1",
-    product_id: "4324",
-    customer_id: "23143",
-    customer_name: "Shirley A. Lape",
-    order_date: "2002-05-17T03:24:00",
-    order_total: "$435.50",
-    current_order_status: "PLACED",
-    shipment_address: "Cottage Grave, OR 97424",
-  },
-  {
-    id: "2",
-    product_id: "4324",
-    customer_id: "23143",
-    customer_name: "John Rick",
-    order_date: "2002-05-14T05:24:00",
-    order_total: "$435.50",
-    current_order_status: "CONFIRMED",
-    shipment_address: "Cottage Grave, OR 97424",
-  },
-  {
-    id: "3",
-    product_id: "4324",
-    customer_id: "23143",
-    customer_name: "Taylor Swift",
-    order_date: "2002-05-17T07:24:00",
-    order_total: "$435.50",
-    current_order_status: "SHIPPED",
-    shipment_address: "Cottage Grave, OR 97424",
-  },
-  {
-    id: "4",
-    product_id: "4324",
-    customer_id: "23143",
-    customer_name: "Jason",
-    order_date: "2002-05-17T12:40:00",
-    order_total: "$435.50",
-    current_order_status: "OUT_FOR_DELIVERY",
-    shipment_address: "Cottage Grave, OR 97424",
-  },
-  {
-    id: "5",
-    product_id: "4324",
-    customer_id: "23143",
-    customer_name: "Shirley A. Lape",
-    order_date: "2002-05-17T03:24:00",
-    order_total: "$435.50",
-    current_order_status: "DELIVERED",
-    shipment_address: "Cottage Grave, OR 97424",
-  },
-];
-
 function RecentOrders() {
   return (
-    <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
-      <strong className="text-gray-700 font-medium">Recent Orders</strong>
+    <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
+      {/* <strong className="text-gray-700 font-medium">Recent Orders</strong> */}
       <div className="mt-3">
         <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
           <thead>
             <tr className="font-semibold">
-              <td className="py-4 px-4 text-center">ID</td>
-              <td className="py-4 px-4 text-center">Product ID</td>
-              <td className="py-4 px-4 text-center">Customer Name</td>
-              <td className="py-4 px-4 text-center">Order Date</td>
-              <td className="py-4 px-4 text-center">Order Total</td>
-              <td className="py-4 px-4 text-center">Products</td>
-              <td className="py-4 px-4 text-center">Order Status</td>
+              <td className="py-4 px-4 text-center">No</td>
+              <td className="py-4 px-4 text-center">Tanggal</td>
+              <td className="py-4 px-4 text-center">No Penjualan</td>
+              <td className="py-4 px-4 text-center">Kode Barang</td>
+              <td className="py-4 px-4 text-center">Jumlah</td>
+              <td className="py-4 px-4 text-center">Subtotal</td>
+              <td className="py-4 px-4 text-center">Tools</td>
             </tr>
           </thead>
           <tbody>
-            {recentOrderData.map((order) => (
+            {/* {recentOrderData.map((order) => (
               <tr key={order.id} className="hover:bg-gray-100">
                 <td className="py-4 px-4 text-center">
                   <Link to={`/order/${order.id}`}>{order.id}</Link>
@@ -93,7 +40,7 @@ function RecentOrders() {
                 <td className="py-4 px-4 text-center">{order.shipment_address}</td>
                 <td className="py-4 px-4 text-center">{getOrderStatus(order.current_order_status)}</td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>

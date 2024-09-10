@@ -3,6 +3,7 @@ import { FiLayers } from "react-icons/fi";
 
 import EditButton from "./button/button_product/EditButton";
 import DeleteButton from "./button/button_product/DeleteButton";
+import PembelianButton from "./button/button_product/PembelianProduct";
 import Modal from "./Modal";
 
 import { Menu } from "@headlessui/react";
@@ -48,13 +49,12 @@ export default function Products({ productId, userId }) {
   const [isModalOpenCreate, setIsModalOpenCreate] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isModalTambahStokOpen, setisModalTambahStockOpen] = useState(false);
   const [selectedTambahStock, setSelectedTambahStock] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [existingImage, setExistingImage] = useState(""); // State untuk menyimpan gambar yang ada
   const [userRole, setUserRole] = useState(null);
-
-  // const [userId, setUserId] = useState(""); // Replace with actual user ID retrieval logic
 
   useEffect(() => {
     // Fetch user role from an API or some source
@@ -90,6 +90,12 @@ export default function Products({ productId, userId }) {
 
   const toggleModalTambahStock = () => {
     setisModalTambahStockOpen(isModalTambahStokOpen);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    console.log(`Selected category: ${category}`); // Debugging atau untuk melakukan sesuatu dengan category
+    // Tambahkan logika untuk fetch data atau filter produk berdasarkan category di sini
   };
 
   const handleFileChange = (e) => {
@@ -131,7 +137,7 @@ export default function Products({ productId, userId }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, category, imageUrl, harga_beli, harga_jual, stock } =
+    const { name, category, harga_beli, harga_jual, stock, imageUrl } =
       formData;
 
     // Validasi input kosong termasuk gambar
@@ -141,7 +147,9 @@ export default function Products({ productId, userId }) {
     }
 
     // Convert base64 image data from data URL
-    const base64Image = imageUrl ? imageUrl.split(",")[1] : "";
+    const base64Image = formData.imageUrl
+      ? formData.imageUrl.split(",")[1]
+      : null;
 
     const newItem = {
       nama_product: name,
@@ -151,6 +159,8 @@ export default function Products({ productId, userId }) {
       konten_base64: base64Image,
       jumlah_stock: stock,
     };
+
+    console.log(newItem); // Debug log to check the structure of newItem
 
     axios
       .post("http://localhost:8000/api/create", newItem, {
@@ -251,7 +261,6 @@ export default function Products({ productId, userId }) {
     setExistingImage(product.gambar); // Set gambar yang sudah ada
     setIsEditModalOpen(true); // Buka modal edit
   };
-
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
@@ -368,10 +377,64 @@ export default function Products({ productId, userId }) {
     }
   };
 
+  const handlePembelianClick = (id_product) => {
+    console.log(`handlePembelianClick called with id_product: ${id_product}`);
+    setSelectedProduct(id_product);
+    setIsBuyModalOpen(true);
+  };
+
+  const handlePembelianProduct = async (e, id_product) => {
+    e.preventDefault();
+    const { jumlah_stock } = formDataStock; // Hapus id_product jika tidak dibutuhkan
+
+    // Validate inputs
+    if (!jumlah_stock) {
+      alert("Jumlah stock harus di isi!");
+      return;
+    }
+
+    const newItem = {
+      jumlah_stock: jumlah_stock,
+    };
+    console.log(newItem);
+
+    console.log(setSelectedProduct());
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/product/pembelian_product/${id_product}`, // Gunakan id_product dari parameter
+        newItem,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+
+      // Handle successful response
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Pembelian Produk Berhasil", {
+          duration: 5000,
+        });
+        setIsBuyModalOpen(false);
+      }
+
+      // Optionally refresh the list or fetch updated data
+      fetchProducts(); // Pastikan fungsi ini ada dan bekerja dengan benar
+    } catch (error) {
+      // Handle errors (network issues, server errors, etc.)
+      console.error("Error updating stock:", error);
+      alert("Terjadi kesalahan");
+    }
+  };
+
   return (
     <main className="relative ">
+      <button>
+        {/* make me blue button */}
+        <div></div>
+      </button>
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
+      <div className="bg-white px-4 pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
             <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
@@ -678,6 +741,11 @@ export default function Products({ productId, userId }) {
                         onClick={() => handleDeleteClick(product.id_product)}
                       />
                     )}
+                    {role === "admin" && (
+                      <PembelianButton
+                        onClick={() => handlePembelianClick(product.id_product)}
+                      />
+                    )}
                     {/* BUTTON CREATE ITEM */}
                     {role === "supplier" && (
                       <TambahStockProduct
@@ -898,6 +966,46 @@ export default function Products({ productId, userId }) {
             Delete
           </button>
         </div>
+      </Modal>
+
+      <Modal open={isBuyModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2 className="text-lg font-semibold mb-4">Pembelian</h2>
+        <form
+          onSubmit={(e) => handlePembelianProduct(e, selectedProduct)} // Pastikan selectedProduct adalah id_product
+          className="mt-8 grid grid-cols-6 gap-6"
+        >
+          <div className="col-span-6">
+            <label
+              htmlFor="stock"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Jumlah Stock
+            </label>
+            <input
+              type="number"
+              id="jumlah_stock"
+              name="jumlah_stock"
+              value={formDataStock.jumlah_stock}
+              onChange={handleStockChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div className="flex gap-2.5">
+            <button
+              type="button"
+              onClick={() => setIsBuyModalOpen(false)}
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
+            >
+              Konfirmasi
+            </button>
+          </div>
+        </form>
       </Modal>
     </main>
   );

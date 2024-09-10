@@ -21,7 +21,7 @@ class Product extends Authenticatable
         'kategori_produk',
         'harga_beli',
         'harga_jual',
-        'jumlah_stock',
+        'jumlah_stock', 
     ];
     
     public $timestamps = false; // Jika Anda tidak menggunakan created_at dan updated_at

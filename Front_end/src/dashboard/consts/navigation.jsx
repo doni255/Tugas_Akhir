@@ -47,7 +47,7 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
     {
       key: "customers",
       label: "Data Users",
-      path: "/dashboard/customers",
+      path: "/dashboard/DataUsers",
       icon: <HiOutlineUsers />,
       roles: ["admin"],
     },
@@ -88,7 +88,7 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
         },
         {
           key: "barangmasuk",
-          label: "Input Data Barang Masuk",
+          label: "Data Barang Masuk",
           path: "/dashboard/supplier/barangmasuk",
           roles: ["supplier"],
         },

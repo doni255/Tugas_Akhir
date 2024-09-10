@@ -3,6 +3,8 @@ import "./Login.css";
 
 import login from "./hooks/login";
 
+import { Toaster, toast } from "react-hot-toast";
+
 export default function Login() {
   // Memanggil hook
   const {
@@ -19,11 +21,12 @@ export default function Login() {
 
   return (
     <div class="bg-gradient-to-l bg-gray-50">
-      {users.map((user) => (
+      {/* {users.map((user) => (
         <li key={user.id}>
           <h2>{user.nama}</h2>
         </li>
-      ))}
+      ))} */}
+      <Toaster position="top-right" reverseOrder={false} />
       <div class="flex justify-center items-center min-h-screen">
         <div class="w-full sm:w-3/4 md:w-2/4 lg:w-1/3 xl:w-1/4 p-6 shadow-2xl bg-white rounded-md">
           <h1 class="text-3xl block text-center font-semibold">

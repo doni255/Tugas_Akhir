@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Uang;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 
@@ -33,9 +33,46 @@ class ProductController extends Controller
         return response()->json(['totalStock' => $totalStock]);
     }
 
+    public function getProductsByMultipleCategories(Request $request)
+{
+
+    $categories = $request->input('categories'); // Ambil data categories dari request
+
+    if (empty($categories)) {
+        return response([
+            'message' => 'No categories provided',
+            'data' => []
+        ], 400);
+    }
+
+    $products = Product::whereIn('kategori_produk', $categories)->get();
+
+    if ($products->isEmpty()) {
+        return response([
+            'message' => 'No data',
+            'data' => []
+        ], 404);
+    }
+
+     // Memetakan data produk, konversi gambar ke base64
+     $productsArray = $products->map(function($product) {
+        $productData = $product->toArray(); // Ubah produk ke array
+        $productData['gambar'] = $product->konten_base64; // Ubah gambar jadi base64
+        unset($productData['attributes']['gambar']); // Hapus atribut gambar asli jika perlu
+        return $productData;
+    })->values()->all();
+
+    return response([
+        'message' => 'Retrieve data success',
+        'data' => $productsArray
+    ], 200);
+}
+
+
     public function getProducts()
     {
         $products = Product::all();
+        
 
         if ($products->isEmpty()) {
             return response([
@@ -195,6 +232,34 @@ class ProductController extends Controller
             ], 500);
         }
     }
+              
+    public function pembelianBarang(Request $request, $id_product)
+    {
+        $product = Product::find($id_product);
     
-   
+        $validator = Validator::make($request -> all(), [
+            'jumlah_stock' => 'required|numeric',       
+        ]);
+
+        // Jika validasi gagal, kembalikan respons error
+        if ($validator->fails()) {
+            return response([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $uang = Uang::find(1);
+        $uang->jumlah_uang = $uang->jumlah_uang - ($product->harga_beli * $request->jumlah_stock);
+    
+        $product->jumlah_stock = $product->jumlah_stock - $request->jumlah_stock;
+        $product->save();
+        $uang->save();
+    
+        return response()->json([
+            'message' => 'Product stock updated successfully',
+            'product' => $product->jumlah_stock,
+            'uang' => $uang
+        ], 200);
+    }
 }

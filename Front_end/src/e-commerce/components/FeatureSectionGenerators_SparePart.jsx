@@ -1,39 +1,36 @@
+import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import ringPiston from "../assets/images/chainsaw/ring-piston.png";
-
-const data = [
-  {
-    id: 0,
-    img: ringPiston,
-    name: "Ring Piston",
-    price: "Rp.500.000",
-  },
-  {
-    id: 1,
-    img: "https://ae01.alicdn.com/kf/HLB10fqtbzDuK1Rjy1zjq6zraFXa9/3pcs-Tool-Parts-Metal-Chainsaw-Spare-Part-Chain-Saw-Sprocket-Rim-Power-Mate-325-7-For.jpg",
-    name: "Pithon Gear",
-    price: "1.600.000",
-  },
-  {
-    id: 2,
-    img: "https://images.tokopedia.net/img/cache/700/product-1/2019/8/16/6586075/6586075_fdd2e8aa-3b9e-4976-aec4-c3d564949299_1920_1920.jpg",
-    name: "Chain Saw Matari",
-    price: "950.000",
-  },
-  {
-    id: 3,
-    img: "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/24/71e508f0-b879-4f91-903e-07979b77def8.jpg",
-    name: "Rantai + Pisau",
-    price: "250.000",
-  },
-];
+import axios from "axios";
 
 const FeatureSectionGenerators_SparePart = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch products by category "Genset"
+    axios
+      .post("http://localhost:8000/api/product/categories", {
+        categories: ["Genset", "Spare Part Genset"],
+      })
+      .then((response) => {
+        setProducts(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p>Loading products...</p>;
+  }
+
   return (
     <div className="container pt-16">
       <div className="lg:flex justify-between items-center">
         <div>
-          <h3 className="font-medium text-2xl">Generators & SparePart</h3>
+          <h3 className="font-medium text-2xl">Genset & SparePart</h3>
           <p className="text-gray-600 mt-2">
             Buy farm fresh fruits and vegetables online at the best prices
           </p>
@@ -58,13 +55,8 @@ const FeatureSectionGenerators_SparePart = () => {
           />
         </div>
 
-        {data.map((el) => (
-          <ProductCard
-            key={el.id}
-            img={el.img}
-            name={el.name}
-            price={el.price}
-          />
+        {products.map((product) => (
+          <ProductCard key={product.id_product} product={product} />
         ))}
       </div>
     </div>

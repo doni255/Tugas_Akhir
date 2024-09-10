@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Tambah_Stock;
+use App\Models\Uang;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -84,6 +85,9 @@ class TambahStockAdminController extends Controller
 
     public function konfirmasiTambahStock(Request $request)
     {
+
+        $uang = Uang::all()->first();
+
         // Validasi input
         $validator = Validator::make($request->all(), [
             'id_product' => 'required',
@@ -112,6 +116,10 @@ class TambahStockAdminController extends Controller
     
         // Tambahkan jumlah stock produk
         $product->jumlah_stock += $tambahStock->jumlah_stock;
+
+        $uang->jumlah_uang = $uang->jumlah_uang - ($product->harga_beli * $tambahStock->jumlah_stock);
+
+        $uang->save();
     
         // Simpan perubahan pada produk
         $product->save();
@@ -122,7 +130,10 @@ class TambahStockAdminController extends Controller
         // Kembalikan respons sukses
         return response([
             'message' => 'Tambah stok produk success',
-            'data' => $product->jumlah_stock
+            'data' => [
+                'product' => $product->jumlah_stock,
+                'uang' => $uang
+            ]
         ], 201);
     }
     

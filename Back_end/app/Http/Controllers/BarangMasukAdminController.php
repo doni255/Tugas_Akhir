@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Barang_Masuk;
 use App\Models\Product;
+use App\Models\Uang;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -53,6 +54,9 @@ class BarangMasukAdminController extends Controller
 
     public function konfirmasiBarangMasuk(Request $request)
 {
+
+    $uang = Uang::all()->first();
+
     // Validasi input
     $validator = Validator::make($request->all(), [
         'id_barang_masuk' => 'required',    
@@ -87,6 +91,10 @@ class BarangMasukAdminController extends Controller
     $product->harga_beli = $barang_masuk->harga_beli;
     $product->harga_jual = $barang_masuk->harga_jual; // Optional: Atur harga jual
     $product->jumlah_stock = $barang_masuk->jumlah_stock;
+    $uang->jumlah_uang = $uang->jumlah_uang - ($barang_masuk->harga_beli * $barang_masuk->jumlah_stock);
+
+    // Simpan data ke tabel uang
+    $uang->save();
 
     // Simpan data ke tabel products
     $product->save();
@@ -96,7 +104,10 @@ class BarangMasukAdminController extends Controller
 
     return response([
         'message' => 'Product confirmation success and Barang Masuk deleted',
-        'data' => $product
+        'data' => [
+            'product' => $product,
+            'uang' => $uang
+        ]
     ], 201);
 }
 

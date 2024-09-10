@@ -7,7 +7,7 @@ import usePagination from "./hook/usePagination";
 import EditButton from "./button/button_product/EditButton";
 import login from "../../hooks/login";
 
-export default function Customers() {
+export default function DataUsers() {
   const { users, setUsers } = login(); // Ambil users dan setUsers dari hook login
   const itemsPerPage = 6;
 
@@ -39,6 +39,7 @@ export default function Customers() {
             Data Users 😁
           </h1>
         </div>
+        <div className="flex justify-end">dsa</div>
       </div>
 
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">

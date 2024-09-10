@@ -15,7 +15,7 @@ import Layout from "./dashboard/components/shared/Layout";
 import Dashboard from "./dashboard/components/Dashboard";
 import Products from "./dashboard/components/Products";
 import Orders from "./dashboard/components/Orders";
-import Customers from "./dashboard/components/Customers";
+import DataUsers from "./dashboard/components/DataUsers";
 import Pendapatan from "./dashboard/components/Pendapatan";
 import BarangMasuk from "./dashboard/components/supplier/BarangMasuk";
 import Messages from "./dashboard/components/Messages";
@@ -39,6 +39,8 @@ import Cart from "./e-commerce/components/Cart";
 import BarangMasukAdmin from "./dashboard/components/BarangMasukAdmin";
 import KonfirmasiStock from "./dashboard/components/KonfirmasiStock";
 import DataTambahStock from "./dashboard/components/supplier/DataTambahStock";
+import FeatureWaterPump_Sparepart from "./e-commerce/components/FeatureWaterPump_SparePart";
+import FeatureSpeedBoat_SparePart from "./e-commerce/components/FeatureSpeedBoat_Sparepart";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -117,7 +119,7 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="orders" element={<Orders />} />
               <Route path="konfirmasi_stock" element={<KonfirmasiStock />} />
-              <Route path="customers" element={<Customers />} />
+              <Route path="DataUsers" element={<DataUsers />} />
               <Route path="pendapatan" element={<Pendapatan />} />
               <Route path="barang_masuk" element={<BarangMasuk />} />
               <Route path="barang_masuk_admin" element={<BarangMasukAdmin />} />
@@ -152,7 +154,9 @@ function App() {
                     <Category />
                     <CategoryCard />
                     <FeatureSectionSaw_SparePart />
+                    <FeatureSpeedBoat_SparePart />
                     <FeatureSectionGenerators_SparePart />
+                    <FeatureWaterPump_Sparepart />
                     <Banner />
                     <BlogSection />
                     <NewsLetter />

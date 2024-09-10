@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "./ProductCard";
 
-const FeatureSectionSaw_SparePart = () => {
+const FeatureSpeedBoat_SparePart = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
       .post("http://localhost:8000/api/product/categories", {
-        categories: ["Gergaji", "Spare Part Gergaji"],
+        categories: ["", "spare part mesin kapal"],
       })
       .then((response) => {
         setProducts(response.data.data || []); // Pastikan data di-set sebagai array
@@ -29,7 +29,7 @@ const FeatureSectionSaw_SparePart = () => {
     <div className="container pt-16 mx-auto">
       <div className="lg:flex justify-between items-center mb-8">
         <div>
-          <h3 className="font-medium text-2xl">Gergaji & SparePart</h3>
+          <h3 className="font-medium text-2xl">Speed Boat & SparePart</h3>
           <p className="text-gray-600 mt-2">
             Buy farm fresh fruits and vegetables online at the best prices
           </p>
@@ -48,7 +48,7 @@ const FeatureSectionSaw_SparePart = () => {
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pt-8 gap-6">
         <div>
           <img
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain "
             alt="banner"
             src="https://s.alicdn.com/@sc04/kf/Hb1778a45b15445cb80687fd3d827b5565.jpg_720x720q50.jpg"
           />
@@ -66,4 +66,4 @@ const FeatureSectionSaw_SparePart = () => {
   );
 };
 
-export default FeatureSectionSaw_SparePart;
+export default FeatureSpeedBoat_SparePart;

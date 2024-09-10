@@ -37,9 +37,11 @@ use Illuminate\Http\Request;
     // Bagian Product
     Route::get('/total-stock', [ProductController::class, 'getTotalStock']);
     Route::get('/product', [ProductController::class, 'getProducts']);
+    Route::post('/product/categories', [ProductController::class, 'getProductsByMultipleCategories']);
     Route::delete('/product/{id}', [ProductController::class, 'destroy']);
     Route::post('/create', [ProductController::class, 'create']);
     Route::post('/product/{id_product}', [ProductController::class, 'update']);
+    Route::put('/product/pembelian_product/{id_product}', [ProductController::class, 'pembelianBarang']);
 
     // Barang Masuk Untuk Supplier
     Route::get('/barang_masuk/{id_user}', [BarangMasukController::class, 'getBarangMasuk']);
