@@ -65,6 +65,12 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
           roles: ["admin"],
         },
         {
+          key: "pengeluaran",
+          label: "Pengeluaran",
+          path: "/dashboard/pengeluaran",
+          roles: ["admin"],
+        },
+        {
           key: "barang_masuk_admin",
           label: "Barang Masuk Supplier",
           path: "/dashboard/barang_masuk_admin",

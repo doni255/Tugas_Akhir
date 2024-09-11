@@ -41,6 +41,7 @@ import KonfirmasiStock from "./dashboard/components/KonfirmasiStock";
 import DataTambahStock from "./dashboard/components/supplier/DataTambahStock";
 import FeatureWaterPump_Sparepart from "./e-commerce/components/FeatureWaterPump_SparePart";
 import FeatureSpeedBoat_SparePart from "./e-commerce/components/FeatureSpeedBoat_Sparepart";
+import Pengeluaran from "./dashboard/components/Pengeluaran";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -121,6 +122,7 @@ function App() {
               <Route path="konfirmasi_stock" element={<KonfirmasiStock />} />
               <Route path="DataUsers" element={<DataUsers />} />
               <Route path="pendapatan" element={<Pendapatan />} />
+              <Route path="pengeluaran" element={<Pengeluaran />} />
               <Route path="barang_masuk" element={<BarangMasuk />} />
               <Route path="barang_masuk_admin" element={<BarangMasukAdmin />} />
               <Route path="messages" element={<Messages />} />

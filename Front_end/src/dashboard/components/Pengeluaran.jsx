@@ -4,30 +4,30 @@ import axios from "axios";
 
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 
-export default function Pendapatan() {
-  const [pendapatan, setPendapatan] = useState(null);
+export default function Pengeluaran() {
+  const [pengeluaran, setPengeluaran] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = Array.isArray(pendapatan)
-    ? pendapatan.slice(indexOfFirstItem, indexOfLastItem)
+  const currentItems = Array.isArray(pengeluaran)
+    ? pengeluaran.slice(indexOfFirstItem, indexOfLastItem)
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const fetchPendapatan = async () => {
+  const fetchPengeluaran = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/pendapatan");
+      const response = await axios.get("http://localhost:8000/api/pengeluaran");
       console.log("Data fetched from API:", response.data); // Tambahkan log ini
-      setPendapatan(response.data);
+      setPengeluaran(response.data);
     } catch (error) {
       console.log(error);
-      setPendapatan([]);
+      setPengeluaran([]);
     }
   };
   useEffect(() => {
-    fetchPendapatan();
+    fetchPengeluaran();
   }, []);
 
   const formatTanggal = (tanggal) => {
@@ -54,7 +54,7 @@ export default function Pendapatan() {
 
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
         <strong className="text-2xl font-semibold loading-relaxed text-gray-800">
-          Pendapatan
+          Pengeluaran
         </strong>
 
         <div className="mt-3"></div>
@@ -75,25 +75,25 @@ export default function Pendapatan() {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentItems.map((pendapatan, index) => {
-                      console.log(`Item #${index}:`, pendapatan); // Tambahkan log ini
+                    {currentItems.map((pengeluaran, index) => {
+                      console.log(`Item #${index}:`, pengeluaran); // Tambahkan log ini
                       return (
                         <tr
-                          key={pendapatan.id_penjualan_barang}
+                          key={pengeluaran.id_pembelian_barang}
                           className="hover:bg-gray-100"
                         >
                           <td className="text-center">
                             {(index + 1).toString().padStart(6, "0")}
                           </td>
+                          <td className="text-center">
+                            {pengeluaran.nama_product}
+                          </td>
 
                           <td className="text-center">
-                            {pendapatan.nama_product}
+                            {pengeluaran.harga_total}
                           </td>
                           {/* <td></td> */}
-                          <td className="text-center">
-                            {pendapatan.harga_total}
-                          </td>
-                          <td className="text-center">{formatTanggal(pendapatan.tanggal)}</td>
+                          <td className="text-center">{formatTanggal(pengeluaran.tanggal)}</td>
                           <td className="relative">
                             <div className="absolute inset-0 flex items-center justify-center">
                               <FaFilePdf className="mx-1" />
