@@ -18,6 +18,9 @@ class PendapatanController extends Controller
         }
 
         return response()->json($pendapatan);
+
+        // Di controller atau route API
+        return response()->json(Pendapatan::all());
     }
 
     public function getGrafikPendapatanPerbulanDiTahunini()

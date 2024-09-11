@@ -18,3 +18,4 @@ class Pendapatan extends Model
         'nama_product',
     ];
 }
+    

@@ -70,20 +70,6 @@ export default function Products({ productId, userId }) {
 
   const [imageError, setImageError] = useState("");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    harga_beli: "",
-    harga_jual: "",
-    imageUrl: null,
-    price: "",
-    stock: "",
-  });
-
-  const [formDataStock, setFormDataStock] = useState({
-    jumlah_stock: "",
-  });
-
   const toggleModalCreate = () => {
     setIsModalOpenCreate(!isModalOpenCreate);
   };
@@ -98,59 +84,75 @@ export default function Products({ productId, userId }) {
     // Tambahkan logika untuk fetch data atau filter produk berdasarkan category di sini
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, imageUrl: reader.result });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImageError("Image file is required");
-    }
-  };
-
-  const handleFileChangeEdit = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedProduct({
-          ...selectedProduct,
-          gambar: reader.result.split(",")[1], // Simpan hanya bagian base64
-        });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImageError("Image file is required");
-    }
-  };
-
   // Function to handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Change ${name} to ${value}`);
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
+
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setFormData({ ...formData, imageUrl: reader.result });
+  //     };
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     setImageError("Image file is required");
+  //   }
+  // };
+
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    harga_beli: "",
+    harga_jual: "",
+    imageUrl: null,
+    price: "",
+    stock: "",
+  });
+
+  const [formDataStock, setFormDataStock] = useState({
+    jumlah_stock: "",
+  });
+
+  const handleTambahProduct = (e) => {
+    const { name, value, type, files } = e.target;
+
+    if (type === "file") {
+      // Jika input adalah file, gunakan FileReader untuk mengkonversi ke data URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevState) => ({
+          ...prevState,
+          [name]: reader.result, // Simpan hasil file sebagai data URL
+        }));
+      };
+      reader.readAsDataURL(files[0]);
+    } else {
+      // Jika input bukan file, perbarui state berdasarkan name dan value
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, category, harga_beli, harga_jual, stock, imageUrl } =
       formData;
 
-    // Validasi input kosong termasuk gambar
-    if (!name || !category || !harga_beli || !harga_jual || !stock) {
-      alert("Please fill in all the fields.");
-      return;
-    }
+    // Display the value that we input
+    console.log(formData);
 
-    // Convert base64 image data from data URL
-    const base64Image = formData.imageUrl
-      ? formData.imageUrl.split(",")[1]
-      : null;
-
+    // Lanjutkan ke pengiriman data jika semua field sudah terisi
+    const base64Image = imageUrl ? imageUrl.split(",")[1] : null;
     const newItem = {
       nama_product: name,
       kategori_produk: category,
@@ -162,28 +164,28 @@ export default function Products({ productId, userId }) {
 
     console.log(newItem); // Debug log to check the structure of newItem
 
-    axios
-      .post("http://localhost:8000/api/create", newItem, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        toggleModalCreate();
-        fetchProducts();
-        toast.success("Product berhasil di tambahkan !", {
-          duration: 5000,
-        });
-        // resetForm();
-        // window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-        toggleModalCreate();
-        window.location.reload();
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/create",
+        newItem,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json", // Gunakan application/json
+          },
+        }
+      );
+
+      console.log("Response dari server:", response);
+      toggleModalCreate();
+      fetchProducts();
+      toast.success("Product berhasil ditambahkan!", {
+        duration: 5000,
       });
+    } catch (error) {
+      console.log("Error saat mengirim data:", error);
+      toggleModalCreate();
+    }
   };
 
   const handleTambahStockClick = (id_product) => {
@@ -434,7 +436,7 @@ export default function Products({ productId, userId }) {
         <div></div>
       </button>
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="bg-white px-4 pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
+      <div className="bg-white px-4 pb-20 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
           <div>
             <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
@@ -528,7 +530,7 @@ export default function Products({ productId, userId }) {
                     id="name"
                     name="name"
                     value={formData.name}
-                    onChange={handleChange}
+                    onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     required
                   />
@@ -597,7 +599,7 @@ export default function Products({ productId, userId }) {
                     id="harga_beli"
                     name="harga_beli"
                     value={formData.harga_beli}
-                    onChange={handleChange}
+                    onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     required
                   />
@@ -615,7 +617,7 @@ export default function Products({ productId, userId }) {
                     id="harga_jual"
                     name="harga_jual"
                     value={formData.harga_jual}
-                    onChange={handleChange}
+                    onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     required
                   />
@@ -632,7 +634,7 @@ export default function Products({ productId, userId }) {
                     type="file"
                     id="imageUrl"
                     name="imageUrl"
-                    onChange={handleFileChange}
+                    onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                   />
                   {imageError && (
@@ -652,7 +654,7 @@ export default function Products({ productId, userId }) {
                     id="stock"
                     name="stock"
                     value={formData.stock}
-                    onChange={handleChange}
+                    onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                     required
                   />
@@ -862,7 +864,12 @@ export default function Products({ productId, userId }) {
                 id="harga_beli"
                 name="harga_beli" // Pastikan name sesuai
                 value={selectedProduct.harga_beli || ""}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    harga_beli: e.target.value,
+                  })
+                }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 required
               />
@@ -870,7 +877,7 @@ export default function Products({ productId, userId }) {
 
             <div className="col-span-6">
               <label
-                htmlFor="harga_beli"
+                htmlFor="harga_jual"
                 className="block text-sm font-medium text-gray-700"
               >
                 Harga Jual
@@ -880,7 +887,12 @@ export default function Products({ productId, userId }) {
                 id="harga_jual"
                 name="harga_jual"
                 value={selectedProduct.harga_jual || ""}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    harga_jual: e.target.value,
+                  })
+                }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 required
               />
