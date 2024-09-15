@@ -40,7 +40,7 @@ import BarangMasukAdmin from "./dashboard/components/BarangMasukAdmin";
 import KonfirmasiStock from "./dashboard/components/KonfirmasiStock";
 import DataTambahStock from "./dashboard/components/supplier/DataTambahStock";
 import FeatureWaterPump_Sparepart from "./e-commerce/components/FeatureWaterPump_SparePart";
-import FeatureSpeedBoat_SparePart from "./e-commerce/components/FeatureSpeedBoat_Sparepart";
+import FeatureSpeedBoat_SparePart from "./e-commerce/components/FeatureSpeedBoat_SparePart";
 import Pengeluaran from "./dashboard/components/Pengeluaran";
 
 // Auth Context untuk menyimpan peran pengguna
@@ -152,15 +152,15 @@ function App() {
                 element={
                   <>
                     <MobNavBar setShowCart={setShowCart} />
-                    <Hero />
-                    <Category />
-                    <CategoryCard />
-                    <FeatureSectionSaw_SparePart />
+                    {/* <Hero /> */}
+                    {/* <Category /> */}
+                    {/* <CategoryCard /> */}
+                    {/* <FeatureSectionSaw_SparePart />
                     <FeatureSpeedBoat_SparePart />
                     <FeatureSectionGenerators_SparePart />
-                    <FeatureWaterPump_Sparepart />
-                    <Banner />
-                    <BlogSection />
+                    <FeatureWaterPump_Sparepart /> */}
+                    {/* <Banner /> */}
+                    {/* <BlogSection /> */}
                     <NewsLetter />
                     <Feature />
                     {showCart && <Cart setShowCart={setShowCart} />}

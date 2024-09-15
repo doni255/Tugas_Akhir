@@ -33,13 +33,13 @@ const Cart: React.FC<CartProps> = ({ setShowCart }) => {
         </h3>
 
         <div className="mt-6">
-          {product.map((el: Product) => (
+          {product.map((product) => (
             <CartProduct
-              id={el.id} // Pass the unique product ID
-              key={el.id} // Use the unique product ID as the key
-              img={el.img} // Product image
-              name={el.name} // Product name
-              price={el.price} // Product price
+              id={product.id} // Pass the unique product ID
+              key={product.id} // Use the unique product ID as the key
+              img={product.img} // Product image
+              name={product.name} // Product name
+              price={product.price} // Product price
               onRemove={handleRemoveProduct} // Pass the remove function
             />
           ))}

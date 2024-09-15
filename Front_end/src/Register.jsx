@@ -5,6 +5,7 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "./axiosClient";
 import { useStateContext } from "./contexts/contextprovider";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ export default function Register() {
   const namaRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const roleRef = useRef();
   const no_telponRef = useRef();
   const kotaRef = useRef();
   const alamatRef = useRef();
@@ -27,7 +27,6 @@ export default function Register() {
     nama: "",
     email: "",
     no_telpon: "",
-    role: "",
     kota: "",
     alamat: "",
     password: "",
@@ -44,18 +43,41 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      nama: namaRef.current.value,
-      email: emailRef.current.value,
-      no_telpon: no_telponRef.current.value,
-      role: roleRef.current.value,
-      kota: kotaRef.current.value,
-      alamat: alamatRef.current.value,
-      password: passwordRef.current.value,
-    };
 
+    // Fields that should not be empty
+    const requiredFields = [
+      { field: "nama", message: "Nama must be filled" },
+      { field: "password", message: "Password must be filled" },
+      { field: "no_telpon", message: "Nomor HP must be filled" },
+      { field: "kota", message: "Kota must be filled" },
+      { field: "alamat", message: "Alamat must be filled" },
+    ];
+
+    // Check if any required field is empty
+    for (let { field, message } of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        toast.error(message);
+        return;
+      }
+    }
+
+    // Check if assword is less than 6 characters
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+
+    if (formData.no_telpon.length < 10) {
+      toast.error("Nomor HP must be at least 10 characters long");
+      return;
+    }
+
+    if (formData.alamat.length < 10) {
+      toast.error("Alamat must be at least 10 characters long");
+      return;
+    }
     try {
-      const response = await fetch("http://localhost:8000/api/users", {
+      const response = await fetch("http://localhost:8000/api/store_user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,36 +85,19 @@ export default function Register() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-
-        // Menangani kesalahan validasi
-        if (response.status === 422) {
-          // Asumsi errorData adalah objek yang berisi pesan kesalahan per field
-          const errorMessages = Object.values(errorData).flat().join(", ");
-          setError(errorMessages || "An unexpected error occurred.");
-        } else {
-          // Menangani kesalahan HTTP lainnya
-          const errorText = await response.text();
-          console.error("HTTP Error:", response.status, errorText);
-          setError("An unexpected error occurred.");
-        }
-
-        return;
-      }
-
-      // Redirect user to login section jika berhasil
-      navigate("/");
+      // Redirect if it success
       const result = await response.json();
       console.log("Result:", result);
+      // Redirect to login page with success state
+      navigate("/", { state: { registrationSuccess: true } });
     } catch (error) {
-      console.error("Error:", error);
       setError("An unexpected error occurred.");
     }
   };
 
   return (
     <section className="bg-gray-50 min-h-screen flex items-center justify-center p-12">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="shadow-2xl bg-white rounded-md">
         <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
           <div className="m l lg:max-w-3xl">
@@ -119,18 +124,11 @@ export default function Register() {
                   type="text"
                   id="Nama"
                   name="nama"
-                  value={FormData.nama}
+                  value={formData.nama}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  required
                 />
               </div>
-
-              {error && (
-                <div className="col-span-6 text-red-600">
-                  <p>{error}</p>
-                </div>
-              )}
 
               <div className="col-span-6">
                 <label
@@ -145,10 +143,10 @@ export default function Register() {
                   type="email"
                   id="Email"
                   name="email"
-                  value={FormData.email}
+                  value={formData.email}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  required
+                  placeholder="..Email Boleh Kosong"
                 />
               </div>
 
@@ -168,11 +166,10 @@ export default function Register() {
                   value={formData.password}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  required
                 />
               </div>
 
-              <div className="col-span-6 sm:col-span-6">
+              {/* <div className="col-span-6 sm:col-span-6">
                 <label
                   htmlFor="Password"
                   className="block text-sm font-medium text-gray-700"
@@ -189,22 +186,6 @@ export default function Register() {
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                   required
-                />
-              </div>
-
-              {/* <div className="col-span-6 sm:col-span-3">
-                <label
-                  htmlFor="PasswordConfirmation"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Password Confirmation
-                </label>
-
-                <input
-                  type="password"
-                  id="PasswordConfirmation"
-                  name="password_confirmation"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div> */}
 
@@ -224,7 +205,6 @@ export default function Register() {
                   value={formData.no_telpon}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  required
                 />
               </div>
 
@@ -244,7 +224,6 @@ export default function Register() {
                   value={formData.kota}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  required
                 />
               </div>
 
@@ -264,7 +243,6 @@ export default function Register() {
                   value={formData.alamat}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  required
                 />
               </div>
 

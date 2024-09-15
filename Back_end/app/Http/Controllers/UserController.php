@@ -120,6 +120,42 @@ class UserController extends Controller
         ], 201);
     }
 
+    public function storeUser(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:255|unique:users,nama',
+            'email' => 'nullable|email|unique:users,email',
+            'no_telpon' => 'required|string|max:20',
+            'kota' => 'required|string|max:100',
+            'alamat' => 'required|string|max:255',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => 'Validation Error',
+                'data' => $validator->errors()
+            ], 400);
+        }
+
+        // Create the user
+        $user = User::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'no_telpon' => $request->no_telpon,
+            'role' => 'user', // Set role menjadi "user"
+            'kota' => $request->kota,
+            'alamat' => $request->alamat,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response([
+            'message' => 'User created successfully',
+            'data' => $user
+        ], 201);
+    } 
+
     public function login(Request $request)
 {
     // Validate the request

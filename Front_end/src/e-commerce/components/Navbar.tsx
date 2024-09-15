@@ -1,46 +1,470 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
-import { IoIosMenu } from "react-icons/io";
-import { AiOutlineUser, AiOutlineShoppingCart } from "react-icons/ai";
+
+import login from "../../hooks/login";
+import { useRegister } from "../../hooks/useRegister";
+import {
+  AiOutlineUser,
+  AiOutlineShoppingCart,
+  AiOutlineLogin,
+} from "react-icons/ai";
+import { useState, useEffect } from "react";
 import CartCountBadge from "./CartCountBadge";
+import FeatureSectionSaw_SparePart from "./FeatureSectionSaw_SparePart";
+import FeatureSpeedBoat_SparePart from "./FeatureSpeedBoat_SparePart";
+import FeatureSectionGenerators_SparePart from "./FeatureSectionGenerators_SparePart";
+import FeatureWaterPump_Sparepart from "./FeatureWaterPump_SparePart";
+import { Transition } from "@headlessui/react";
+
+// Example product list (you can replace this with fetched data from an API)
+const products = [
+  { id: 1, name: "Genset" },
+  { id: 2, name: "Gergaji" },
+  { id: 3, name: "Pompa Air" },
+  { id: 4, name: "Speedboat" },
+];
 
 const Navbar = ({ setShowCart }: any) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [isProfileModalOpen, setisProfileModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+  // Memanggil hookb
+  const {
+    users,
+    nama,
+    setNama,
+    setId,
+    password,
+    setPassword,
+    error,
+    handleRegisterClick,
+    handleLogin,
+  } = login();
+
+  const { formData, handleChange, handleSubmit } = useRegister();
+
+  // Filter products based on search query
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm]);
+
   return (
     <>
-      <div className="sticky top-0 bg-white z-10 w-full">
+      <div className="sticky top-0 bg-[#2C2F33] z-10 w-full">
         <div className="container mx-auto">
-          <div className="hidden lg:flex justify-between items-center p-8">
-            <h1 className="text-4xl font-medium">Logo</h1>
+          <div className="hidden lg:flex justify-between items-center p-6">
+            {/* Logo */}
+            <h1 className="text-4xl font-bold text-[#F1F1F1]">Machine Shop</h1>
+
+            {/* Search Bar */}
             <div className="relative w-full max-w-[500px]">
               <input
-                className="bg-[#f2f3f5] border-none outline-none px-6 py-3 rounded-[30px] w-full"
+                className="bg-[#4A4D52] border border-[#C0C0C0] outline-none px-6 py-3 rounded-[30px] w-full text-[#F1F1F1] placeholder-[#C0C0C0]"
                 type="text"
                 placeholder="Search Product..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <BsSearch
-                className="absolute top-0 right-0 mt-4 mr-5 text-gray-500"
+                className="absolute top-0 right-0 mt-4 mr-5 text-[#F5C300]"
                 size={20}
               />
             </div>
 
-            <div className="flex gap-4">
-              <div className="icon__wrapper">
-                <AiOutlineUser />
+            {/* Icons: User, Cart and login Button*/}
+            <div className="flex gap-4 items-center">
+              <div
+                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                onClick={() => setisProfileModalOpen(true)}
+              >
+                <AiOutlineUser size={24} />
               </div>
               <div
-                className="icon__wrapper relative cursor-pointer"
+                className="icon__wrapper cursor-pointer relative text-[#F5C300] hover:text-[#FF6B00]"
                 onClick={() => setShowCart(true)}
               >
-                <AiOutlineShoppingCart onClick={() => setShowCart(true)} />
+                <AiOutlineShoppingCart size={24} />
                 <CartCountBadge size="w-[25px] h-[25px]" />
               </div>
+
+              {/* Login Button */}
+              <button
+                type="submit"
+                className="px-4  text-white py-3 rounded-md font-semibold hover:bg-[#FF7B00] transition duration-300 ease-in-out"
+                onClick={() => setIsLoginModalOpen(true)}
+              >
+                Login
+              </button>
             </div>
           </div>
         </div>
       </div>
-        <Outlet />
+
+      {/* Display the filtered products */}
+      <ProductList products={filteredProducts} />
+      <Outlet />
+
+      {/* Modal */}
+      {/* <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2>User Modal</h2>
+        <p>
+          This is the content inside the modal when you click the user icon.
+        </p>
+      </Modal> */}
+
+      {/* Modal with Transition */}
+      <Transition
+        show={isProfileModalOpen}
+        enter="transition ease-out duration-300 transform"
+        enterFrom="opacity-0 scale-45"
+        enterTo="opacity-100 scale-100"
+        leave="transition ease-in duration-200 transform"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-60"
+      >
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setisProfileModalOpen(false)} // Close modal when clicking outside
+        >
+          <div
+            className="bg-white p-8 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()} // Prevent click inside modal from closing
+          >
+            <h2 className="text-xl font-bold mb-4">User Modal</h2>
+            <p>Bagian Profile</p>
+            <button
+              className="mt-4 px-4 py-2 bg-[#F5C300] hover:bg-[#FF6B00] text-white rounded-lg"
+              onClick={() => setisProfileModalOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </Transition>
+
+      {/* Modal with Transition */}
+      <Transition
+        show={isLoginModalOpen}
+        enter="transition ease-out duration-300 transform"
+        enterFrom="opacity-0 scale-45"
+        enterTo="opacity-100 scale-100"
+        leave="transition ease-in duration-200 transform"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-60"
+      >
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setIsLoginModalOpen(false)} // Close modal when clicking outside
+        >
+          <div
+            className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
+            onClick={(e) => e.stopPropagation()} // Prevent click inside modal from closing
+          >
+            {/* Close button (x) */}
+            <button
+              className="absolute top-2 right-2 text-gray-400  hover:text-gray-600 "
+              onClick={() => setIsLoginModalOpen(false)}
+            >
+              &#x2715;
+            </button>
+            <form onSubmit={handleLogin}>
+              <div className="mt-3">
+                <label htmlFor="username" className="block text-base mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  value={nama}
+                  onChange={(e) => setNama(e.target.value)}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  placeholder=" Nama..."
+                />
+              </div>
+
+              <div className="mt-3">
+                <label htmlFor="password" className="block text-base mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  placeholder=" Password..."
+                />
+              </div>
+
+              {error && <p className="mt-3 text-red-500">{error}</p>}
+
+              <div className="mt-7">
+                <button
+                  type="submit"
+                  className="border-2 border-sky-500 bg-sky-500 text-white py-1 px-5 w-full rounded-md hover:bg-sky-600"
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+            <div className="mt-3 flex justify-between items-center">
+              <div>
+                <p>Dont have an account? </p>
+              </div>
+
+              <div>
+                <button
+                  className="text-gray-400 font-semibold hover:text-indigo-600 "
+                  onClick={() => {
+                    setIsLoginModalOpen(false);
+                    setIsRegisterModalOpen(true);
+                  }}
+                >
+                  Register
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+
+      <Transition
+        show={isRegisterModalOpen}
+        enter="transition ease-out duration-300 transform"
+        enterFrom="opacity-0 scale-45"
+        enterTo="opacity-100 scale-100"
+        leave="transition ease-in duration-200 transform"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-60"
+      >
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setIsRegisterModalOpen(false)} // Close modal when clicking outside
+        >
+          <div
+            className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
+            onClick={(e) => e.stopPropagation()} // Prevent click inside modal from closing
+          >
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              onClick={() => setIsRegisterModalOpen(false)}
+            >
+              &#x2715;
+            </button>
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-6 gap-6 max-w-md mx-auto"
+            >
+              {/* <div className="col-span-6 flex justify-center">
+                <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+                  Create Account 😁
+                </h1>
+              </div> */}
+
+              <div className="col-span-6">
+                <label
+                  htmlFor="FirstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Nama
+                </label>
+
+                <input
+                  type="text"
+                  id="Nama"
+                  name="nama"
+                  value={formData.nama}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
+
+              <div className="col-span-6">
+                <label
+                  htmlFor="Email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+
+                <input
+                  type="email"
+                  id="Email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  placeholder="..Email Boleh Kosong"
+                />
+              </div>
+
+              <div className="col-span-6 sm:col-span-6">
+                <label
+                  htmlFor="Password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+
+                <input
+                  type="password"
+                  id="Password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
+
+              {/* <div className="col-span-6 sm:col-span-6">
+                <label
+                  htmlFor="Password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
+                </label>
+
+                <input
+                  ref={roleRef}
+                  type="text"
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
+                />
+              </div> */}
+
+              <div className="col-span-6">
+                <label
+                  htmlFor="noHp"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Nomor HP
+                </label>
+
+                <input
+                  type="text"
+                  id="No_telpon"
+                  name="no_telpon"
+                  value={formData.no_telpon}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
+
+              <div className="col-span-6">
+                <label
+                  htmlFor="Kota"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Kota
+                </label>
+
+                <input
+                  type="text"
+                  id="Kota"
+                  name="kota"
+                  value={formData.kota}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
+
+              <div className="col-span-6">
+                <label
+                  htmlFor="Alamat"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Alamat
+                </label>
+
+                <input
+                  type="text"
+                  id="Alamat"
+                  name="alamat"
+                  value={formData.alamat}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
+
+              <div className="col-span-6">
+                <label htmlFor="MarketingAccept" className="flex gap-4">
+                  <input
+                    type="checkbox"
+                    id="MarketingAccept"
+                    name="marketing_accept"
+                    className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
+                  />
+
+                  <span className="text-sm text-gray-700">
+                    I want to receive emails about events, product updates and
+                    company announcements.
+                  </span>
+                </label>
+              </div>
+
+              <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
+                <button className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
+                  Create an account
+                </button>
+
+                <p className="mt-4 text-sm text-gray-500 sm:mt-0">
+                  Already have an account?
+                  <a
+                    href="#"
+                    className="text-gray-400 underline font-semibold hover:text-indigo-600"
+                  >
+                    Log in
+                  </a>
+                  .
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Transition>
     </>
+  );
+};
+
+const ProductList = ({
+  products,
+}: {
+  products: { id: number; name: string }[];
+}) => {
+  return (
+    <div className="container mx-auto mt-4">
+      {/* Render corresponding product sections */}
+      {products.length > 0 ? (
+        <>
+          {products.some((product) => product.name === "Gergaji") && (
+            <FeatureSectionSaw_SparePart />
+          )}
+          {products.some((product) => product.name === "Speedboat") && (
+            <FeatureSpeedBoat_SparePart />
+          )}
+          {products.some((product) => product.name === "Genset") && (
+            <FeatureSectionGenerators_SparePart />
+          )}
+          {products.some((product) => product.name === "Pompa Air") && (
+            <FeatureWaterPump_Sparepart />
+          )}
+        </>
+      ) : (
+        <li>No products found</li>
+      )}
+    </div>
   );
 };
 

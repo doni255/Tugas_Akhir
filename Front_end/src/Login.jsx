@@ -4,7 +4,8 @@ import "./Login.css";
 import login from "./hooks/login";
 
 import { Toaster, toast } from "react-hot-toast";
-
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 export default function Login() {
   // Memanggil hook
   const {
@@ -18,6 +19,15 @@ export default function Login() {
     handleRegisterClick,
     handleLogin,
   } = login();
+
+  const location = useLocation();
+
+  // Show success message if redirected from registration
+  useEffect(() => {
+    if (location.state?.registrationSuccess) {
+      toast.success("Registration successful! Please login.");
+    }
+  }, [location.state]);
 
   return (
     <div class="bg-gradient-to-l bg-gray-50">

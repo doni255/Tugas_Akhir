@@ -30,6 +30,8 @@ use Illuminate\Http\Request;
     Route::apiResource('/users', UserController::class);
     Route::post('/login', [UserController::class, 'login']);
     Route::post('/store', [UserController::class, 'store']);
+    Route::post('/store_user', [UserController::class, 'storeUser']);
+    // Route::post('/check_nama', [UserController::class, 'checkNama']);
 
     // Bagian Users
     Route::delete('/users/{id}', [UserController::class, 'destroy']);

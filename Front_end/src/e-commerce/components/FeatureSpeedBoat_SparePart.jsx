@@ -26,8 +26,8 @@ const FeatureSpeedBoat_SparePart = () => {
   }
 
   return (
-    <div className="container pt-16 mx-auto">
-      <div className="lg:flex justify-between items-center mb-8">
+    <div className="container pt-16">
+      <div className="lg:flex justify-between items-center">
         <div>
           <h3 className="font-medium text-2xl">Speed Boat & SparePart</h3>
           <p className="text-gray-600 mt-2">
@@ -35,7 +35,7 @@ const FeatureSpeedBoat_SparePart = () => {
           </p>
         </div>
 
-        <div className="space-x-4 mt-8 lg:mt-0">
+        {/* <div className="space-x-4 mt-8 lg:mt-0">
           <button className="feature_btn">Fruits</button>
           <button className="text-gray-600 hover:text-accent">
             Vegetables
@@ -43,16 +43,16 @@ const FeatureSpeedBoat_SparePart = () => {
           <button className="text-gray-600 hover:text-accent">
             Bread & Bakery
           </button>
-        </div>
+        </div> */}
       </div>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pt-8 gap-6">
-        <div>
+        {/* <div>
           <img
             className="w-full h-full object-contain "
             alt="banner"
             src="https://s.alicdn.com/@sc04/kf/Hb1778a45b15445cb80687fd3d827b5565.jpg_720x720q50.jpg"
           />
-        </div>
+        </div> */}
 
         {products.length > 0 ? (
           products.map((product) => (
