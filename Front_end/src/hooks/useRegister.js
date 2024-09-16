@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 // import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast"; // Import toast
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -74,9 +75,17 @@ export const useRegister = () => {
 
       const result = await response.json();
       console.log("Result:", result);
-      navigate("/", { state: { registrationSuccess: true } });
+
+      // Show success toast
+      toast.success("Registration successful!");
+
+      navigate("/e-commerce", { state: { registrationSuccess: true } });
+      setTimeout(() => {
+        window.location.reload(); // Reload the page after a short delay
+      }, 1000); // Adjust the delay if needed
     } catch (error) {
       console.error("An unexpected error occurred.", error);
+      toast.error("An error occurred during registration.");
     }
   };
 

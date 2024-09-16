@@ -138,7 +138,7 @@ function App() {
               }
             >
               {/* <Route index element={<Supplier />} /> */}
-              <Route path="data_tambah_stock" element={<DataTambahStock  />} />
+              <Route path="data_tambah_stock" element={<DataTambahStock />} />
               <Route path="barangmasuk" element={<BarangMasuk />} />
             </Route>
 

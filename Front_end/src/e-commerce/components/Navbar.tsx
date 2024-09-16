@@ -16,6 +16,7 @@ import FeatureSpeedBoat_SparePart from "./FeatureSpeedBoat_SparePart";
 import FeatureSectionGenerators_SparePart from "./FeatureSectionGenerators_SparePart";
 import FeatureWaterPump_Sparepart from "./FeatureWaterPump_SparePart";
 import { Transition } from "@headlessui/react";
+import toast, { Toaster } from "react-hot-toast";
 
 // Example product list (you can replace this with fetched data from an API)
 const products = [
@@ -63,7 +64,7 @@ const Navbar = ({ setShowCart }: any) => {
           <div className="hidden lg:flex justify-between items-center p-6">
             {/* Logo */}
             <h1 className="text-4xl font-bold text-[#F1F1F1]">Machine Shop</h1>
-
+            <Toaster position="top-right" reverseOrder={false} />
             {/* Search Bar */}
             <div className="relative w-full max-w-[500px]">
               <input
@@ -398,22 +399,6 @@ const Navbar = ({ setShowCart }: any) => {
                 />
               </div>
 
-              <div className="col-span-6">
-                <label htmlFor="MarketingAccept" className="flex gap-4">
-                  <input
-                    type="checkbox"
-                    id="MarketingAccept"
-                    name="marketing_accept"
-                    className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
-                  />
-
-                  <span className="text-sm text-gray-700">
-                    I want to receive emails about events, product updates and
-                    company announcements.
-                  </span>
-                </label>
-              </div>
-
               <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                 <button className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
                   Create an account
@@ -424,6 +409,10 @@ const Navbar = ({ setShowCart }: any) => {
                   <a
                     href="#"
                     className="text-gray-400 underline font-semibold hover:text-indigo-600"
+                    onClick={() => {
+                      setIsRegisterModalOpen(false);
+                      setIsLoginModalOpen(true);
+                    }}
                   >
                     Log in
                   </a>
