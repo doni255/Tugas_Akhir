@@ -37,6 +37,7 @@ use Illuminate\Http\Request;
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::get('/total-users', [UserController::class, 'getTotalUsers']);
+    Route::get('/getDataUserByID/{id_user}', [UserController::class, 'getDataUserByID']);
     
     // Bagian Product
     Route::get('/total-stock', [ProductController::class, 'getTotalStock']);

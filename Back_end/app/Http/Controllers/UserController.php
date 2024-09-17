@@ -198,4 +198,17 @@ class UserController extends Controller
     }   
 }
 
+    public function getDataUserByID($id_user){
+        // Mengambil data user berdasarkan id_user
+        $user = User::find($id_user);
+
+        // Jika user tidak ditemukan
+        if(!$user){
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Mengembalikan data user dalam bentuk JSON
+        return response()->json($user);
+    }
+
 }

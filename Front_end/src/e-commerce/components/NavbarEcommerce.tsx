@@ -9,6 +9,7 @@ import {
   AiOutlineUser,
   AiOutlineShoppingCart,
   AiOutlineLogin,
+  AiOutlineProduct,
 } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import CartCountBadge from "./CartCountBadge";
@@ -39,7 +40,7 @@ const products = [
   { id: 4, name: "Speedboat" },
 ];
 
-const Navbar = ({ setShowCart }: NavbarProps) => {
+const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
   // Memanggil hook
   const {
     userData,
@@ -89,39 +90,63 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
       kota: localStorage.getItem("kota"),
       alamat: localStorage.getItem("alamat"),
     };
-
-    setUserData(storedUserData); // Set state with user data
   };
 
   const handleProfileClick = () => {
     navigate("/e-commerce/profile"); // Redirect to profile page
   };
 
+  const handleProductClick = () => {
+    navigate("/e-commerce/products"); // Redirect to product page
+  };
+
   return (
     <>
-      <div className="sticky top-0 bg-[#959595] z-5 w-full">
+      <div className="sticky top-0 bg-[#2C2F33] z-10 w-full">
         <div className="container mx-auto">
-          <div className="hidden lg:flex justify-between items-center px-2 py-2">
-            {/* Search Bar */}
-            <div className="relative w-full">
-              <input
-                className="bg-[#4A4D52] border border-[#C0C0C0] outline-none px-6 py-3 rounded-[30px] w-full text-[#F1F1F1] placeholder-[#C0C0C0]"
-                type="text"
-                placeholder="Search Product..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <BsSearch
-                className="absolute top-0 right-0 mt-4 mr-5 text-[#F5C300]"
-                size={20}
-              />
+          <div className="hidden lg:flex justify-between items-center p-6">
+            {/* Logo */}
+            <a href="/e-commerce" className="no-underline hover:no-underline">
+              <h1 className="text-4xl font-bold text-[#F1F1F1]">
+                Machine Shop
+              </h1>
+            </a>
+            <Toaster position="top-right" reverseOrder={false} />
+
+            {/* Icons: User, Cart and login Button*/}
+            <div className="flex gap-4 items-center">
+              <div className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+              onClick={handleProductClick}>
+                <AiOutlineProduct size={24} />
+              </div>
+
+              <div
+                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                onClick={handleProfileClick}
+              >
+                <AiOutlineUser size={24} />
+              </div>
+              {/* <div
+                  className="icon__wrapper cursor-pointer relative text-[#F5C300] hover:text-[#FF6B00]"
+                  onClick={() => setShowCart(true)}
+                >
+                  <AiOutlineShoppingCart size={24} />
+                  <CartCountBadge size="w-[25px] h-[25px]" />
+                </div> */}
+
+              {/* Login Button */}
+              <button
+                type="submit"
+                className="px-4  text-white py-3 rounded-md font-semibold hover:bg-[#FF7B00] transition duration-300 ease-in-out"
+                onClick={() => setIsLoginModalOpen(true)}
+              >
+                Login
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Display the filtered products */}
-      <ProductList products={filteredProducts} />
       <Outlet />
 
       {/* Modal PROFILE with Transition */}
@@ -147,7 +172,7 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
             <br />
             <br />
 
-            {userData ? (
+            {/* {userData ? (
               <>
                 <p>
                   <strong>Name:</strong> {userData.nama || "No Name"}
@@ -167,7 +192,7 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
               </>
             ) : (
               <p>Tidak ada data user</p>
-            )}
+            )} */}
 
             <button
               className="mt-4 px-4 py-2 bg-[#F5C300] hover:bg-[#FF6B00] text-white rounded-lg"
@@ -455,35 +480,4 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
   );
 };
 
-
-const ProductList = ({
-  products,
-}: {
-  products: { id: number; name: string }[];
-}) => {
-  return (
-    <div className="container mx-auto mt-0 px-0">
-      {/* Render corresponding product sections */}
-      {products.length > 0 ? (
-        <>
-          {products.some((product) => product.name === "Gergaji") && (
-            <FeatureSectionSaw_SparePart />
-          )}
-          {products.some((product) => product.name === "Speedboat") && (
-            <FeatureSpeedBoat_SparePart />
-          )}
-          {products.some((product) => product.name === "Genset") && (
-            <FeatureSectionGenerators_SparePart />
-          )}
-          {products.some((product) => product.name === "Pompa Air") && (
-            <FeatureWaterPump_Sparepart />
-          )}
-        </>
-      ) : (
-        <li>No products found</li>
-      )}
-    </div>
-  );
-};
-
-export default Navbar;
+export default NavbarEcommerce;

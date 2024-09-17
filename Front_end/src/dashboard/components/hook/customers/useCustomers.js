@@ -52,15 +52,28 @@ const useCustomers = (users, setUsers) => {
     }
   };
 
+  // const handleEditClick = (user) => {
+  //   setEditUserData({
+  //     id_user: user.id_user, // Tambahkan id_user
+  //     nama: user.nama,
+  //     email: user.email,
+  //     role: user.role,
+  //     alamat: user.alamat,
+  //     kota: user.kota,
+  //     no_telpon: user.no_telpon,
+  //   });
+  //   setIsEditModalOpen(true);
+  // };
+
   const handleEditClick = (user) => {
     setEditUserData({
-      id_user: user.id_user, // Tambahkan id_user
-      nama: user.nama,
-      email: user.email,
-      role: user.role,
-      alamat: user.alamat,
-      kota: user.kota,
-      no_telpon: user.no_telpon,
+      id_user: user.id_user || "", // Pastikan id_user tidak null
+      nama: user.nama || "", // Inisialisasi dengan string kosong jika null
+      email: user.email || "", // Pastikan email tidak null
+      role: user.role || "", // Pastikan role tidak null
+      alamat: user.alamat || "", // Pastikan alamat tidak null
+      kota: user.kota || "", // Pastikan kota tidak null
+      no_telpon: user.no_telpon || "", // Pastikan no_telpon tidak null
     });
     setIsEditModalOpen(true);
   };
@@ -91,13 +104,13 @@ const useCustomers = (users, setUsers) => {
         );
         console.log("Update Response:", response);
 
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.id_user === editUserData.id_user
-              ? { ...user, ...editUserData }
-              : user
-          )
-        );
+        // setUsers((prevUsers) =>
+        //   prevUsers.map((user) =>
+        //     user.id_user === editUserData.id_user
+        //       ? { ...user, ...editUserData }
+        //       : user
+        //   )
+        // );
 
         handleCloseEditModal(); // Menutup modal setelah update
       } catch (error) {

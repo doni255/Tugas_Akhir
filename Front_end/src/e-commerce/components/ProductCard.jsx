@@ -43,9 +43,7 @@ const ProductCard = ({ product }) => {
           {product.nama_product}
         </h4>
 
-        <p className="text-gray-500 mb-2">
-          Rp {product.harga_jual.toLocaleString()}
-        </p>
+        <p className="text-gray-500 mb-2">Rp {product.harga_jual}</p>
 
         <p className="text-sm text-gray-500">Stock: {product.jumlah_stock}</p>
 
@@ -53,7 +51,7 @@ const ProductCard = ({ product }) => {
           className="mt-4 bg-accent text-white py-2 px-4 rounded hover:bg-accent-dark transition-colors hover:bg-green-900  "
           onClick={addProductToCart}
         >
-          Tambahkan Ke Keranjang
+          CheckOut
         </button>
 
         {/* <button

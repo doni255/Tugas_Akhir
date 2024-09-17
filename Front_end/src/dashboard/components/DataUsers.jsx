@@ -153,118 +153,118 @@ export default function DataUsers() {
           </ol>
         </div>
 
-        {/* Modal for Edit Form */}
-        <Modal open={isEditModalOpen} onClose={handleCloseEditModal}>
-          <h2 className="text-lg font-semibold mb-4">Edit User</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleUpdate(); // Mengirim data pembaruan ke hook
-            }}
-            className="mt-8 grid grid-cols-6 gap-6"
-          >
-            <div className="col-span-6 sm:col-span-6">
-              <label
-                htmlFor="nama"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Nama:
-              </label>
-              <input
-                type="text"
-                id="nama"
-                name="nama"
-                value={editUserData.nama}
-                onChange={handleEditChange}
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
-            </div>
+          {/* Modal for Edit Form */}
+          <Modal open={isEditModalOpen} onClose={handleCloseEditModal}>
+            <h2 className="text-lg font-semibold mb-4">Edit User</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdate(); // Mengirim data pembaruan ke hook
+              }}
+              className="mt-8 grid grid-cols-6 gap-6"
+            >
+              <div className="col-span-6 sm:col-span-6">
+                <label
+                  htmlFor="nama"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Nama:
+                </label>
+                <input
+                  type="text"
+                  id="nama"
+                  name="nama"
+                  value={editUserData.nama}
+                  onChange={handleEditChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
 
-            <div className="col-span-6 sm:col-span-6">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email:
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={editUserData.email}
-                onChange={handleEditChange}
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
-            </div>
+              <div className="col-span-6 sm:col-span-6">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email:
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={editUserData.email}
+                  onChange={handleEditChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
 
-            <div className="col-span-6">
-              <label
-                htmlFor="alamat"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Alamat:
-              </label>
-              <input
-                type="text"
-                id="alamat"
-                name="alamat"
-                value={editUserData.alamat}
-                onChange={handleEditChange}
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
-            </div>
+              <div className="col-span-6">
+                <label
+                  htmlFor="alamat"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Alamat:
+                </label>
+                <input
+                  type="text"
+                  id="alamat"
+                  name="alamat"
+                  value={editUserData.alamat}
+                  onChange={handleEditChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
 
-            <div className="col-span-6">
-              <label
-                htmlFor="kota"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Kota:
-              </label>
-              <input
-                type="text"
-                id="kota"
-                name="kota"
-                value={editUserData.kota}
-                onChange={handleEditChange}
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
-            </div>
+              <div className="col-span-6">
+                <label
+                  htmlFor="kota"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Kota:
+                </label>
+                <input
+                  type="text"
+                  id="kota"
+                  name="kota"
+                  value={editUserData.kota}
+                  onChange={handleEditChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
 
-            <div className="col-span-6">
-              <label
-                htmlFor="no_telpon"
-                className="block text-sm font-medium text-gray-700"
-              >
-                No Telepon:
-              </label>
-              <input
-                type="text"
-                id="no_telpon"
-                name="no_telpon"
-                value={editUserData.no_telpon}
-                onChange={handleEditChange}
-                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-              />
-            </div>
+              <div className="col-span-6">
+                <label
+                  htmlFor="no_telpon"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  No Telepon:
+                </label>
+                <input
+                  type="text"
+                  id="no_telpon"
+                  name="no_telpon"
+                  value={editUserData.no_telpon}
+                  onChange={handleEditChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                />
+              </div>
 
-            <div className="flex gap-2.5">
-              <button
-                type="submit"
-                className="inline-block rounded bg-blue-500 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
-              >
-                Update
-              </button>
-              <button
-                onClick={handleCloseEditModal}
-                type="button"
-                className="inline-block rounded border border-current px-8 py-3 text-sm font-medium text-indigo-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Modal>
+              <div className="flex gap-2.5">
+                <button
+                  type="submit"
+                  className="inline-block rounded bg-blue-500 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={handleCloseEditModal}
+                  type="button"
+                  className="inline-block rounded border border-current px-8 py-3 text-sm font-medium text-indigo-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </Modal>
 
         {/* Modal untuk konfirmasi delete */}
         <Modal open={isModalOpen} onClose={handleCloseModal}>

@@ -147,3 +147,26 @@ export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = () => {
 
   return filteredBottomLinks;
 };
+
+export const ECOMMERCE_LINKS = () => {
+
+  const links = [
+    {
+      key: "e-commerce",
+      label: "E-commerce",
+      path: "/e-commerce",
+      roles: ["customer"],
+      subLinks: [
+        {
+          //profile
+          key: "profile",
+          label: "Profile",
+          path: "/e-commerce/profile",
+          roles: ["customer"],
+        },
+      ],
+    },
+  ];
+
+  return links;
+};

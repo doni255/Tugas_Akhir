@@ -24,7 +24,7 @@ import Messages from "./dashboard/components/Messages";
 import Supplier from "./dashboard/components/supplier/supplier";
 
 // Import E-commerce
-import Navbar from "./e-commerce/components/Navbar";
+
 import MobNavBar from "./e-commerce/components/MobNavbar";
 import Hero from "./e-commerce/components/Hero";
 import Category from "./e-commerce/components/Category";
@@ -42,6 +42,12 @@ import DataTambahStock from "./dashboard/components/supplier/DataTambahStock";
 import FeatureWaterPump_Sparepart from "./e-commerce/components/FeatureWaterPump_SparePart";
 import FeatureSpeedBoat_SparePart from "./e-commerce/components/FeatureSpeedBoat_SparePart";
 import Pengeluaran from "./dashboard/components/Pengeluaran";
+
+// e-commerce
+import LayoutEcommerce from "./dashboard/components/shared/LayoutEcommerce";
+import Navbar from "./e-commerce/components/Navbar";
+import NavbarEcommerce from "./e-commerce/components/NavbarEcommerce";
+import ProfilePage from "./e-commerce/components/ProfilePage";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -143,31 +149,34 @@ function App() {
             </Route>
 
             {/* Bagian E-commerce */}
+
             <Route
               path="/e-commerce"
-              element={<Navbar setShowCart={setShowCart} />}
+              element={
+                <ProtectedRoute role="admin">
+                  <LayoutEcommerce />
+                </ProtectedRoute>
+              }
             >
               <Route
-                index
-                element={
-                  <>
-                    <MobNavBar setShowCart={setShowCart} />
-                    {/* <Hero /> */}
-                    {/* <Category /> */}
-                    {/* <CategoryCard /> */}
-                    {/* <FeatureSectionSaw_SparePart />
-                    <FeatureSpeedBoat_SparePart />
-                    <FeatureSectionGenerators_SparePart />
-                    <FeatureWaterPump_Sparepart /> */}
-                    {/* <Banner /> */}
-                    {/* <BlogSection /> */}
-                    <NewsLetter />
-                    <Feature />
-                    {showCart && <Cart setShowCart={setShowCart} />}
-                  </>
-                }
-              />
+                path="products"
+                element={<Navbar setShowCart={setShowCart} />}
+              >
+                <Route
+                  index
+                  element={
+                    <>
+                      <MobNavBar setShowCart={setShowCart} />
+
+                      {showCart && <Cart setShowCart={setShowCart} />}
+                    </>
+                  }
+                />
+              </Route>
+              <Route path="profile" element={<ProfilePage />} />
             </Route>
+
+            {/* <Route path="e-commerce/profile" element={<ProfilePage />} /> */}
           </Routes>
         </CartContextProvider>
       </AuthProvider>
