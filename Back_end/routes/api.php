@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BarangMasukAdminController;
 use App\Http\Controllers\BarangMasukController;
+use App\Http\Controllers\BeliProdukController;
 use App\Http\Controllers\PendapatanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProductController;
@@ -77,6 +78,11 @@ use Illuminate\Http\Request;
     Route::get('/pengeluaran', [PengeluaranController::class, 'getPengeluaran']);
     Route::get('/grafik_pengeluaran', [PengeluaranController::class, 'getGrafikPengeluaranPerbulanDiTahunIni']);
     Route::get('/grafik_pengeluaran_pertahun', [PengeluaranController::class, 'getGrafikPengeluaranPertahun']);
-  
+
+    // Beli Produk
+    Route::get('/keranjang_pembelian/{id_user}', [BeliProdukController::class, 'getKeranjangPembelian']);
+    Route::post('/keranjang_pembelian/tambah_keranjang/{id_product}', [BeliProdukController::class, 'keranjangPembelian']);
+    Route::post('/keranjang_pembelian/beli_product/{id_beli_produk}', [BeliProdukController::class, 'beliProduct']);
+    Route::get('/status_beli_product', [BeliProdukController::class, 'getBeliProductByStatus']);
 
 

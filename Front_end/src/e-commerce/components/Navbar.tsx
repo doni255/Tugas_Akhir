@@ -80,17 +80,6 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
     if (role === "user") {
       navigate("/e-commerce"); // Redirect to e-commerce page after login
     }
-
-    // After login, store user data to localStorage
-    const storedUserData = {
-      nama: localStorage.getItem("nama"),
-      email: localStorage.getItem("email"),
-      no_telpon: localStorage.getItem("no_telpon"),
-      kota: localStorage.getItem("kota"),
-      alamat: localStorage.getItem("alamat"),
-    };
-
-    setUserData(storedUserData); // Set state with user data
   };
 
   const handleProfileClick = () => {
@@ -146,28 +135,6 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
 
             <br />
             <br />
-
-            {userData ? (
-              <>
-                <p>
-                  <strong>Name:</strong> {userData.nama || "No Name"}
-                </p>
-                <p>
-                  <strong>Email:</strong> {userData.email || "No Email"}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {userData.no_telpon || "No Phone"}
-                </p>
-                <p>
-                  <strong>City:</strong> {userData.kota || "No City"}
-                </p>
-                <p>
-                  <strong>Address:</strong> {userData.alamat || "No Address"}
-                </p>
-              </>
-            ) : (
-              <p>Tidak ada data user</p>
-            )}
 
             <button
               className="mt-4 px-4 py-2 bg-[#F5C300] hover:bg-[#FF6B00] text-white rounded-lg"
@@ -454,7 +421,6 @@ const Navbar = ({ setShowCart }: NavbarProps) => {
     </>
   );
 };
-
 
 const ProductList = ({
   products,
