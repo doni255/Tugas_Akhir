@@ -148,5 +148,24 @@ class BeliProdukController extends Controller
             'data' => $beli_produk
         ], 200);
     }
+
+    // buatkan fungsi yang dimana menghapus keranjangpembelian
+    public function destroyCartProduct($id_beli_produk) {
+        $beli_produk = beli_produk::find($id_beli_produk);
+
+        if($beli_produk){
+            $beli_produk->delete();
+
+            return response()->json([
+                'message' => 'Delete keranjang pembelian success',
+                'data' => $beli_produk
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
+    }
     
 }

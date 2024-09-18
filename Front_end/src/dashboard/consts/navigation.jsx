@@ -149,7 +149,6 @@ export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = () => {
 };
 
 export const ECOMMERCE_LINKS = () => {
-
   const links = [
     {
       key: "e-commerce",
@@ -162,6 +161,13 @@ export const ECOMMERCE_LINKS = () => {
           key: "profile",
           label: "Profile",
           path: "/e-commerce/profile",
+          roles: ["customer"],
+        },
+        {
+          //cartproduct
+          key: "cartproduct",
+          label: "Cart_Product",
+          path: "/e-commerce/cartproduct",
           roles: ["customer"],
         },
       ],

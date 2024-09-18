@@ -81,8 +81,9 @@ use Illuminate\Http\Request;
 
     // Beli Produk
     Route::get('/keranjang_pembelian/{id_user}', [BeliProdukController::class, 'getKeranjangPembelian']);
-    Route::post('/keranjang_pembelian/tambah_keranjang/{id_product}', [BeliProdukController::class, 'keranjangPembelian']);
+    Route::post('/keranjang_pembelian/tambah_keranjang/{id_user}', [BeliProdukController::class, 'keranjangPembelian']);
     Route::post('/keranjang_pembelian/beli_product/{id_beli_produk}', [BeliProdukController::class, 'beliProduct']);
     Route::get('/status_beli_product', [BeliProdukController::class, 'getBeliProductByStatus']);
+    Route::delete('/hapus_keranjang/{id_beli_produk}', [BeliProdukController::class, 'destroyCartProduct']);
 
 

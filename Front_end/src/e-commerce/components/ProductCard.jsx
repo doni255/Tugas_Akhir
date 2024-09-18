@@ -3,25 +3,48 @@ import React from "react";
 import { AiFillStar, AiOutlineStar, AiOutlineShopping } from "react-icons/ai";
 import { useCartContext } from "../context/cartContext";
 import { useState } from "react";
-import modal from "./Modal";
 import Modal from "./Modal";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCartContext();
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const addProductToCart = () => {
-    addToCart({
-      img: `data:image/jpeg;base64,${product.gambar}`, // Tambahkan prefix base64
-      name: product.nama_product,
-      price: product.harga_jual,
-    });
-    setModalVisible(true); // Tampilkan modal setelah menambahkan ke keranjang
-  };
+  const tambahKeranjang = (idProduct) => {
+    const idUser = localStorage.getItem("id_user"); // Get id_user from localStorage
 
-  if (!product) {
-    return null; // Atau tampilkan pesan kesalahan
-  }
+    // Debugging: Print the values
+    console.log("idUser:", idUser);
+    console.log("idProduct:", idProduct);
+
+    axios
+      .post(
+        `http://localhost:8000/api/keranjang_pembelian/tambah_keranjang/${idUser}`, // Use template literal with backticks
+        {
+          id_user: idUser, // Send the correct user ID
+          id_product: idProduct, // Send the correct product ID
+          harga_beli: product.harga_jual,
+          konten_base64: product.gambar,
+        }
+      )
+      .then((response) => {
+        console.log("Response tambah keranjang:", response.data);
+
+        // Correct the message check to match the backend response
+        if (response.data.message === "Product added to cart") {
+          toast.success("Produk berhasil ditambahkan ke keranjang.");
+          // fetchCartProduct(); // Assuming this function updates your cart display
+        }
+      })
+      .catch((error) => {
+        console.error("Error tambah keranjang:", error); // Debugging
+        if (error.response) {
+          console.log("Error response data:", error.response.data); // Log the error response
+          console.log("Error status:", error.response.status);
+        }
+      });
+  };
 
   return (
     <div className="border border-gray-200 hover:border-gray-300 hover:scale-105 transition-transform rounded-lg relative">
@@ -49,17 +72,10 @@ const ProductCard = ({ product }) => {
 
         <button
           className="mt-4 bg-accent text-white py-2 px-4 rounded hover:bg-accent-dark transition-colors hover:bg-green-900  "
-          onClick={addProductToCart}
+          onClick={() => tambahKeranjang(product.id_product)}
         >
-          CheckOut
+          + Keranjang
         </button>
-
-        {/* <button
-          className="absolute -top-4 right-2 bg-accent text-white text-[28px] w-[50px] h-[50px] rounded-full grid place-items-center cursor-pointer"
-          onClick={addProductToCart}
-        >
-          <AiOutlineShopping />
-        </button> */}
 
         <Modal
           isVisible={isModalVisible}

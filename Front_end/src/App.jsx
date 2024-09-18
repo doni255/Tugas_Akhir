@@ -48,6 +48,7 @@ import LayoutEcommerce from "./dashboard/components/shared/LayoutEcommerce";
 import Navbar from "./e-commerce/components/Navbar";
 import NavbarEcommerce from "./e-commerce/components/NavbarEcommerce";
 import ProfilePage from "./e-commerce/components/ProfilePage";
+import CartProduct from "./e-commerce/components/CartProduct";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -174,6 +175,7 @@ function App() {
                 />
               </Route>
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="cartproduct" element={<CartProduct  />} />
             </Route>
 
             {/* <Route path="e-commerce/profile" element={<ProfilePage />} /> */}

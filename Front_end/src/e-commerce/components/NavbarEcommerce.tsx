@@ -100,6 +100,10 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
     navigate("/e-commerce/products"); // Redirect to product page
   };
 
+  const handleCartProductClick = () => {
+    navigate("/e-commerce/cartproduct");// Redirect to cart product page
+  };
+
   return (
     <>
       <div className="sticky top-0 bg-[#2C2F33] z-10 w-full">
@@ -115,9 +119,18 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
 
             {/* Icons: User, Cart and login Button*/}
             <div className="flex gap-4 items-center">
-              <div className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
-              onClick={handleProductClick}>
+              <div
+                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                onClick={handleProductClick}
+              >
                 <AiOutlineProduct size={24} />
+              </div>
+
+              <div className="flex gap-4 items-center">
+                <div className="icon__wrapper cursor_pointer text-[#F5C300] hover:text-[#FF6B00]"
+                onClick={handleCartProductClick}>
+                  <AiOutlineShoppingCart size={24} />
+                </div>
               </div>
 
               <div
