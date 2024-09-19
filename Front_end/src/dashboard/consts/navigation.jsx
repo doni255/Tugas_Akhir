@@ -45,6 +45,13 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
       roles: ["admin"],
     },
     {
+      key: "konfirmasi_pembayaran",
+      label: "Pembayaran",
+      icon: <HiOutlineShoppingCart />,
+      path: "/dashboard/konfirmasi_pembayaran",
+      roles: ["admin"],
+    },
+    {
       key: "customers",
       label: "Data Users",
       path: "/dashboard/DataUsers",

@@ -6,13 +6,6 @@ import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const CartProduct = () => {
-  const [formKeranjangData, setFormKeranjangData] = useState({
-    id_user: "",
-    id_product: "",
-    harga_beli: "",
-    konten_base64: "",
-  });
-
   const [cartProducts, setCartProducts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -36,19 +29,19 @@ const CartProduct = () => {
       );
 
       // Debugging: Check API response data structure
-      console.log("API response data:", response.data);
+      console.log("API response data:", response.data.data);
 
       if (response.data.message === "Retrieve data success") {
         setCartProducts(response.data.data); // Set the cartProducts state
-      } else {
-        toast.error("No data found.");
+
+        // console.log("Cart products:", response.data.data[0].status);
       }
 
       setIsLoaded(true);
     } catch (error) {
-      console.error("Error fetching cart products:", error);
       setIsLoaded(true);
-      toast.error("Failed to load cart data.");
+      setCartProducts([]); // Reset the cartProducts state
+
     }
   };
 
@@ -82,6 +75,8 @@ const CartProduct = () => {
         }
       );
       toast.success("Produk berhasil dibeli.");
+      setIsPaymentModalOpen(false); // Close the payment modal  
+      fetchCartProduct(); // Fetch the updated cart products
     } catch (error) {
       console.error(
         "Error purchasing product:",
@@ -287,7 +282,7 @@ const CartProduct = () => {
         leaveTo="opacity-0 scale-60"
       >
         {isLoaded && cartProducts.length > 0 ? (
-          <div className="w-full max-w-5xl bg-white shadow-md rounded-lg p-6">
+          <div className="w-full bg-white shadow-md rounded-lg p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
               Produk di Keranjang
             </h2>
@@ -300,7 +295,7 @@ const CartProduct = () => {
                   <div className="flex items-center gap-4">
                     <img
                       src={
-                        item.product?.konten_base64
+                        item.product.konten_base64
                           ? `data:image/jpeg;base64,${item.product.konten_base64}`
                           : "https://via.placeholder.com/150"
                       }
@@ -309,16 +304,36 @@ const CartProduct = () => {
                     />
                     <div className="flex flex-col max-w-xs">
                       <h3 className="text-lg font-semibold truncate w-56">
-                        {item.product?.nama_product}
+                        {item.product.nama_product}
                       </h3>
                       <p className="text-gray-500">
-                        {item.product?.kategori_produk}
+                        {item.product.kategori_produk}
                       </p>
                     </div>
                   </div>
                   <div>
                     <p className="text-lg font-semibold mt-2">
-                      Rp. {item.product?.harga_jual}
+                      Status Pembayaran
+                      <br />  
+                      <span className="font-extralight">
+                        {item.status}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold mt-2">
+                      Harga Produk
+                      <br />  
+                      <span className="font-extralight">
+                        {item.product.harga_jual}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold mt-2">
+                      Tanggal Pemesanan
+                      <br />
+                      <span className="font-extralight">{item.tanggal}</span>
                     </p>
                   </div>
                   <div className="flex flex-col gap-2">

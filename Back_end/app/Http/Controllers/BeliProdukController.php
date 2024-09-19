@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\beli_produk;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Pendapatan;
+use App\Models\Uang;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -96,7 +98,7 @@ class BeliProdukController extends Controller
         
         if($beli_produk){
             $validator = Validator::make($request->all(), [
-                'bukti_pembayaran' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048', // Misalkan ini untuk gambar dalam format base64
+                'bukti_pembayaran' => 'required|file|mimes:jpeg,png,jpg,gif', // Misalkan ini untuk gambar dalam format base64
             ]);
 
             if($validator->fails()){
@@ -148,6 +150,35 @@ class BeliProdukController extends Controller
             'message' => 'Retrieve data success',
             'data' => $beli_produk
         ], 200);
+    }
+
+    // konfirmasi pembayaran
+    public function konfirmasiPembayaran($id_beli_produk) {
+        $beli_produk = beli_produk::find($id_beli_produk);
+
+        if($beli_produk){
+            $pendapatan = new Pendapatan();
+            $pendapatan->harga_total = $beli_produk->product->harga_jual;
+            $pendapatan->tanggal = date('Y-m-d');
+            $pendapatan->nama_product = $beli_produk->product->nama_product;
+            $pendapatan->save();
+
+            $uang = Uang::find(1);
+            $uang->jumlah_uang = $uang->jumlah_uang + $beli_produk->product->harga_jual;
+            $uang->save();
+        
+            $beli_produk->delete();
+
+            return response()->json([
+                'message' => 'Pembayaran berhasil',
+                'data' => $pendapatan
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
     }
 
     // buatkan fungsi yang dimana menghapus keranjangpembelian
