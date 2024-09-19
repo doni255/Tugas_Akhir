@@ -91,6 +91,7 @@ class BeliProdukController extends Controller
     }
     
     public function beliProduct(Request $request, $id_beli_produk) {
+        
         $beli_produk = beli_produk::find($id_beli_produk);
         
         if($beli_produk){
