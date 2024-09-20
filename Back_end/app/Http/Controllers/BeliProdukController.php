@@ -182,7 +182,7 @@ class BeliProdukController extends Controller
     }
 
     // buatkan fungsi yang dimana menghapus keranjangpembelian
-    public function destroyCartProduct($id_beli_produk) {
+    public function destroyEvidentPayment($id_beli_produk) {
         $beli_produk = beli_produk::find($id_beli_produk);
 
         if($beli_produk){

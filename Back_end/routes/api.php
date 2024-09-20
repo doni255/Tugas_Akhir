@@ -84,7 +84,7 @@ use Illuminate\Http\Request;
     Route::post('/keranjang_pembelian/tambah_keranjang/{id_user}', [BeliProdukController::class, 'keranjangPembelian']);
     Route::post('/keranjang_pembelian/beli_product/{id_beli_produk}', [BeliProdukController::class, 'beliProduct']);
     Route::get('/status_beli_product', [BeliProdukController::class, 'getBeliProductByStatus']);
-    Route::delete('/hapus_keranjang/{id_beli_produk}', [BeliProdukController::class, 'destroyCartProduct']);
+    Route::delete('/hapus_keranjang/{id_beli_produk}', [BeliProdukController::class, 'destroyEvidentPayment']);
     Route::post("/konfirmasi_pembayaran/{id_beli_produk}", [BeliProdukController::class, 'konfirmasiPembayaran']);
 
 

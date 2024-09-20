@@ -42,18 +42,19 @@ export default function KonfirmasiStock() {
 
     // console.log(formData, "aoi");
 
-    console.log(selectedKonfirmasiStock)
+    console.log(selectedKonfirmasiStock);
 
-
-   axios
-      .post("http://localhost:8000/api/tambah_stock_admin/konfirmasi_tambah_stock",
+    axios
+      .post(
+        "http://localhost:8000/api/tambah_stock_admin/konfirmasi_tambah_stock",
         formData,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-      })
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((response) => {
         console.log(response);
         // fetchTambahStock();
@@ -76,7 +77,7 @@ export default function KonfirmasiStock() {
   };
 
   const handleConfirmButton = (product) => {
-    console.log(product)
+    console.log(product);
     setSelectedUserConfirm(product.user);
     setSelectedKonfirmasiStock(product.id_product);
     setisConfirmationModalOpen(true);
@@ -205,16 +206,18 @@ export default function KonfirmasiStock() {
                 .map((tambah_stock) => (
                   <tr
                     key={tambah_stock.id_tambah_stock}
-                    className="hover:bg-gray-100"
+                    className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-lg border-b border-gray-200 last:border-none"
                   >
-                    <td className="text-center">
+                    <td className="py-3 px-6 text-center font-semibold text-gray-700">
                       {tambah_stock.product.nama_product}
                     </td>
-                    <td className="text-center">
+                    <td className="py-3 px-6 text-center font-semibold text-gray-700">
                       {tambah_stock.product.kategori_produk}
                     </td>
-                    <td className="text-center">{tambah_stock.jumlah_stock}</td>
-                    <td className=" text-center">
+                    <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                      {tambah_stock.jumlah_stock}
+                    </td>
+                    <td className=" py-3 px-6 text-center font-semibold text-gray-700">
                       {tambah_stock.tanggal_kirim}
                     </td>
                     <td>
@@ -338,7 +341,6 @@ export default function KonfirmasiStock() {
         open={isConfirmationModalOpen}
         onClose={() => setisConfirmationModalOpen(false)}
       >
-
         {selectedUserConfirm && (
           <div className="sm:flex sm:items-start w-80">
             <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
