@@ -178,7 +178,7 @@ export default function KonfirmasiStock() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                 {/* <td className="pl-10 py-4">
@@ -208,16 +208,16 @@ export default function KonfirmasiStock() {
                     key={tambah_stock.id_tambah_stock}
                     className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
                   >
-                    <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                    <td className="py-3 px-6 text-center  text-gray-700">
                       {tambah_stock.product.nama_product}
                     </td>
-                    <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                    <td className="py-3 px-6 text-center text-gray-700">
                       {tambah_stock.product.kategori_produk}
                     </td>
-                    <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                    <td className="py-3 px-6 text-center  text-gray-700">
                       {tambah_stock.jumlah_stock}
                     </td>
-                    <td className=" py-3 px-6 text-center font-semibold text-gray-700">
+                    <td className=" py-3 px-6 text-center  text-gray-700">
                       {tambah_stock.tanggal_kirim}
                     </td>
                     <td>

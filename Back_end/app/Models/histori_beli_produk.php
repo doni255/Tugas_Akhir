@@ -13,10 +13,10 @@ class histori_beli_produk extends Model
 
     protected $fillable = [
         'id_user',
-        'gambar',
-        'nama_product',
-        'kategori_product',
-        'harga_jual',
+        'bukti_pembayaran',
+        'id_beli_produk',
+        'tanggal',
+        'status',
     ];
 
     public $timestamps = false; // Jika Anda tidak menggunakan created_at dan updated_at
@@ -31,7 +31,7 @@ class histori_beli_produk extends Model
 
     public function getKontenBase64Attribute()
     {
-        return base64_encode($this->attributes['gambar']);
+        return base64_encode($this->attributes['bukti_pembayaran']);
     }
 
 }

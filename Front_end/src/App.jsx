@@ -50,6 +50,7 @@ import NavbarEcommerce from "./e-commerce/components/NavbarEcommerce";
 import ProfilePage from "./e-commerce/components/ProfilePage";
 import CartProduct from "./e-commerce/components/CartProduct";
 import KonfirmasiPembayaran from "./dashboard/components/KonfirmasiPembayaran";
+import History from "./e-commerce/components/History";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -177,6 +178,7 @@ function App() {
                 />
               </Route>
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="history" element={<History />} />
               <Route path="cartproduct" element={<CartProduct  />} />
             </Route>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\beli_produk;
+use App\Models\histori_beli_produk;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Pendapatan;
@@ -157,8 +158,18 @@ class BeliProdukController extends Controller
         $beli_produk = beli_produk::find($id_beli_produk);
 
         if($beli_produk){
+
+              // Simpan data ke histori_beli_produk
+            $histori = new histori_beli_produk();
+            $histori->id_user = $beli_produk->id_user;
+            $histori->bukti_pembayaran = $beli_produk->bukti_pembayaran; // Simpan gambar atau bukti pembayaran
+            $histori->tanggal = date('Y-m-d');
+            $histori->status = 'lunas';
+            $histori->save();
+
+
             $pendapatan = new Pendapatan();
-            $pendapatan->harga_total = $beli_produk->product->harga_jual;
+            $pendapatan->harga_total = $beli_produk->product->harga_jual; // Tambahkan harga_total
             $pendapatan->tanggal = date('Y-m-d');
             $pendapatan->nama_product = $beli_produk->product->nama_product;
             $pendapatan->save();

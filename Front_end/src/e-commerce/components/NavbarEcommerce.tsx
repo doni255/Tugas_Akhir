@@ -23,6 +23,7 @@ import {
   PopoverButton,
   PopoverPanel,
 } from "@headlessui/react";
+import { TbReportSearch } from "react-icons/tb";
 import toast, { Toaster } from "react-hot-toast";
 
 interface NavbarProps {
@@ -109,6 +110,10 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
     navigate("/e-commerce/cartproduct"); // Redirect to cart product page
   };
 
+  const handleHistoryClick = () => {
+    navigate("/e-commerce/history"); // Redirect to history
+  };
+
   return (
     <>
       <div className="sticky top-0 bg-[#2C2F33] z-10 w-full">
@@ -138,6 +143,13 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
                 >
                   <AiOutlineShoppingCart size={24} />
                 </div>
+              </div>
+
+              <div
+                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                onClick={handleHistoryClick}
+              >
+                <TbReportSearch size={24} />
               </div>
 
               <div
