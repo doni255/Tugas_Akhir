@@ -206,7 +206,7 @@ export default function KonfirmasiStock() {
                 .map((tambah_stock) => (
                   <tr
                     key={tambah_stock.id_tambah_stock}
-                    className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-lg border-b border-gray-200 last:border-none"
+                    className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
                   >
                     <td className="py-3 px-6 text-center font-semibold text-gray-700">
                       {tambah_stock.product.nama_product}

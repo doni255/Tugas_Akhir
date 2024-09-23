@@ -45,10 +45,16 @@ export default function KonfirmasiPembayaran() {
 
   // Fungsi untuk fetch data status beli produk
   const fetchBeliProduct = async () => {
+    console.log("fetching data");
+    // get all data from beli product
+
     try {
       const response = await axios.get(
         "http://localhost:8000/api/status_beli_product"
       );
+      const data = response.data.data || [];
+      console.log("data", data);
+
       setBeliProducts(response.data.data || []); // Menyimpan data produk ke dalam state
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -102,7 +108,6 @@ export default function KonfirmasiPembayaran() {
     setIdBeliProduk(beli_product.id_beli_produk);
     setIsDeleteConfirmationModalOpen(true);
   };
-
   const hapusKonfirmasiPembayaran = () => {
     if (!idBeliProduk) return; // Ensure the ID is defined
 
@@ -147,7 +152,7 @@ export default function KonfirmasiPembayaran() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                 <td className="text-center font-semibold">ID Product</td>
@@ -165,15 +170,15 @@ export default function KonfirmasiPembayaran() {
               {beliProducts.map((beli_product) => (
                 <tr
                   key={beli_product.id_beli_produk}
-                  className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-lg border-b border-gray-200 last:border-none"
+                  className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
                 >
-                  <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                  <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.id_product}
                   </td>
-                  <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                  <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.bukti_pembayaran}
                   </td>
-                  <td className="py-3 px-6 text-center font-semibold text-gray-700">
+                  <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.tanggal}
                   </td>
                   <td>
@@ -194,11 +199,14 @@ export default function KonfirmasiPembayaran() {
                       <img
                         src={`data:image/jpeg;base64,${beli_product.kontent_base64}`}
                         alt="Product Image"
-                        className="w-24 h-24 object-cover rounded-lg shadow-md hover:scale-105 transition transform duration-300"
+                        className="w-20 h-20 object-cover rounded-lg shadow-md hover:scale-105 transition transform duration-300"
                       />
                     ) : (
                       <span className="italic text-gray-400">No Image</span>
                     )}
+                  </td>
+                  <td>
+                    
                   </td>
                   <td className="py-4 px-4 text-center">
                     <ConfirmButton

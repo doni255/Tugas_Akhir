@@ -57,21 +57,22 @@ export default function Pendapatan() {
           Pendapatan
         </strong>
 
-        <div className="mt-3"></div>
         <div className="overflow-x-auto">
           <div className="w-full">
             <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
               {/* <strong className="text-gray-700 font-medium">Recent Orders</strong> */}
               <div className="mt-3">
-                <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
+                <table className="w-full  text-gray-700 border-x border-gray-200 rounded-sm">
                   <thead>
-                    <tr className="font-semibold">
-                      <td className="py-2 px-2 text-center">No</td>
-                      <td className="py-2 px-2 text-center">Nama Product</td>
-                      <td className="py-2 px-2 text-center">Sub Total</td>
+                    <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
+                      <td className="text-center font-semibold">No</td>
+                      <td className="text-center font-semibold">
+                        Nama Product
+                      </td>
+                      <td className="text-center font-semibold">Sub Total</td>
                       {/* <td className="py-4 px-4 text-center">Jumlah</td> */}
-                      <td className="py-2 px-2 text-center">Tanggal</td>
-                      <td className="py-2 px-2 text-center">Tools</td>
+                      <td className="text-center font-semibold">Tanggal</td>
+                      <td className="text-center font-semibold">Tools</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -80,20 +81,22 @@ export default function Pendapatan() {
                       return (
                         <tr
                           key={pendapatan.id_penjualan_barang}
-                          className="hover:bg-gray-100"
+                          className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
                         >
-                          <td className="text-center">
+                          <td className="py-3 px-6 text-center text-gray-700">
                             {(index + 1).toString().padStart(6, "0")}
                           </td>
 
-                          <td className="text-center">
+                          <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.nama_product}
                           </td>
                           {/* <td></td> */}
-                          <td className="text-center">
+                          <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.harga_total}
                           </td>
-                          <td className="text-center">{formatTanggal(pendapatan.tanggal)}</td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {formatTanggal(pendapatan.tanggal)}
+                          </td>
                           <td className="relative">
                             <div className="absolute inset-0 flex items-center justify-center">
                               <FaFilePdf className="mx-1" />

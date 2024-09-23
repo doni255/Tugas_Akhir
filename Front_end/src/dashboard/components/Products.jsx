@@ -698,7 +698,9 @@ export default function Products({ productId, userId }) {
                     ID
                   </div>
                 </td>
-                <td className="font-semibold">&nbsp; &nbsp; Gambar</td>
+                <td className="text-center font-semibold">
+                  &nbsp; &nbsp; Gambar
+                </td>
                 <td className=" text-center font-semibold">Product Name</td>
                 <td className="text-center font-semibold">Kategori Produk</td>
                 <td className="text-center font-semibold">Harga Beli</td>
@@ -711,8 +713,11 @@ export default function Products({ productId, userId }) {
 
             <tbody>
               {currentItems.map((product) => (
-                <tr key={product.id_product} className="hover:bg-gray-100">
-                  <td className="gap-x-4 items-center py-4   pl-10">
+                <tr
+                  key={product.id_product}
+                  className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
+                >
+                  <td className="py-3 px-6 text-center text-gray-700">
                     <span className="py-3 px-4 text-center">
                       {product.id_product}
                     </span>
@@ -728,11 +733,21 @@ export default function Products({ productId, userId }) {
                       className="w-20 justify-center aspect-auto rounded-lg object-cover object-top border border-gray-200"
                     />
                   </td>
-                  <td className="text-center">{product.nama_product}</td>
-                  <td className="text-center">{product.kategori_produk}</td>
-                  <td className="text-center">{product.harga_beli}</td>
-                  <td className="text-center">{product.harga_jual}</td>
-                  <td className="text-center">{product.jumlah_stock}</td>
+                  <td className="py-3 px-6 text-center text-gray-700">
+                    {product.nama_product}
+                  </td>
+                  <td className="py-3 px-6 text-center text-gray-700">
+                    {product.kategori_produk}
+                  </td>
+                  <td className="py-3 px-6 text-center text-gray-700">
+                    {product.harga_beli}
+                  </td>
+                  <td className="py-3 px-6 text-center text-gray-700">
+                    {product.harga_jual}
+                  </td>
+                  <td className="py-3 px-6 text-center text-gray-700">
+                    {product.jumlah_stock}
+                  </td>
                   {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
                   <td className="py-4 px-4 text-center">
                     {role === "admin" && (

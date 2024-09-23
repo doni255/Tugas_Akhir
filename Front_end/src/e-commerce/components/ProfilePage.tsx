@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Transition } from "@headlessui/react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -16,16 +16,35 @@ const ProfilePage = () => {
     role: "",
   });
 
-  const [isToastShown, setIsToastShown] = useState(false);
+  // const [isToastShown, setIsToastShown] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false); // state for animation
+  const toastShownRef = useRef(false); // Use a ref to track if the toast has been shown
   const navigate = useNavigate();
 
-  const Logout = () => {
-    localStorage.clear();
-    navigate("/e-commerce");
+  const setTimedLogout = () => {
+    localStorage.clear(); // Clear user data
     toast.success("Logout Berhasil 😁", {
       duration: 5000,
     });
+
+    // Set a timeout to refresh the page after 5 seconds
+    setTimeout(() => {
+      window.location.reload(); // Refresh the page
+    }, 500); // Adjust the time as needed
+  };
+
+  const Logout = () => {
+    // Check if the user is logged in
+    const isLoggedIn = localStorage.getItem("id_user");
+
+    if (!isLoggedIn) {
+      toast.error("You haven't logged in yet!", {
+        duration: 3000,
+      });
+      return; // Prevent further execution if not logged in
+    }
+
+    setTimedLogout();
   };
 
   const getDataUserByID = async () => {
@@ -36,35 +55,40 @@ const ProfilePage = () => {
           localStorage.getItem("id_user")
       );
       const data = response.data;
-      // Update the formData state directly without mutating the object
-      setFormData({
-        nama: data.nama,
-        email: data.email,
-        password: data.password,
-        alamat: data.alamat,
-        no_telpon: data.no_telpon,
-        kota: data.kota,
-        role: data.role,
-      });
 
-      // Tampilkan toast hanya jika belum ditampilkan
-      if (!isToastShown) {
-        toast.success("Login Berhasil 😁", {
-          duration: 5000,
-        });
-        setIsToastShown(true); // Tandai bahwa toast sudah ditampilkan
-      }
+      setFormData(data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    // Logika yang dijalankan saat komponen pertama kali dirender (mounted)
-    getDataUserByID();
-    setTimeout(() => {
-      setIsLoaded(true); // Trigger animation after data is loaded
-    }, 100);
+    const fetchData = async () => {
+      await getDataUserByID();
+
+      // Show login toast if the user is logged in and toast has not been shown yet
+      const isLoggedIn = localStorage.getItem("id_user");
+      const isToastShown = localStorage.getItem("isToastShown");
+      if (isLoggedIn && !isToastShown) {
+        toast.success("Login Berhasil", {
+          duration: 1500,
+        });
+        localStorage.setItem("isToastShown", "true"); // Mark as shown
+      }
+
+      // Check for the logout flag and show the logout toast
+      const isLoggedOut = localStorage.getItem("isLoggedOut");
+      if (isLoggedOut) {
+        toast.success("You have successfully logged out!", {
+          duration: 3000,
+        });
+        localStorage.removeItem("isLoggedOut"); // Clear the logout flag
+      }
+
+      setIsLoaded(true);
+    };
+
+    fetchData();
   }, []);
 
   return (

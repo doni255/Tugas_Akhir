@@ -17,7 +17,12 @@ import FeatureSectionSaw_SparePart from "./FeatureSectionSaw_SparePart";
 import FeatureSpeedBoat_SparePart from "./FeatureSpeedBoat_SparePart";
 import FeatureSectionGenerators_SparePart from "./FeatureSectionGenerators_SparePart";
 import FeatureWaterPump_Sparepart from "./FeatureWaterPump_SparePart";
-import { Transition } from "@headlessui/react";
+import {
+  Transition,
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+} from "@headlessui/react";
 import toast, { Toaster } from "react-hot-toast";
 
 interface NavbarProps {
@@ -101,7 +106,7 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
   };
 
   const handleCartProductClick = () => {
-    navigate("/e-commerce/cartproduct");// Redirect to cart product page
+    navigate("/e-commerce/cartproduct"); // Redirect to cart product page
   };
 
   return (
@@ -127,8 +132,10 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
               </div>
 
               <div className="flex gap-4 items-center">
-                <div className="icon__wrapper cursor_pointer text-[#F5C300] hover:text-[#FF6B00]"
-                onClick={handleCartProductClick}>
+                <div
+                  className="icon__wrapper cursor_pointer text-[#F5C300] hover:text-[#FF6B00]"
+                  onClick={handleCartProductClick}
+                >
                   <AiOutlineShoppingCart size={24} />
                 </div>
               </div>
@@ -139,6 +146,7 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
               >
                 <AiOutlineUser size={24} />
               </div>
+
               {/* <div
                   className="icon__wrapper cursor-pointer relative text-[#F5C300] hover:text-[#FF6B00]"
                   onClick={() => setShowCart(true)}

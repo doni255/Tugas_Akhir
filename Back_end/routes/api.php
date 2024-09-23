@@ -3,6 +3,7 @@
 use App\Http\Controllers\BarangMasukAdminController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BeliProdukController;
+use App\Http\Controllers\HistoriBeliProdukController;
 use App\Http\Controllers\PendapatanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProductController;
@@ -86,5 +87,8 @@ use Illuminate\Http\Request;
     Route::get('/status_beli_product', [BeliProdukController::class, 'getBeliProductByStatus']);
     Route::delete('/hapus_keranjang/{id_beli_produk}', [BeliProdukController::class, 'destroyEvidentPayment']);
     Route::post("/konfirmasi_pembayaran/{id_beli_produk}", [BeliProdukController::class, 'konfirmasiPembayaran']);
+
+    // Histori Beli Produk
+    Route::get('/histori_beli_produk/{id_user}', [HistoriBeliProdukController::class, 'historiBeliProduk']);
 
 
