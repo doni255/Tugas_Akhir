@@ -51,7 +51,7 @@ export default function KonfirmasiPembayaran() {
     try {
       const response = await axios.get(
         "http://localhost:8000/api/status_beli_product"
-      );
+      );  
       const data = response.data.data || [];
       console.log("data", data);
 
@@ -64,7 +64,7 @@ export default function KonfirmasiPembayaran() {
 
   const handleConfirmButton = (beli_product) => {
     console.log(beli_product.id_beli_produk);
-    setSelectedUserConfirm(beli_product.id_user);
+    setSelectedUserConfirm(beli_product);
     setSelectedKonfirmasiPembayaran(beli_product.id_beli_produk);
     setisConfirmationModalOpen(true);
   };
@@ -151,7 +151,7 @@ export default function KonfirmasiPembayaran() {
             </p>
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-hidden">
           <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
@@ -170,13 +170,21 @@ export default function KonfirmasiPembayaran() {
               {beliProducts.map((beli_product) => (
                 <tr
                   key={beli_product.id_beli_produk}
-                  className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
+                  className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.05] shadow-sm border-b border-gray-200 last:border-none"
                 >
                   <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.id_product}
                   </td>
                   <td className="py-3 px-6 text-center text-gray-700">
-                    {beli_product.bukti_pembayaran}
+                    {beli_product.bukti_pembayaran ? (
+                      <img
+                        src={`data:image/jpeg;base64,${beli_product.bukti_pembayaran}`}
+                        alt="Product Image"
+                        className="w-44 h-auto object-cover rounded-lg shadow-md hover:scale-125 transition transform duration-300"
+                      />
+                    ) : (
+                      <span className="italic text-gray-400">No Image</span>
+                    )}
                   </td>
                   <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.tanggal}
@@ -193,21 +201,7 @@ export default function KonfirmasiPembayaran() {
                       {beli_product.status}
                     </div>
                   </td>
-                  <td className="py-3 px-6 text-center">
-                    {/* Jika ada konten base64, tampilkan gambar */}
-                    {beli_product.kontent_base64 ? (
-                      <img
-                        src={`data:image/jpeg;base64,${beli_product.kontent_base64}`}
-                        alt="Product Image"
-                        className="w-20 h-20 object-cover rounded-lg shadow-md hover:scale-105 transition transform duration-300"
-                      />
-                    ) : (
-                      <span className="italic text-gray-400">No Image</span>
-                    )}
-                  </td>
-                  <td>
-                    
-                  </td>
+                  <td></td>
                   <td className="py-4 px-4 text-center">
                     <ConfirmButton
                       onClick={() => handleConfirmButton(beli_product)}
@@ -234,72 +228,6 @@ export default function KonfirmasiPembayaran() {
         />
         <div className="mb-16"></div>
       </div>
-
-      {/* {selectedUser && (
-        <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 text-center">
-            <div className="fixed inset-0 transition-opacity">
-              <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"></div>
-            </div>
-            <div className="inline-block align-middle bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-red-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Account Information
-                    </h3>
-                    <div className="mt-2">
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          <strong>Nama: </strong>
-                          {selectedUser.nama}
-                          <br />
-                          <strong>Email: </strong>
-                          {selectedUser.email}
-                          <br />
-                          <strong>No Telepon: </strong>
-                          {selectedUser.no_telpon}
-                          <br />
-                          <strong>Kota: </strong>
-                          {selectedUser.kota}
-                          <br />
-                          <strong>Alamat: </strong>
-                          {selectedUser.alamat}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  onClick={handleCloseModalKontak}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )} */}
 
       {/* Modal for Konfirmasi */}
       <Modal

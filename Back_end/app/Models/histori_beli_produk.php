@@ -13,8 +13,9 @@ class histori_beli_produk extends Model
 
     protected $fillable = [
         'id_user',
+        'nama_product',
+        'gambar',
         'bukti_pembayaran',
-        'id_beli_produk',
         'tanggal',
         'status',
     ];
@@ -33,5 +34,11 @@ class histori_beli_produk extends Model
     {
         return base64_encode($this->attributes['bukti_pembayaran']);
     }
+
+    public function getKontenBase64AttributeGambar()
+    {
+        return base64_encode($this->attributes['gambar']);
+    }
+    
 
 }

@@ -259,7 +259,7 @@ class ProductController extends Controller
         }
 
         $uang = Uang::find(1);
-        $uang->jumlah_uang = $uang->jumlah_uang - ($product->harga_beli * $request->jumlah_stock);
+        $uang->jumlah_uang = $uang->jumlah_uang + ($product->harga_beli * $request->jumlah_stock);
     
         $product->jumlah_stock = $product->jumlah_stock - $request->jumlah_stock;
         $product->save();

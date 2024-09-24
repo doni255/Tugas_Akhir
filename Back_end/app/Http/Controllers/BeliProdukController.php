@@ -137,21 +137,54 @@ class BeliProdukController extends Controller
 
 
     // BUAT ADMIN
-    public function getBeliProductByStatus() {
-        $beli_produk = beli_produk::where('status', 'lunas')->get();
 
-        if($beli_produk->isEmpty()){
+        public function getBeliProductByStatus()
+    {
+        $beli_products = beli_produk::where('status', 'lunas')
+            ->get();
+
+        if ($beli_products) {
             return response()->json([
-                'message' => 'No data',
-                'data' => []
-            ], 404);
+                'message' => 'Data found',
+                'data' => $beli_products->map(function ($item) {
+
+                    // There are 2 ways how to displays image with $filePath and $base64Image
+                    $filePath = public_path('uploads/bukti_pembayaran/' . $item->bukti_pembayaran);
+                    $base64Image = file_exists($filePath) ? base64_encode(file_get_contents($filePath)) : null;
+
+                    return [
+                        'id_beli_produk' => $item->id_beli_produk,
+                        'id_product' => $item->id_product,
+                        'bukti_pembayaran' => $base64Image, // Original image filename
+                        'tanggal' => $item->tanggal,
+                        'status' => $item->status,
+                        // 'kontent_base64' => $base64Image // Base64 image data
+                    ];
+                }),
+            ]);
         }
 
         return response()->json([
-            'message' => 'Retrieve data success',
-            'data' => $beli_produk
-        ], 200);
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
     }
+
+    // public function getBeliProductByStatus() {
+    //     $beli_produk = beli_produk::where('status', 'lunas')->get();
+
+    //     if($beli_produk->isEmpty()){
+    //         return response()->json([
+    //             'message' => 'No data',
+    //             'data' => []
+    //         ], 404);
+    //     }
+
+    //     return response()->json([
+    //         'message' => 'Retrieve data success',
+    //         'data' => $beli_produk
+    //     ], 200);
+    // }
 
     // konfirmasi pembayaran
     public function konfirmasiPembayaran($id_beli_produk) {
@@ -163,6 +196,8 @@ class BeliProdukController extends Controller
             $histori = new histori_beli_produk();
             $histori->id_user = $beli_produk->id_user;
             $histori->bukti_pembayaran = $beli_produk->bukti_pembayaran; // Simpan gambar atau bukti pembayaran
+            $histori->nama_product = $beli_produk->product->nama_product;
+            $histori->gambar = $beli_produk->product->konten_base64; // Simpan gambar produk
             $histori->tanggal = date('Y-m-d');
             $histori->status = 'lunas';
             $histori->save();

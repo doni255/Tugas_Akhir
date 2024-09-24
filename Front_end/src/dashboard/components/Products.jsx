@@ -996,7 +996,7 @@ export default function Products({ productId, userId }) {
       </Modal>
 
       <Modal open={isBuyModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2 className="text-lg font-semibold mb-4">Pembelian</h2>
+        <h2 className="text-lg font-semibold mb-4">Pembelian Jumlah Stock</h2>
         <form
           onSubmit={(e) => handlePembelianProduct(e, selectedProduct)} // Pastikan selectedProduct adalah id_product
           className="mt-8 grid grid-cols-6 gap-6"
