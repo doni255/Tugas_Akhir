@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import RecentOrders from "./RecentOrders";
 import axios from "axios";
-
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import jsPDF from "jspdf";
+import "jspdf-autotable"; // Import for auto table
 
 export default function Pendapatan() {
   const [pendapatan, setPendapatan] = useState(null);
@@ -19,7 +20,7 @@ export default function Pendapatan() {
   const fetchPendapatan = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/pendapatan");
-      console.log("Data fetched from API:", response.data); // Tambahkan log ini
+      console.log("Data fetched from API:", response.data);
       setPendapatan(response.data);
     } catch (error) {
       console.log(error);
@@ -39,19 +40,41 @@ export default function Pendapatan() {
     });
   };
 
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Laporan Pendapatan", 14, 22);
+
+    // Define the table content
+    const tableColumn = ["No", "Nama Product", "Sub Total", "Tanggal"];
+    const tableRows = [];
+
+    currentItems.forEach((item, index) => {
+      const pendapatanData = [
+        (index + 1).toString().padStart(6, "0"),
+        item.nama_product,
+        item.harga_total,
+        formatTanggal(item.tanggal),
+      ];
+      tableRows.push(pendapatanData);
+    });
+
+    // Generate the table in the PDF
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+      theme: "grid",
+    });
+
+    // Save the PDF
+    doc.save("laporan-pendapatan.pdf");
+  };
+
   return (
     <main>
-      {/* <div className="flex items-center justify-between py-7 px-10">
-        <div>
-          <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
-            Here`s Your Customers 😁
-          </h1>
-          <p className="text-sm font-medium text-gray-500">
-            Let's grow to your business! Create your product and upload here
-          </p>
-        </div>
-      </div> */}
-
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
         <div className="flex justify-between items-center p-4 bg-white rounded-md">
           <div>
@@ -61,6 +84,7 @@ export default function Pendapatan() {
           </div>
           <div className="flex space-x-4">
             <button
+              onClick={handleDownloadPdf} // Handle PDF download on click
               className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
               title="Download as PDF"
             >
@@ -78,7 +102,6 @@ export default function Pendapatan() {
         <div className="overflow-x-auto">
           <div className="w-full">
             <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
-              {/* <strong className="text-gray-700 font-medium">Recent Orders</strong> */}
               <div className="mt-3">
                 <table className="w-full  text-gray-700 border-x border-gray-200 rounded-sm">
                   <thead>
@@ -88,14 +111,11 @@ export default function Pendapatan() {
                         Nama Product
                       </td>
                       <td className="text-center font-semibold">Sub Total</td>
-                      {/* <td className="py-4 px-4 text-center">Jumlah</td> */}
                       <td className="text-center font-semibold">Tanggal</td>
-                      <td className="text-center font-semibold">Tools</td>
                     </tr>
                   </thead>
                   <tbody>
                     {currentItems.map((pendapatan, index) => {
-                      console.log(`Item #${index}:`, pendapatan); // Tambahkan log ini
                       return (
                         <tr
                           key={pendapatan.id_penjualan_barang}
@@ -104,11 +124,9 @@ export default function Pendapatan() {
                           <td className="py-3 px-6 text-center text-gray-700">
                             {(index + 1).toString().padStart(6, "0")}
                           </td>
-
                           <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.nama_product}
                           </td>
-                          {/* <td></td> */}
                           <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.harga_total}
                           </td>

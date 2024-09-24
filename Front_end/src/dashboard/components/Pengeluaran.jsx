@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import RecentOrders from "./RecentOrders";
 import axios from "axios";
-
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import jsPDF from "jspdf";
+import "jspdf-autotable"; // Import for auto table
 
 export default function Pengeluaran() {
   const [pengeluaran, setPengeluaran] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -16,16 +15,18 @@ export default function Pengeluaran() {
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const fetchPengeluaran = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/pengeluaran");
-      console.log("Data fetched from API:", response.data); // Tambahkan log ini
+      console.log("Data fetched from API:", response.data);
       setPengeluaran(response.data);
     } catch (error) {
       console.log(error);
       setPengeluaran([]);
     }
   };
+
   useEffect(() => {
     fetchPengeluaran();
   }, []);
@@ -39,29 +40,69 @@ export default function Pengeluaran() {
     });
   };
 
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Laporan Pengeluaran", 14, 22);
+
+    // Define the table content
+    const tableColumn = ["No", "Nama Product", "Sub Total", "Tanggal"];
+    const tableRows = [];
+
+    currentItems.forEach((item, index) => {
+      const pengeluaranData = [
+        (index + 1).toString().padStart(6, "0"),
+        item.nama_product,
+        item.harga_total,
+        formatTanggal(item.tanggal),
+      ];
+      tableRows.push(pengeluaranData);
+    });
+
+    // Generate the table in the PDF
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+      theme: "grid",
+    });
+
+    // Save the PDF
+    doc.save("laporan-pengeluaran.pdf");
+  };
+
   return (
     <main>
-      {/* <div className="flex items-center justify-between py-7 px-10">
-        <div>
-          <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
-            Here`s Your Customers 😁
-          </h1>
-          <p className="text-sm font-medium text-gray-500">
-            Let's grow to your business! Create your product and upload here
-          </p>
-        </div>
-      </div> */}
-
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
-        <strong className="text-2xl font-semibold loading-relaxed text-gray-800">
-          Pengeluaran
-        </strong>
+        <div className="flex justify-between items-center p-4 bg-white rounded-md">
+          <div>
+            <strong className="text-3xl font-bold tracking-wide text-gray-800">
+              Pengeluaran
+            </strong>
+          </div>
+          <div className="flex space-x-4">
+            <button
+              onClick={handleDownloadPdf} // Handle PDF download on click
+              className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
+              title="Download as PDF"
+            >
+              <FaFilePdf size={25} />
+            </button>
+            <button
+              className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
+              title="Download as Excel"
+            >
+              <FaFileExcel size={25} />
+            </button>
+          </div>
+        </div>
 
         <div className="mt-3"></div>
         <div className="overflow-x-auto">
           <div className="w-full">
             <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
-              {/* <strong className="text-gray-700 font-medium">Recent Orders</strong> */}
               <div className="mt-3">
                 <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
                   <thead>
@@ -69,14 +110,11 @@ export default function Pengeluaran() {
                       <td className="py-2 px-2 text-center">No</td>
                       <td className="py-2 px-2 text-center">Nama Product</td>
                       <td className="py-2 px-2 text-center">Sub Total</td>
-                      {/* <td className="py-4 px-4 text-center">Jumlah</td> */}
                       <td className="py-2 px-2 text-center">Tanggal</td>
-                      <td className="py-2 px-2 text-center">Tools</td>
                     </tr>
                   </thead>
                   <tbody>
                     {currentItems.map((pengeluaran, index) => {
-                      console.log(`Item #${index}:`, pengeluaran); // Tambahkan log ini
                       return (
                         <tr
                           key={pengeluaran.id_pembelian_barang}
@@ -88,17 +126,11 @@ export default function Pengeluaran() {
                           <td className="text-center">
                             {pengeluaran.nama_product}
                           </td>
-
                           <td className="text-center">
                             {pengeluaran.harga_total}
                           </td>
-                          {/* <td></td> */}
-                          <td className="text-center">{formatTanggal(pengeluaran.tanggal)}</td>
-                          <td className="relative">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <FaFilePdf className="mx-1" />
-                              <FaFileExcel className="mx-1" />
-                            </div>
+                          <td className="text-center">
+                            {formatTanggal(pengeluaran.tanggal)}
                           </td>
                         </tr>
                       );
