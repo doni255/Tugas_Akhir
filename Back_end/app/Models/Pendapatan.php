@@ -13,6 +13,8 @@ class Pendapatan extends Model
     protected $table = 'pendapatan';
     protected $primaryKey = 'id_pembelian_barang';
     protected $fillable = [
+        'harga_jual',
+        'pajak',
         'harga_total',
         'tanggal',
         'nama_product',

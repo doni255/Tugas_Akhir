@@ -92,6 +92,11 @@ use Illuminate\Http\Request;
     Route::get('/histori_beli_produk/{id_user}', [HistoriBeliProdukController::class, 'getHistoriBeliProduk']);
     Route::get('/status_pengiriman_produk/{id_user}', [BeliProdukController::class, 'getBeliProductByStatusPengiriman']);
 
+    // Get & Update Status Pengiriman Produk
+    Route::get('/get_product_status_pengiriman', [BeliProdukController::class, 'getBeliProductByStatusPengirimanAdmin']);
+    Route::post('/update_status_shipped/{id_beli_produk}', [BeliProdukController::class, 'ubahStatusPengirimanProdukToShipped']);
+    Route::post('/update_status_delivered/{id_beli_produk}', [BeliProdukController::class, 'ubahStatusPengirimanProdukToDelivered']);
     
-
+    // Konfirmasi penerimaan produk
+    Route::post('/konfirmasi_penerimaan_produk/{id_beli_produk}', [BeliProdukController::class, 'receiveOrder']);
 

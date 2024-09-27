@@ -100,11 +100,17 @@ class BeliProdukController extends Controller
     public function getBeliProductByStatusPengiriman($id_user)
     {
 
-        $beli_produk = beli_produk::where('id_user', $id_user)
-            ->where('status_pengiriman', 'confirmed')
-            ->orWhere('status_pengiriman', 'shipped')
-            ->orWhere('status_pengiriman', 'delivered')            
-            ->get();
+        $beli_produk = beli_produk::with(['user'])
+        // Where id_user matches AND status is 'lunas'
+        ->where('id_user', $id_user)
+        ->where('status', 'lunas')
+        // Use a group to handle the shipping status logic correctly
+        ->where(function ($query) {
+            $query->where('status_pengiriman', 'confirmed')
+                  ->orWhere('status_pengiriman', 'shipped')
+                  ->orWhere('status_pengiriman', 'delivered');
+        })
+        ->get();
 
         if ($beli_produk->isEmpty()) {
             return response()->json([
@@ -218,28 +224,50 @@ class BeliProdukController extends Controller
         ], 404);
     }
 
-    public function getBeliProductByStatusPengirimanAdmin($id_user) 
+    public function getBeliProductByStatusPengirimanAdmin() 
     {
+        $beli_products = beli_produk::with(['user'])
+            ->where('status', 'lunas')
+            ->where('status_pengiriman', 'confirmed')
+            ->orWhere('status_pengiriman', 'shipped')
+            ->orWhere('status_pengiriman', 'delivered')    
+            ->get();
 
+        if ($beli_products) {
+            return response()->json([
+                'message' => 'Data found',
+                'data' => $beli_products->map(function ($item) {
+
+                    // There are 2 ways how to displays image with $filePath and $base64Image
+                    $filePath = public_path('uploads/bukti_pembayaran/' . $item->bukti_pembayaran);
+                    $base64Image = file_exists($filePath) ? base64_encode(file_get_contents($filePath)) : null;
+
+                    return [
+                        'id_beli_produk' => $item->id_beli_produk,
+                        'id_product' => $item->id_product,
+                        'bukti_pembayaran' => $base64Image, // Original image filename
+                        'tanggal' => $item->tanggal,
+                        'status' => $item->status,
+                        'status_pengiriman' => $item->status_pengiriman,
+                        // 'kontent_base64' => $base64Image // Base64 image data
+                        'user' => [
+                            'id_user' => $item->user->id_user,
+                            'nama' => $item->user->nama,
+                            'email' => $item->user->email,
+                            'alamat' => $item->user->alamat,
+                            'no_telpon' => $item->user->no_telpon,
+                            'role' => $item->user->role,
+                        ]
+                    ];
+                }),
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => [],
+        ], 404);
     }
-
-
-    // public function getBeliProductByStatus() {
-    //     $beli_produk = beli_produk::where('status', 'lunas')->get();
-
-    //     if($beli_produk->isEmpty()){
-    //         return response()->json([
-    //             'message' => 'No data',
-    //             'data' => []
-    //         ], 404);
-    //     }
-
-    //     return response()->json([
-    //         'message' => 'Retrieve data success',
-    //         'data' => $beli_produk
-    //     ], 200);
-    // }
-
     // konfirmasi pembayaran
     public function konfirmasiPembayaran($id_beli_produk) {
         $beli_produk = beli_produk::find($id_beli_produk);
@@ -258,6 +286,48 @@ class BeliProdukController extends Controller
             'message' => 'Data not found',
             'data' => []
         ], 404);
+    }
+
+    public function ubahStatusPengirimanProdukToShipped($id_beli_produk)
+    {
+        $beli_produk = beli_produk::find($id_beli_produk);
+
+        if($beli_produk){
+            $beli_produk->status_pengiriman = 'shipped';
+            $beli_produk->save();
+
+            return response()->json([
+                'message' => 'Status pengiriman produk berhasil diubah menjadi shipped',
+                'data' => $beli_produk
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
+    }
+
+    public function ubahStatusPengirimanProdukToDelivered($id_beli_produk)
+    {
+
+        $beli_produk = beli_produk::find($id_beli_produk);
+
+        if($beli_produk){
+            $beli_produk->status_pengiriman = 'delivered';
+            $beli_produk->save();
+
+            return response()->json([
+                'message' => 'Status pengiriman produk berhasil diubah menjadi delivered',
+                'data' => $beli_produk
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
+
     }
 
     public function getPembelianStatusConfirmed($id_beli_produk) {
@@ -282,30 +352,33 @@ class BeliProdukController extends Controller
         if($beli_produk){
              // Simpan data ke histori_beli_produk
              $histori = new histori_beli_produk();
-             $histori->id_user = $beli_produk->id_user;
-             $histori->bukti_pembayaran = $beli_produk->bukti_pembayaran; // Simpan gambar atau bukti pembayaran
+             $histori->id_user = $beli_produk->id_user;             
              $histori->nama_product = $beli_produk->product->nama_product;
              $histori->gambar = $beli_produk->product->konten_base64; // Simpan gambar produk
              $histori->harga_jual = $beli_produk->product->harga_jual;
              $histori->tanggal = date('Y-m-d');             
              $histori->save();
  
- 
              $pendapatan = new Pendapatan();
-             $pendapatan->harga_total = $beli_produk->product->harga_jual; // Tambahkan harga_total
+             $pendapatan->harga_jual = $beli_produk->product->harga_jual; // Tambahkan harga_total
+             $pendapatan->pajak = $beli_produk->product->harga_jual * 25/100; // Tambahkan harga_total
+             $pendapatan->harga_total = $beli_produk->product->harga_jual + $pendapatan->pajak; // Tambahkan harga_total
              $pendapatan->tanggal = date('Y-m-d');
              $pendapatan->nama_product = $beli_produk->product->nama_product;
              $pendapatan->save();
  
              $uang = Uang::find(1);
-             $uang->jumlah_uang = $uang->jumlah_uang + $beli_produk->product->harga_jual;
+             $uang->jumlah_uang = $uang->jumlah_uang + $pendapatan->harga_total;
              $uang->save();
          
              $beli_produk->delete();
 
             return response()->json([
                 'message' => 'Order received',
-                'data' => $beli_produk
+                'data' => [
+                    $pendapatan,
+                    $uang
+                ]
             ], 200);
         }
 

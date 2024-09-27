@@ -13,6 +13,8 @@ class Pengeluaran extends Model
     protected $table = 'pengeluaran';
     protected $primaryKey = 'id_penjualan_barang';
     protected $fillable = [
+        'harga_beli',
+        'pajak',
         'harga_total',
         'tanggal',
         'nama_product',

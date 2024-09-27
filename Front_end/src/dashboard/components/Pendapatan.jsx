@@ -7,7 +7,6 @@ import "jspdf-autotable"; // Import for auto table
 
 export default function Pendapatan() {
   const [pendapatan, setPendapatan] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -17,6 +16,7 @@ export default function Pendapatan() {
     : [];
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const fetchPendapatan = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/pendapatan");
@@ -27,6 +27,7 @@ export default function Pendapatan() {
       setPendapatan([]);
     }
   };
+
   useEffect(() => {
     fetchPendapatan();
   }, []);
@@ -48,14 +49,23 @@ export default function Pendapatan() {
     doc.text("Laporan Pendapatan", 14, 22);
 
     // Define the table content
-    const tableColumn = ["No", "Nama Product", "Sub Total", "Tanggal"];
+    const tableColumn = [
+      "No",
+      "Nama Product",
+      "Harga Jual",
+      "Sub Total",
+      "Pajak Pendapatan",
+      "Tanggal",
+    ];
     const tableRows = [];
 
     currentItems.forEach((item, index) => {
       const pendapatanData = [
         (index + 1).toString().padStart(6, "0"),
         item.nama_product,
-        item.harga_total,
+        item.harga_jual.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }),
+        item.harga_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }),
+        item.pajak.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }),
         formatTanggal(item.tanggal),
       ];
       tableRows.push(pendapatanData);
@@ -67,7 +77,27 @@ export default function Pendapatan() {
       body: tableRows,
       startY: 30,
       theme: "grid",
+      styles: { cellPadding: 5, fontSize: 10 },
+      columnStyles: {
+        0: { halign: 'center' },
+        1: { halign: 'left' },
+        2: { halign: 'right' },
+        3: { halign: 'right' },
+        4: { halign: 'right' },
+        5: { halign: 'center' },
+      }
     });
+
+    // Calculate totals
+    const totalPendapatan = currentItems.reduce((acc, item) => acc + item.harga_total, 0);
+    const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
+
+    // Summary section
+    const summaryY = doc.autoTable.previous.finalY + 10;
+    doc.setFontSize(14);
+    doc.text(`Total Pendapatan: ${totalPendapatan.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}`, 14, summaryY);
+    doc.text(`Total Pajak Pendapatan: ${totalPajak.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}`, 14, summaryY + 10);
+    doc.text(`Grand Total: ${(totalPendapatan + totalPajak).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}`, 14, summaryY + 20);
 
     // Save the PDF
     doc.save("laporan-pendapatan.pdf");
@@ -101,16 +131,16 @@ export default function Pendapatan() {
 
         <div className="overflow-x-auto">
           <div className="w-full">
-            <div className="bg-white px-4  pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
+            <div className="bg-white px-4 pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
               <div className="mt-3">
-                <table className="w-full  text-gray-700 border-x border-gray-200 rounded-sm">
+                <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
                   <thead>
                     <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                       <td className="text-center font-semibold">No</td>
-                      <td className="text-center font-semibold">
-                        Nama Product
-                      </td>
+                      <td className="text-center font-semibold">Nama Product</td>
+                      <td className="text-center font-semibold">Harga Jual</td>
                       <td className="text-center font-semibold">Sub Total</td>
+                      <td className="text-center font-semibold">Pajak Pendapatan</td>
                       <td className="text-center font-semibold">Tanggal</td>
                     </tr>
                   </thead>
@@ -128,7 +158,13 @@ export default function Pendapatan() {
                             {pendapatan.nama_product}
                           </td>
                           <td className="py-3 px-6 text-center text-gray-700">
-                            {pendapatan.harga_total}
+                            {pendapatan.harga_jual.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {pendapatan.harga_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {pendapatan.pajak.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
                           </td>
                           <td className="py-3 px-6 text-center text-gray-700">
                             {formatTanggal(pendapatan.tanggal)}

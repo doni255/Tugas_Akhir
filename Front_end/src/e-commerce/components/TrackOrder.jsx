@@ -29,24 +29,36 @@ const TrackOrder = () => {
     }
   };
 
-  const handlePaymentClick = (id_beli_produk) => {
+  const handleSubmitPesanan = () => {
+    console.log("id produk in handel submit", selectedIdBeliProduk);
+
+    
+
+    try {
+      const response = axios.post(
+        `http://localhost:8000/api/konfirmasi_penerimaan_produk/${selectedIdBeliProduk}`
+      );
+      toast.success("Pesanan Diterima");
+      fetchTrackOrder();
+    } catch (error) {
+      toast.error("Gagal menerima pesanan");
+    }
+  };
+
+  const handleTerimaPesanan = (id_beli_produk) => {
+    console.log("Terima Pesanan", id_beli_produk);
     setSelectedIdBeliProduk(id_beli_produk);
     setIsPaymentModalOpen(true);
   };
 
-  const handleSubmitPayment = (e) => {
-    e.preventDefault();
-    if (selectedFile && selectedIdBeliProduk) {
-      paymentProduct(selectedIdBeliProduk, selectedFile);
-    } else {
-      toast.error("Please select a file to upload.");
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-  };
+  // const handleSubmitPayment = (e) => {
+  //   e.preventDefault();
+  //   if (selectedFile && selectedIdBeliProduk) {
+  //     paymentProduct(selectedIdBeliProduk, selectedFile);
+  //   } else {
+  //     toast.error("Please select a file to upload.");
+  //   }
+  // };
 
   const getStatusFlags = (status) => {
     const trimmedStatus = status.trim().toLowerCase();
@@ -81,7 +93,7 @@ const TrackOrder = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
           onClick={() => setIsPaymentModalOpen(false)}
         >
-          <div className="relative bg-white p-6 sm:p-10 rounded-lg shadow-2xl w-full max-w-lg max-h-screen overflow-y-auto">
+          <div className="relative bg-white p-6 sm:p-10 rounded-lg shadow-2xl w-1/2b max-w-lg max-h-screen overflow-y-auto">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-transform hover:scale-110"
               onClick={() => setIsPaymentModalOpen(false)}
@@ -89,9 +101,16 @@ const TrackOrder = () => {
               &#x2715;
             </button>
             <h2 className="text-2xl font-bold text-gray-800 mb-5 text-center">
-              Complete Your Payment
+              Selesaikan Pemesanan
             </h2>
-            <form onSubmit={handleSubmitPayment}>
+            <button
+              type="submit"
+              className="w-full py-3 bg-indigo-600 text-white text-lg font-semibold rounded-md shadow-lg hover:bg-indigo-500 transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              onClick={handleSubmitPesanan}
+            >
+              Submit
+            </button>
+            {/* <form onSubmit={handleSubmitPayment}>
               <div className="mt-5">
                 <label
                   htmlFor="file-upload"
@@ -138,7 +157,7 @@ const TrackOrder = () => {
                   Submit
                 </button>
               </div>
-            </form>
+            </form> */}
           </div>
         </div>
       </Transition>
@@ -270,7 +289,7 @@ const TrackOrder = () => {
                     {/* Payment Button */}
                     <button
                       className="px-6 py-2 bg-gradient-to-r from-green-400 to-green-500 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:from-green-500 hover:to-green-600 transition-all transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
-                      onClick={() => handlePaymentClick(item.id_beli_produk)}
+                      onClick={() => handleTerimaPesanan(item.id_beli_produk)}
                     >
                       Terima Pesanan
                     </button>

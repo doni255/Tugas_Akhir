@@ -90,14 +90,16 @@ class BarangMasukAdminController extends Controller
     $product->gambar = $barang_masuk->gambar;
     $product->nama_product = $barang_masuk->nama_product;
     $product->kategori_produk = $barang_masuk->kategori_produk;
-    $product->harga_beli = $barang_masuk->harga_beli;
-    $product->harga_jual = $barang_masuk->harga_jual; // Optional: Atur harga jual
+    $product->harga_beli = $barang_masuk->harga_beli;    
     $product->jumlah_stock = $barang_masuk->jumlah_stock;
     $uang->jumlah_uang = $uang->jumlah_uang - ($barang_masuk->harga_beli * $barang_masuk->jumlah_stock);
 
     $pengeluaran = new Pengeluaran();
+
     $pengeluaran->nama_product = $barang_masuk->nama_product;
-    $pengeluaran->harga_total = $barang_masuk->harga_beli * $barang_masuk->jumlah_stock;
+    $pengeluaran->harga_beli = $product->harga_beli; // Tambahkan harga_total
+    $pengeluaran->pajak = $product->harga_beli * 25 / 100;
+    $pengeluaran->harga_total = (($barang_masuk->harga_beli + $pengeluaran->pajak) * $barang_masuk->jumlah_stock);
     $pengeluaran->tanggal = date('Y-m-d');
     $pengeluaran->save();
 
