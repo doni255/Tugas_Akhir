@@ -726,7 +726,7 @@ export default function Products({ productId, userId }) {
                   <td className="">
                     <img
                       src={`data:image/png;base64,${product.gambar}`}
-                      className="w-20 justify-center aspect-auto rounded-lg object-cover object-top border border-gray-200"
+                      className="w-24 justify-center aspect-auto rounded-lg object-cover object-top border border-gray-200"
                     />
                   </td>
                   <td className="py-3 px-6 text-center text-gray-700">

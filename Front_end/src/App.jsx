@@ -52,6 +52,7 @@ import CartProduct from "./e-commerce/components/CartProduct";
 import KonfirmasiPembayaran from "./dashboard/components/KonfirmasiPembayaran";
 import History from "./e-commerce/components/History";
 import ContactUs from "./e-commerce/components/ContactUs";
+import TrackOrder from "./e-commerce/components/TrackOrder";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -194,6 +195,7 @@ function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="history" element={<History />} />
               <Route path="cartproduct" element={<CartProduct />} />
+              <Route path="track_order" element={<TrackOrder />} />
             </Route>
 
             {/* <Route path="e-commerce/profile" element={<ProfilePage />} /> */}

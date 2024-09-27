@@ -15,9 +15,8 @@ class histori_beli_produk extends Model
         'id_user',
         'nama_product',
         'gambar',
-        'bukti_pembayaran',
-        'tanggal',
-        'status',
+        'harga_jual',
+        'tanggal',        
     ];
 
     public $timestamps = false; // Jika Anda tidak menggunakan created_at dan updated_at
@@ -28,11 +27,6 @@ class histori_beli_produk extends Model
     {
         return
         $this->belongsTo(User::class, 'id_user', 'id_user');
-    }
-
-    public function getKontenBase64Attribute()
-    {
-        return base64_encode($this->attributes['bukti_pembayaran']);
     }
 
     public function getKontenBase64AttributeGambar()

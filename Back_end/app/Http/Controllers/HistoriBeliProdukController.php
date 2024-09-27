@@ -26,6 +26,7 @@ class HistoriBeliProdukController extends Controller
             return [
                 'id_histori_beli_produk' => $item->id_histori_beli_produk,
                 'id_user' => $item->id_user,
+                'harga_jual' => $item->harga_jual,
                 'nama_product' => $item->nama_product,
                 'gambar' => $item->gambar,
                 'bukti_pembayaran' => base64_encode($item->bukti_pembayaran), // Convert BLOB to base64

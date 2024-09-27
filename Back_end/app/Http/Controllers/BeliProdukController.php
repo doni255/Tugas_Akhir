@@ -33,8 +33,10 @@ class BeliProdukController extends Controller
                 $beli_produk->id_product = $product->id_product;
                 $beli_produk->id_user = $id_user;
                 $beli_produk->bukti_pembayaran = null;
+                $beli_produk->harga_jual = $product->harga_jual;
                 $beli_produk->tanggal = date('Y-m-d');
                 $beli_produk->status = 'belum lunas';
+                $beli_produk->status_pengiriman = 'not confirmed';
                 $beli_produk->save();
 
                 return response()->json([
@@ -58,6 +60,7 @@ class BeliProdukController extends Controller
     public function getKeranjangPembelian($id_user) {
         $beli_produk = beli_produk::with(['product'])
         ->where('id_user', $id_user)
+        ->where('status_pengiriman', 'not confirmed')
         ->get();
 
         if($beli_produk->isEmpty()){
@@ -75,6 +78,7 @@ class BeliProdukController extends Controller
                 'bukti_pembayaran' => $item->bukti_pembayaran,
                 'tanggal' => $item->tanggal,
                 'status' => $item->status,
+                'status_pengiriman' => $item->status_pengiriman,
                 'product' => [
                     'id_product' => $item->product->id_product,
                     'nama_product' => $item->product->nama_product,
@@ -92,7 +96,50 @@ class BeliProdukController extends Controller
             'data' => $beliProductsArray
         ], 200);
     }
-    
+
+    public function getBeliProductByStatusPengiriman($id_user)
+    {
+
+        $beli_produk = beli_produk::where('id_user', $id_user)
+            ->where('status_pengiriman', 'confirmed')
+            ->orWhere('status_pengiriman', 'shipped')
+            ->orWhere('status_pengiriman', 'delivered')            
+            ->get();
+
+        if ($beli_produk->isEmpty()) {
+            return response()->json([
+                'message' => 'No data',
+                'data' => []
+            ], 404);
+        }
+
+        $beliProductsArray = $beli_produk->map(function ($item) {
+            return [
+                'id_beli_produk' => $item->id_beli_produk,
+                'id_product' => $item->id_product,
+                'id_user' => $item->id_user,
+                'bukti_pembayaran' => $item->bukti_pembayaran,
+                'tanggal' => $item->tanggal,
+                'status' => $item->status,
+                'status_pengiriman' => $item->status_pengiriman,
+                'product' => [
+                    'id_product' => $item->product->id_product,
+                    'nama_product' => $item->product->nama_product,
+                    'kategori_produk' => $item->product->kategori_produk,
+                    'harga_beli' => $item->product->harga_beli,
+                    'harga_jual' => $item->product->harga_jual,
+                    'jumlah_stock' => $item->product->jumlah_stock,
+                    'konten_base64' => $item->product->konten_base64
+                ]
+            ];
+        });
+
+        return response()->json([
+            'message' => 'Retrieve data success',
+            'data' => $beliProductsArray
+        ], 200);
+        
+    }
     public function beliProduct(Request $request, $id_beli_produk) {
         
         $beli_produk = beli_produk::find($id_beli_produk);
@@ -138,9 +185,10 @@ class BeliProdukController extends Controller
 
     // BUAT ADMIN
 
-        public function getBeliProductByStatus()
+    public function getBeliProductByStatus()
     {
         $beli_products = beli_produk::where('status', 'lunas')
+            ->where('status_pengiriman', 'not confirmed')
             ->get();
 
         if ($beli_products) {
@@ -170,6 +218,12 @@ class BeliProdukController extends Controller
         ], 404);
     }
 
+    public function getBeliProductByStatusPengirimanAdmin($id_user) 
+    {
+
+    }
+
+
     // public function getBeliProductByStatus() {
     //     $beli_produk = beli_produk::where('status', 'lunas')->get();
 
@@ -191,33 +245,12 @@ class BeliProdukController extends Controller
         $beli_produk = beli_produk::find($id_beli_produk);
 
         if($beli_produk){
-
-              // Simpan data ke histori_beli_produk
-            $histori = new histori_beli_produk();
-            $histori->id_user = $beli_produk->id_user;
-            $histori->bukti_pembayaran = $beli_produk->bukti_pembayaran; // Simpan gambar atau bukti pembayaran
-            $histori->nama_product = $beli_produk->product->nama_product;
-            $histori->gambar = $beli_produk->product->konten_base64; // Simpan gambar produk
-            $histori->tanggal = date('Y-m-d');
-            $histori->status = 'lunas';
-            $histori->save();
-
-
-            $pendapatan = new Pendapatan();
-            $pendapatan->harga_total = $beli_produk->product->harga_jual; // Tambahkan harga_total
-            $pendapatan->tanggal = date('Y-m-d');
-            $pendapatan->nama_product = $beli_produk->product->nama_product;
-            $pendapatan->save();
-
-            $uang = Uang::find(1);
-            $uang->jumlah_uang = $uang->jumlah_uang + $beli_produk->product->harga_jual;
-            $uang->save();
-        
-            $beli_produk->delete();
+            $beli_produk->status_pengiriman = 'confirmed';
+            $beli_produk->save();
 
             return response()->json([
                 'message' => 'Pembayaran berhasil',
-                'data' => $pendapatan
+                'data' => $beli_produk
             ], 200);
         }
 
@@ -225,6 +258,62 @@ class BeliProdukController extends Controller
             'message' => 'Data not found',
             'data' => []
         ], 404);
+    }
+
+    public function getPembelianStatusConfirmed($id_beli_produk) {
+        $beli_produk = beli_produk::find($id_beli_produk);
+
+        if($beli_produk){
+            return response()->json([
+                'message' => 'Data found',
+                'data' => $beli_produk
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
+    }
+
+    public function receiveOrder($id_beli_produk) {
+        $beli_produk = beli_produk::find($id_beli_produk);
+
+        if($beli_produk){
+             // Simpan data ke histori_beli_produk
+             $histori = new histori_beli_produk();
+             $histori->id_user = $beli_produk->id_user;
+             $histori->bukti_pembayaran = $beli_produk->bukti_pembayaran; // Simpan gambar atau bukti pembayaran
+             $histori->nama_product = $beli_produk->product->nama_product;
+             $histori->gambar = $beli_produk->product->konten_base64; // Simpan gambar produk
+             $histori->harga_jual = $beli_produk->product->harga_jual;
+             $histori->tanggal = date('Y-m-d');             
+             $histori->save();
+ 
+ 
+             $pendapatan = new Pendapatan();
+             $pendapatan->harga_total = $beli_produk->product->harga_jual; // Tambahkan harga_total
+             $pendapatan->tanggal = date('Y-m-d');
+             $pendapatan->nama_product = $beli_produk->product->nama_product;
+             $pendapatan->save();
+ 
+             $uang = Uang::find(1);
+             $uang->jumlah_uang = $uang->jumlah_uang + $beli_produk->product->harga_jual;
+             $uang->save();
+         
+             $beli_produk->delete();
+
+            return response()->json([
+                'message' => 'Order received',
+                'data' => $beli_produk
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Data not found',
+            'data' => []
+        ], 404);
+
     }
 
     // buatkan fungsi yang dimana menghapus keranjangpembelian

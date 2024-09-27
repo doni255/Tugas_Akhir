@@ -92,7 +92,7 @@ const ProfilePage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-6 flex flex-col items-center">
+    <div className="mx-auto px-4 py-6 flex flex-col items-center bg-gradient-to-br from-blue-50 to-white min-h-screen">
       <h1 className="text-4xl font-bold mb-8">Profile Page</h1>
 
       <Transition

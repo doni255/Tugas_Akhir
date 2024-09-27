@@ -278,8 +278,8 @@ const CartProduct = () => {
         enter="transition ease-out duration-300 transform"
         enterFrom="opacity-0 scale-45"
         enterTo="opacity-100 scale-100"
-        leave="transition ease-in duration-200 transform"
-        leaveFrom="opacity-100 scale-100"
+        leave="transition ease-in duration-300 transform"
+        leaveFrom="opacity-100 scale-y-0"
         leaveTo="opacity-0 scale-60"
       >
         {isLoaded && cartProducts.length > 0 ? (
@@ -312,13 +312,154 @@ const CartProduct = () => {
                       </p>
                     </div>
                   </div>
-                  <div>
-                    <p className="text-lg font-semibold mt-2">
-                      Status Pembayaran
-                      <br />
-                      <span className="font-extralight">{item.status}</span>
+                  {/* Payment Status */}
+                  <div className="flex flex-col items-center p-2 rounded-lg transform transition duration-500 hover:scale-105 hover:shadow-lg">
+                    <p className="text-lg font-bold text-gray-800 mb-2">
+                      Bukti Pembayaran
                     </p>
+                    <div
+                      className={`flex items-center justify-between p-2 rounded-full w-48 ${
+                        item.status === "lunas"
+                          ? "bg-gradient-to-r from-green-200 to-green-100"
+                          : "bg-gradient-to-r from-yellow-200 to-yellow-100"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span
+                          className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-white shadow-md ${
+                            item.status === "lunas"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
+                          }`}
+                        >
+                          {item.status === "lunas" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          )}
+                        </span>
+                        <span
+                          className={`text-sm font-medium ${
+                            item.status === "lunas"
+                              ? "text-green-700"
+                              : "text-yellow-700"
+                          }`}
+                        >
+                          {item.status.charAt(0).toUpperCase() +
+                            item.status.slice(1)}
+                        </span>
+                      </div>
+                      {item.status === "lunas" && (
+                        <div className="flex items-center space-x-1 animate-pulse">
+                          <span className="text-green-500 text-sm font-semibold">
+                            ✔ Lunas
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Confirmation Status */}
+                  <div className="flex flex-col items-center p-2 rounded-lg transform transition duration-500 hover:scale-105 hover:shadow-lg">
+                    <p className="text-lg font-bold text-gray-800 mb-2">
+                      Status Konfirmasi
+                    </p>
+                    <div
+                      className={`flex items-center justify-between p-2 rounded-full w-48 ${
+                        item.status_pengiriman === "confirmed"
+                          ? "bg-gradient-to-r from-green-200 to-green-100"
+                          : "bg-gradient-to-r from-yellow-200 to-yellow-100"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span
+                          className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-white shadow-md ${
+                            item.status_pengiriman === "confirmed"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
+                          }`}
+                        >
+                          {item.status_pengiriman === "confirmed" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          )}
+                        </span>
+                        <span
+                          className={`text-sm font-medium ${
+                            item.status_pengiriman === "confirmed"
+                              ? "text-green-700"
+                              : "text-yellow-700"
+                          }`}
+                        >
+                          {item.status_pengiriman
+                            ? item.status_pengiriman.charAt(0).toUpperCase() +
+                              item.status_pengiriman.slice(1)
+                            : "Status tidak diketahui"}
+                        </span>
+                      </div>
+                      {item.status_pengiriman === "sudah dikonfirmasi" && (
+                        <div className="flex items-center space-x-1 animate-pulse">
+                          <span className="text-green-500 text-sm font-semibold">
+                            ✔ Sudah Dikonfirmasi
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <div>
                     <p className="text-lg font-semibold mt-2">
                       Harga Produk

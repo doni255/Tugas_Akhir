@@ -15,8 +15,10 @@ class beli_produk extends Model
         'id_product',
         'id_user',
         'bukti_pembayaran',
+        'harga_jual',
         'tanggal',
-        'status'
+        'status',
+        'status_pengiriman',
     ];
 
     public $timestamps = false;

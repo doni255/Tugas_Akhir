@@ -177,6 +177,13 @@ export const ECOMMERCE_LINKS = () => {
           path: "/e-commerce/cartproduct",
           roles: ["customer"],
         },
+        {
+          //Track Order
+          key: "trackorder",
+          label: "Track_Order",
+          path: "/e-commerce/track_order",
+          roles: ["customer"],
+        },
       ],
     },
   ];

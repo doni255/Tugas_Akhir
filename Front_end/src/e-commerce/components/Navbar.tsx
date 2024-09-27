@@ -428,7 +428,7 @@ const ProductList = ({
   products: { id: number; name: string }[];
 }) => {
   return (
-    <div className="container mx-auto mt-0 px-0">
+    <div className="mx-auto px-4 py-6 flex flex-col items-center bg-gradient-to-br  min-h-screen">
       {/* Render corresponding product sections */}
       {products.length > 0 ? (
         <>

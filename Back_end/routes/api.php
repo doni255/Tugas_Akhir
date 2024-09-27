@@ -88,7 +88,10 @@ use Illuminate\Http\Request;
     Route::delete('/hapus_keranjang/{id_beli_produk}', [BeliProdukController::class, 'destroyEvidentPayment']);
     Route::post("/konfirmasi_pembayaran/{id_beli_produk}", [BeliProdukController::class, 'konfirmasiPembayaran']);
 
-    // Histori Beli Produk  
+    // Histori Beli Produk & Status Pengiriman Produk
     Route::get('/histori_beli_produk/{id_user}', [HistoriBeliProdukController::class, 'getHistoriBeliProduk']);
+    Route::get('/status_pengiriman_produk/{id_user}', [BeliProdukController::class, 'getBeliProductByStatusPengiriman']);
+
+    
 
 

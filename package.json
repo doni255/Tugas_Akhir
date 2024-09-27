@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@material-tailwind/react": "^2.1.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "jspdf": "^2.5.2",

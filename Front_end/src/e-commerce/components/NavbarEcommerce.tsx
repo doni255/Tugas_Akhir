@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { BsSearch } from "react-icons/bs";
+import { BsSearch, BsTruckFrontFill } from "react-icons/bs";
 
 import login from "../../hooks/login";
 import { useRegister } from "../../hooks/useRegister";
@@ -10,6 +10,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineLogin,
   AiOutlineProduct,
+  AiOutlineTruck,
 } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import CartCountBadge from "./CartCountBadge";
@@ -25,6 +26,9 @@ import {
 } from "@headlessui/react";
 import { TbReportSearch } from "react-icons/tb";
 import toast, { Toaster } from "react-hot-toast";
+import { TruckIcon } from "@heroicons/react/20/solid";
+import { FaTruckLoading } from "react-icons/fa";
+import { LuTruck } from "react-icons/lu";
 
 interface NavbarProps {
   setShowCart: (show: boolean) => void;
@@ -46,7 +50,7 @@ const products = [
   { id: 4, name: "Speedboat" },
 ];
 
-const   NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
+const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
   // Memanggil hook
   const {
     userData,
@@ -114,6 +118,10 @@ const   NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
     navigate("/e-commerce/history"); // Redirect to history
   };
 
+  const handleTrackOrderClick = () => {
+    navigate("/e-commerce/track_order"); // Redirect to track order
+  };
+
   return (
     <>
       <div className="sticky top-0 bg-[#2C2F33] z-10 w-full">
@@ -143,6 +151,13 @@ const   NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
                 >
                   <AiOutlineShoppingCart size={24} />
                 </div>
+              </div>
+
+              <div
+                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                onClick={handleTrackOrderClick}
+              >
+                <AiOutlineTruck size={26} />
               </div>
 
               <div

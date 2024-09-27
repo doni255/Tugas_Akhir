@@ -8,7 +8,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useCartContext();
+  // const { addToCart } = useCartContext();
   const [isModalVisible, setModalVisible] = useState(false);
 
   const tambahKeranjang = (idProduct) => {
@@ -47,7 +47,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="border border-gray-200 hover:border-gray-300 hover:scale-105 transition-transform rounded-lg relative">
+    <div className="border border-gray-200 hover:border-gray-300 hover:scale-105 transition-transform rounded-lg relative shadow-sm">
       <img
         src={`data:image/jpeg;base64,${product.gambar}`}
         alt={product.nama_product}
@@ -77,11 +77,11 @@ const ProductCard = ({ product }) => {
           + Keranjang
         </button>
 
-        <Modal
+        {/* <Modal
           isVisible={isModalVisible}
           onClose={() => setModalVisible(false)}
           product={product}
-        />
+        /> */}
       </div>
     </div>
   );
