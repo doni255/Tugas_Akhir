@@ -180,7 +180,7 @@ export default function Products({ productId, userId }) {
       toggleModalCreate();
       fetchProducts();
       toast.success("Product berhasil ditambahkan!", {
-        duration: 5000,
+        duration: 3000,
       });
     } catch (error) {
       console.log("Error saat mengirim data:", error);
@@ -230,7 +230,7 @@ export default function Products({ productId, userId }) {
       // Handle successful response
       if (response.status === 200 || response.status === 201) {
         toast.success("Jumlah stock berhasil ditambahkan !", {
-          duration: 5000,
+          duration: 3000,
         });
         setisModalTambahStockOpen(false);
       }
@@ -295,7 +295,7 @@ export default function Products({ productId, userId }) {
       console.log("Response data:", response.data);
       fetchProducts();
       toast.success("Product berhasil di edit !", {
-        duration: 5000,
+        duration: 3000,
       });
       setIsEditModalOpen(false);
     } catch (error) {
@@ -366,7 +366,7 @@ export default function Products({ productId, userId }) {
         prevProducts.filter((product) => product.id_product !== id_product)
       );
       toast.success("Product berhasil di hapus !", {
-        duration: 5000,
+        duration: 3000,
       });
       // Close the confirmation modal
       handleCloseModal();
@@ -415,7 +415,7 @@ export default function Products({ productId, userId }) {
       // Handle successful response
       if (response.status === 200 || response.status === 201) {
         toast.success("Pembelian Produk Berhasil", {
-          duration: 5000,
+          duration: 3000,
         });
         setIsBuyModalOpen(false);
       }
@@ -431,10 +431,6 @@ export default function Products({ productId, userId }) {
 
   return (
     <main className="relative ">
-      <button>
-        {/* make me blue button */}
-        <div></div>
-      </button>
       <Toaster position="top-right" reverseOrder={false} />
       <div className="bg-white px-4 pb-20 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between py-7 px-10">
@@ -689,7 +685,7 @@ export default function Products({ productId, userId }) {
           </li>
         ))}
       </ul> */}
-        <div className="overflow-x-auto">
+        <div>
           <table className="w-full">
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">

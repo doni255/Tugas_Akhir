@@ -53,13 +53,18 @@ export const useRegister = () => {
       return;
     }
 
-    if (formData.no_telpon.length < 10) {
-      toast.error("Nomor HP must be at least 10 characters long");
+    if (formData.no_telpon.length < 8) {
+      toast.error("Nomor HP must be at least 8 characters long");
       return;
     }
 
-    if (formData.alamat.length < 10) {
-      toast.error("Alamat must be at least 10 characters long");
+    if (formData.kota.length < 6) {
+      toast.error("Kota must be at least 6 characters long");
+      return;
+    }
+
+    if (formData.alamat.length < 6) {
+      toast.error("Alamat must be at least 6 characters long");
       return;
     }
 

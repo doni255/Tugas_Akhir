@@ -72,8 +72,8 @@ export default function Register() {
       return;
     }
 
-    if (formData.alamat.length < 10) {
-      toast.error("Alamat must be at least 10 characters long");
+    if (formData.alamat.length < 8) {
+      toast.error("Alamat must be at least 8 characters long");
       return;
     }
     try {

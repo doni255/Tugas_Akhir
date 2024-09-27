@@ -101,7 +101,7 @@ class ProductController extends Controller
             'kategori_produk' => 'required|string',
             'harga_beli' => 'required', // Validasi harga sebagai angka
             'harga_jual' => 'required', // Validasi harga sebagai angka
-            'konten_base64' => 'nullable|string', // Misalkan ini untuk gambar dalam format base64
+            'konten_base64' => 'nullable', // Misalkan ini untuk gambar dalam format base64
             'jumlah_stock' => 'required|string',            
         ]);
 

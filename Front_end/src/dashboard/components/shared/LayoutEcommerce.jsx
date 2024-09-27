@@ -13,7 +13,8 @@ export default function LayoutEcommerce() {
         {/* flex-grow untuk mengisi ruang */}
         <NavbarEcommerce />
       </div>
-      <NewsLetter />
+      {/* <NewsLetter /> */}
+      
       <Feature />
     </div>
   );

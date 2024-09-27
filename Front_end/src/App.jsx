@@ -51,6 +51,7 @@ import ProfilePage from "./e-commerce/components/ProfilePage";
 import CartProduct from "./e-commerce/components/CartProduct";
 import KonfirmasiPembayaran from "./dashboard/components/KonfirmasiPembayaran";
 import History from "./e-commerce/components/History";
+import ContactUs from "./e-commerce/components/ContactUs";
 
 // Auth Context untuk menyimpan peran pengguna
 const AuthContext = createContext();
@@ -110,9 +111,19 @@ function App() {
         <CartContextProvider>
           <Routes>
             {/* Bagian Login & Register */}
-            <Route
+            {/* <Route
               path="/"
               element={<Login onLogin={() => handleLogin(useAuth().setRole)} />} // Panggil handleLogin saat login berhasil
+            /> */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <NavbarEcommerce />
+                  <Navbar onLogin={() => handleLogin(useAuth().setRole)} />
+                  <Feature />
+                </>
+              }
             />
             <Route path="/register" element={<Register />} />
 
@@ -129,7 +140,10 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="orders" element={<Orders />} />
               <Route path="konfirmasi_stock" element={<KonfirmasiStock />} />
-              <Route path="konfirmasi_pembayaran" element={<KonfirmasiPembayaran />} />
+              <Route
+                path="konfirmasi_pembayaran"
+                element={<KonfirmasiPembayaran />}
+              />
               <Route path="DataUsers" element={<DataUsers />} />
               <Route path="pendapatan" element={<Pendapatan />} />
               <Route path="pengeluaran" element={<Pengeluaran />} />
@@ -179,7 +193,7 @@ function App() {
               </Route>
               <Route path="profile" element={<ProfilePage />} />
               <Route path="history" element={<History />} />
-              <Route path="cartproduct" element={<CartProduct  />} />
+              <Route path="cartproduct" element={<CartProduct />} />
             </Route>
 
             {/* <Route path="e-commerce/profile" element={<ProfilePage />} /> */}
