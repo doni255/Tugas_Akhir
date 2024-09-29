@@ -1,47 +1,34 @@
 import React from "react";
-
-import { AiFillStar, AiOutlineStar, AiOutlineShopping } from "react-icons/ai";
-import { useCartContext } from "../context/cartContext";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { useState } from "react";
-import Modal from "./Modal";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const ProductCard = ({ product }) => {
-  // const { addToCart } = useCartContext();
   const [isModalVisible, setModalVisible] = useState(false);
 
   const tambahKeranjang = (idProduct) => {
-    const idUser = localStorage.getItem("id_user"); // Get id_user from localStorage
-
-    // Debugging: Print the values
-    console.log("idUser:", idUser);
-    console.log("idProduct:", idProduct);
+    const idUser = localStorage.getItem("id_user");
 
     axios
       .post(
-        `http://localhost:8000/api/keranjang_pembelian/tambah_keranjang/${idUser}`, // Use template literal with backticks
+        `http://localhost:8000/api/keranjang_pembelian/tambah_keranjang/${idUser}`,
         {
-          id_user: idUser, // Send the correct user ID
-          id_product: idProduct, // Send the correct product ID
+          id_user: idUser,
+          id_product: idProduct,
           harga_beli: product.harga_jual,
           konten_base64: product.gambar,
         }
       )
       .then((response) => {
-        console.log("Response tambah keranjang:", response.data);
-
-        // Correct the message check to match the backend response
         if (response.data.message === "Product added to cart") {
           toast.success("Produk berhasil ditambahkan ke keranjang.");
-          // fetchCartProduct(); // Assuming this function updates your cart display
         }
       })
       .catch((error) => {
-        console.error("Error tambah keranjang:", error); // Debugging
+        console.error("Error tambah keranjang:", error);
         if (error.response) {
-          console.log("Error response data:", error.response.data); // Log the error response
-          console.log("Error status:", error.response.status);
+          console.log("Error response data:", error.response.data);
         }
       });
   };
@@ -66,22 +53,22 @@ const ProductCard = ({ product }) => {
           {product.nama_product}
         </h4>
 
-        <p className="text-gray-500 mb-2">Rp {product.harga_jual}</p>
+        {/* Price section */}
+        <p className="text-gray-800 text-xl font-bold mb-2">
+          {product.harga_jual.toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          })}
+        </p>
 
         <p className="text-sm text-gray-500">Stock: {product.jumlah_stock}</p>
 
         <button
-          className="mt-4 bg-accent text-white py-2 px-4 rounded hover:bg-accent-dark transition-colors hover:bg-green-900  "
+          className="mt-4 bg-green-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-800 transition-colors"
           onClick={() => tambahKeranjang(product.id_product)}
         >
           + Keranjang
         </button>
-
-        {/* <Modal
-          isVisible={isModalVisible}
-          onClose={() => setModalVisible(false)}
-          product={product}
-        /> */}
       </div>
     </div>
   );
