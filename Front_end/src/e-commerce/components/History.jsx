@@ -37,6 +37,69 @@ const History = () => {
     fetchHistory();
   }, [id_user]);
 
+  // Handle print button click
+  const handlePrint = (item) => {
+    // Create the HTML content for the note
+    const printContent = `
+      <div style="font-family: 'Georgia', serif; padding: 40px; border: 2px solid #000; max-width: 600px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h1 style="font-size: 24px; color: #4a4a4a; border-bottom: 2px solid #000; padding-bottom: 10px;">Nota Produk</h1>
+          <h2 style="font-size: 18px; color: #333; margin-top: 5px;">Melawi Marine</h2>
+        </div>
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+          <span style="font-weight: bold; color: #333;">No:</span>
+          <span style="color: #555;">${item.id_histori_beli_produk}</span>
+        </div>
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+          <span style="font-weight: bold; color: #333;">Nama Product:</span>
+          <span style="color: #555;">${item.nama_product}</span>
+        </div>
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+          <span style="font-weight: bold; color: #333;">Harga Jual:</span>
+          <span style="color: #555;">${item.harga_jual.toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          })}</span>
+        </div>
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+          <span style="font-weight: bold; color: #333;">Tanggal Pembelian:</span>
+          <span style="color: #555;">${item.tanggal}</span>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <p style="font-style: italic; color: #888;">Thank you for your purchase!</p>
+          <p style="font-size: 12px; color: #999;">Melawi Marine - Providing quality products with exceptional service.</p>
+        </div>
+      </div>
+    `;
+
+    // Open a new window and write the content
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Nota Produk</title>
+          <style>
+            @media print {
+              body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #f9f9f9;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    // Close the document and print
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <div className=" mx-auto px-4 py-6 flex flex-col items-center bg-gradient-to-br from-blue-50 to-white min-h-screen">
       <h1 className="text-5xl font-extrabold mb-10 text-gray-800">
@@ -61,7 +124,7 @@ const History = () => {
               {historyCustomer.map((item) => (
                 <div
                   key={item.id_histori_beli_produk}
-                  className="bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-2xl p-6 hover:shadow-2xl transform transition duration-500 hover:scale-105 border border-gray-700"
+                  className="bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-2xl p-6 hover:shadow-2xl transform transition duration-500 hover:scale-105 border border-gray-700 relative"
                 >
                   {/* Product Image */}
                   <div className="relative flex justify-center items-center">
@@ -92,12 +155,30 @@ const History = () => {
                     </span>
                   </div>
 
-                   {/* Purchase Date */}
-                   <div className="mt-2 text-center">
-                    <p className="text-gray-400 text-sm">Tanggal Pembelian</p>
+                  {/* Product Price */}
+                  <div className="mt-2 text-center">
+                    <p className="text-gray-400 text-sm">Harga Jual</p>
                     <span className="text-lg font-semibold text-yellow-400">
-                      {item.harga_jual}
+                      {item.harga_jual.toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      })}
                     </span>
+                  </div>
+
+                  {/* Print Note Button */}
+                  <div className="mt-4 text-center">
+                    <button
+                      onClick={() => handlePrint(item)}
+                      className="bg-green-800 hover:bg-green-700 text-gold-500 font-bold py-2 px-6 rounded-lg shadow-lg border border-gold-500 transition duration-300 ease-in-out"
+                      style={{
+                        backgroundColor: "#004d40", // Deep green
+                        color: "#d4af37", // Gold text
+                        borderColor: "#d4af37", // Gold border
+                      }}
+                    >
+                      Cetak Nota
+                    </button>
                   </div>
 
                   {/* Decorative Elements */}

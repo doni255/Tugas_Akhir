@@ -348,6 +348,7 @@ class BeliProdukController extends Controller
 
     public function receiveOrder($id_beli_produk) {
         $beli_produk = beli_produk::find($id_beli_produk);
+        $product = Product::find($beli_produk->id_product);
 
         if($beli_produk){
              // Simpan data ke histori_beli_produk
@@ -366,6 +367,9 @@ class BeliProdukController extends Controller
              $pendapatan->tanggal = date('Y-m-d');
              $pendapatan->nama_product = $beli_produk->product->nama_product;
              $pendapatan->save();
+
+             $product->jumlah_stock = $product->jumlah_stock - 1;
+                $product->save();
  
              $uang = Uang::find(1);
              $uang->jumlah_uang = $uang->jumlah_uang + $pendapatan->harga_total;

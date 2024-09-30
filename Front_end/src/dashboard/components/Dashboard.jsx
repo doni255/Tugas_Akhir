@@ -6,6 +6,7 @@ import BuyerProfileChart from "./BuyerProfileChart";
 import RecentOrders from "./RecentOrders";
 import PopularProducts from "./PopularProducts";
 import { useAuth } from "../../App";
+import PengeluaranChart from "./PengeluaranChart";
 
 export default function Dashboard() {
   const { role } = useAuth(); // Dapatkan role pengguna
@@ -19,7 +20,8 @@ export default function Dashboard() {
           <>
             <div className="flex flex-row gap-4 w-full">
               <TransactionChart />
-              <BuyerProfileChart />
+              <PengeluaranChart />
+              {/* <BuyerProfileChart /> */}
             </div>
             <div className="flex flex-row gap-4 w-full">
               {/* <RecentOrders />
