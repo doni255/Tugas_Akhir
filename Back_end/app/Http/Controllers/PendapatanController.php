@@ -23,7 +23,7 @@ class PendapatanController extends Controller
         return response()->json(Pendapatan::all());
     }
 
-    public function getGrafikPendapatanPerbulanDiTahunini()
+    public function     getGrafikPendapatanPerbulanDiTahunini()
     {
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
