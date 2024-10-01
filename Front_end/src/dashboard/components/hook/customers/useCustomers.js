@@ -45,6 +45,7 @@ const useCustomers = (users, setUsers) => {
         setUsers((prevUsers) =>
           prevUsers.filter((user) => user.id_user !== selectedUser)
         );
+
         handleCloseModal();
       } catch (error) {
         console.error("Error deleting users: ", error);
@@ -104,14 +105,14 @@ const useCustomers = (users, setUsers) => {
         );
         console.log("Update Response:", response);
 
-        // setUsers((prevUsers) =>
-        //   prevUsers.map((user) =>
-        //     user.id_user === editUserData.id_user
-        //       ? { ...user, ...editUserData }
-        //       : user
-        //   )
-        // );
-
+        // Update the state with the modified user data without refreshing the page
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id_user === editUserData.id_user
+              ? { ...user, ...editUserData }
+              : user
+          )
+        );
         handleCloseEditModal(); // Menutup modal setelah update
       } catch (error) {
         console.error("Error updating user: ", error);

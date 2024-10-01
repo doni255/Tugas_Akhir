@@ -9,7 +9,6 @@ import Modal from "./Modal";
 import { Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import toast, { Toaster } from "react-hot-toast";
-import { useAuth } from "../../App";
 
 import axios from "axios";
 
@@ -93,19 +92,6 @@ export default function Products({ productId, userId }) {
       [name]: value,
     }));
   };
-
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setFormData({ ...formData, imageUrl: reader.result });
-  //     };
-  //     reader.readAsDataURL(file);
-  //   } else {
-  //     setImageError("Image file is required");
-  //   }
-  // };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -424,7 +410,7 @@ export default function Products({ productId, userId }) {
       fetchProducts(); // Pastikan fungsi ini ada dan bekerja dengan benar
     } catch (error) {
       // Handle errors (network issues, server errors, etc.)
-      console.error("Error updating stock:", error);
+      console.error("Gagal melakukan pembelian:", error);
       alert("Terjadi kesalahan");
     }
   };

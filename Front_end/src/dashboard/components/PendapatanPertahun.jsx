@@ -47,6 +47,43 @@ function PendapatanPertahun() {
 
   // Function to handle printing
   const handlePrint = async () => {
+    // Open the window immediately in response to the button click
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      console.error("Popup window blocked or couldn't be opened.");
+      return;
+    }
+
+    // Add a loading message while waiting for the canvas
+    printWindow.document.write(`
+    <html>
+      <head>
+        <title>Pengeluaran Per Tahun Graph</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+          }
+          h1 {
+            text-align: center;
+          }
+          .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 18px;
+            color: #555;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="loading">Generating print preview...</div>
+      </body>
+    </html>
+  `);
+
     if (!chartRef.current) return; // Ensure chartRef is available
 
     const canvas = await html2canvas(chartRef.current, {
@@ -54,36 +91,14 @@ function PendapatanPertahun() {
       scale: 2, // Increases the quality of the image
     });
 
-    const printWindow = window.open("", "_blank");
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Pengeluaran Per Tahun Graph</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 20px;
-              padding: 0;
-            }
-            h1 {
-              text-align: center;
-            }
-            .chart-container {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              margin-top: 20px;
-            }
-          </style>
-        </head>
-        <body>
-          <h1>Pengeluaran Per Tahun Graph</h1>
-          <div class="chart-container">
-            <img src="${canvas.toDataURL()}" />
-          </div>
-        </body>
-      </html>
-    `);
+    // Update the content with the actual graph image
+    printWindow.document.body.innerHTML = `
+    <h1>Pengeluaran Per Tahun Graph</h1>
+    <div class="chart-container">
+      <img src="${canvas.toDataURL()}" />
+    </div>
+  `;
+
     printWindow.document.close();
     printWindow.onload = () => {
       printWindow.print();
@@ -94,7 +109,7 @@ function PendapatanPertahun() {
   return (
     <div className="h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
       <div className="flex justify-between items-center mb-4">
-        <strong className="text-gray-700 font-medium">Transactions</strong>
+        <strong className="text-gray-700 font-medium">Pendapatan PerTahun</strong>
         <button
           onClick={handlePrint}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"

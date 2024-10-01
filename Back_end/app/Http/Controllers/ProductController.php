@@ -268,6 +268,9 @@ class ProductController extends Controller
         $pendapatan = new Pendapatan();
         $pendapatan->nama_product = $product->nama_product;
         $pendapatan->harga_total = $product->harga_beli * $request->jumlah_stock;
+        $pendapatan->harga_jual = $product->harga_jual;
+        $pendapatan->pajak = $product->harga_jual * 25/100;
+        $pendapatan->harga_total = $product->harga_jual + $pendapatan->pajak;
         $pendapatan->tanggal = date('Y-m-d');
         $pendapatan->save();
     

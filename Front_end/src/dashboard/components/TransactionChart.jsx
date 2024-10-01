@@ -88,7 +88,7 @@ function TransactionChart() {
   return (
     <div className="h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
       <div className="flex justify-between items-center mb-4">
-        <strong className="text-gray-700 font-medium">Transactions</strong>
+        <strong className="text-gray-700 font-medium">Pendapatan Perbulan</strong>
         <button
           onClick={handlePrint}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
