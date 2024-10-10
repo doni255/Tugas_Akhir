@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\Barang_Masuk;
 use App\Models\Product;
 use App\Models\Uang;
-use App\Models\Pendapatan;
 use App\Models\Pengeluaran;
 
 use Illuminate\Http\Request;

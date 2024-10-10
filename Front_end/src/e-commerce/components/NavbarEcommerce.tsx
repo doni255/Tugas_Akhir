@@ -74,6 +74,9 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
     useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Get user role from localStorage or context
+  const role = localStorage.getItem("role");
+
   // Filter products based on search query
   useEffect(() => {
     setFilteredProducts(
@@ -153,26 +156,30 @@ const NavbarEcommerce = ({ setShowCart }: NavbarProps) => {
                 </div>
               </div>
 
-              <div
-                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
-                onClick={handleTrackOrderClick}
-              >
-                <AiOutlineTruck size={26} />
-              </div>
+              {role === "user" && (
+                <>
+                  <div
+                    className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                    onClick={handleTrackOrderClick}
+                  >
+                    <AiOutlineTruck size={26} />
+                  </div>
 
-              <div
-                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
-                onClick={handleHistoryClick}
-              >
-                <TbReportSearch size={24} />
-              </div>
+                  <div
+                    className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                    onClick={handleHistoryClick}
+                  >
+                    <TbReportSearch size={24} />
+                  </div>
 
-              <div
-                className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
-                onClick={handleProfileClick}
-              >
-                <AiOutlineUser size={24} />
-              </div>
+                  <div
+                    className="icon__wrapper cursor-pointer text-[#F5C300] hover:text-[#FF6B00]"
+                    onClick={handleProfileClick}
+                  >
+                    <AiOutlineUser size={24} />
+                  </div>
+                </>
+              )}
 
               {/* <div
                   className="icon__wrapper cursor-pointer relative text-[#F5C300] hover:text-[#FF6B00]"

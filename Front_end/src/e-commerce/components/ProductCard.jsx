@@ -10,6 +10,11 @@ const ProductCard = ({ product }) => {
   const tambahKeranjang = (idProduct) => {
     const idUser = localStorage.getItem("id_user");
 
+    if (!idUser) {
+      toast.error("Anda harus login terlebih dahulu.");
+      return;
+    }
+
     axios
       .post(
         `http://localhost:8000/api/keranjang_pembelian/tambah_keranjang/${idUser}`,
@@ -35,11 +40,17 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="border border-gray-200 hover:border-gray-300 hover:scale-105 transition-transform rounded-lg relative shadow-sm">
-      <img
-        src={`data:image/jpeg;base64,${product.gambar}`}
-        alt={product.nama_product}
-        className="w-full h-auto object-contain"
-      />
+      {product.gambar ? (
+        <img
+          src={`data:image/jpeg;base64,${product.gambar}`}
+          alt={product.nama_product}
+          className="w-full  object-contain"
+        />
+      ) : (
+        <div className="flex items-center justify-center w-full h-2/4 bg-gray-200 rounded-lg">
+          <span className="text-gray-500">Gambar tidak tersedia</span>
+        </div>
+      )}
 
       <div className="space-y-2 relative p-4">
         <div className="text-yellow-400 flex gap-[2px] text-[20px]">
@@ -52,13 +63,14 @@ const ProductCard = ({ product }) => {
         <h4 className="text-lg font-semibold mb-2 text-gray-800">
           {product.nama_product}
         </h4>
-
         {/* Price section */}
         <p className="text-gray-800 text-xl font-bold mb-2">
-          {product.harga_jual.toLocaleString("id-ID", {
-            style: "currency",
-            currency: "IDR",
-          })}
+          {product.harga_jual !== null
+            ? product.harga_jual.toLocaleString("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })
+            : "Harga belum ditentukan"}
         </p>
 
         <p className="text-sm text-gray-500">Stock: {product.jumlah_stock}</p>

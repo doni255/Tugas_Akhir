@@ -45,7 +45,7 @@ import Pengeluaran from "./dashboard/components/Pengeluaran";
 
 // e-commerce
 import LayoutEcommerce from "./dashboard/components/shared/LayoutEcommerce";
-import Navbar from "./e-commerce/components/Navbar";
+import Navbar from "./e-commerce/components/PageProduct";
 import NavbarEcommerce from "./e-commerce/components/NavbarEcommerce";
 import ProfilePage from "./e-commerce/components/ProfilePage";
 import CartProduct from "./e-commerce/components/CartProduct";
@@ -193,8 +193,9 @@ function App() {
                 />
               </Route>
               <Route path="profile" element={<ProfilePage />} />
-              <Route path="history" element={<History />} />
               <Route path="cartproduct" element={<CartProduct />} />
+
+              <Route path="history" element={<History />} />
               <Route path="track_order" element={<TrackOrder />} />
             </Route>
 

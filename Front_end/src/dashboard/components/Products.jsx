@@ -725,7 +725,9 @@ export default function Products({ productId, userId }) {
                     {product.harga_beli}
                   </td>
                   <td className="py-3 px-6 text-center text-gray-700">
-                    {product.harga_jual}
+                    {product.harga_jual !== null
+                      ? product.harga_jual
+                      : "Harga Belum Ditentukan"}
                   </td>
                   <td className="py-3 px-6 text-center text-gray-700">
                     {product.jumlah_stock}

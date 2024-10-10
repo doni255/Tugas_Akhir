@@ -35,26 +35,8 @@ const FeatureSectionGenerators_SparePart = () => {
             Buy farm fresh fruits and vegetables online at the best prices
           </p>
         </div>
-
-        {/* <div className="space-x-4 mt-8 lg:mt-0">
-          <button className="feature_btn">Fruits</button>
-          <button className="text-gray-600 hover:text-accent">
-            Vegetables
-          </button>
-          <button className="text-gray-600 hover:text-accent">
-            Bread & Bakery
-          </button>
-        </div> */}
       </div>
       <div className="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 pt-8 gap-2">
-        {/* <div>
-          <img
-            className="w-full h-full object-contain"
-            alt="banner"
-            src="https://s.alicdn.com/@sc04/kf/Hb1778a45b15445cb80687fd3d827b5565.jpg_720x720q50.jpg"
-          />
-        </div> */}
-
         {products.map((product) => (
           <ProductCard key={product.id_product} product={product} />
         ))}

@@ -21,6 +21,7 @@ function DashboardStatsGrid() {
     fetchTotalUsers();
   }, []);
 
+  // UseEffect untuk mengambil total stock
   useEffect(() => {
     const fetchTotalStock = async () => {
       try {
@@ -35,6 +36,7 @@ function DashboardStatsGrid() {
     fetchTotalStock();
   }, []);
 
+  // UseEffect untuk mengambil total tambah stock
   useEffect(() => {
     const fetchTotalTambahStock = async () => {
       try {
@@ -48,6 +50,19 @@ function DashboardStatsGrid() {
 
     fetchTotalTambahStock();
   }, []);
+
+  // UseEffect untuk mengambil jumlah uang
+  // useEffect(() => {
+  //   const fetchTotalUang = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:8000/api/total-uang");
+  //       const data = await response.json();
+  //       setTotalUang(data.totalUang);
+  //     } catch (error) {
+  //       console.error("Error fetching total uang: ", error);
+  //     }
+  //   };
+
 
   return (
     <div className="flex gap-4 w-full ">

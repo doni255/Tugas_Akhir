@@ -32,8 +32,6 @@ const TrackOrder = () => {
   const handleSubmitPesanan = () => {
     console.log("id produk in handel submit", selectedIdBeliProduk);
 
-    
-
     try {
       const response = axios.post(
         `http://localhost:8000/api/konfirmasi_penerimaan_produk/${selectedIdBeliProduk}`
@@ -51,15 +49,6 @@ const TrackOrder = () => {
     setIsPaymentModalOpen(true);
   };
 
-  // const handleSubmitPayment = (e) => {
-  //   e.preventDefault();
-  //   if (selectedFile && selectedIdBeliProduk) {
-  //     paymentProduct(selectedIdBeliProduk, selectedFile);
-  //   } else {
-  //     toast.error("Please select a file to upload.");
-  //   }
-  // };
-
   const getStatusFlags = (status) => {
     const trimmedStatus = status.trim().toLowerCase();
     return {
@@ -76,7 +65,7 @@ const TrackOrder = () => {
   return (
     <div className="mx-auto px-4 py-6 flex flex-col items-center bg-gradient-to-br from-blue-50 to-white min-h-screen">
       <h1 className="text-5xl font-extrabold mb-10 text-gray-800">
-        Keranjang Pembelian
+        Track Order
       </h1>
 
       {/* Payment Modal */}
@@ -299,9 +288,24 @@ const TrackOrder = () => {
             </div>
           </div>
         ) : (
-          <p className="text-gray-500 mt-10">
-            No trackable orders found. Please try again later.
-          </p>
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-white shadow-md rounded-lg">
+            <div className="w-32 h-32 mb-6 flex items-center justify-center text-6xl">
+              😢
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+              Anda Belum Melakukan Pembelian
+            </h2>
+            <p className="text-gray-500 mb-6">
+              Belum ada produk yang ditambahkan ke keranjang. Silakan jelajahi
+              produk kami dan tambahkan produk yang Anda sukai ke keranjang.
+            </p>
+            <button
+              onClick={() => navigate("/e-commerce/products")} // Replace with your actual product page route
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold"
+            >
+              Belanja Sekarang
+            </button>
+          </div>
         )}
       </Transition>
     </div>

@@ -37,7 +37,7 @@ class UserController extends Controller
         // Input Validation
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255',
             'alamat' => 'required|string|max:255',
             'kota' => 'required|string|max:255',
             'no_telpon' => 'required|string|regex:/^[0-9]+$/|max:20',
@@ -56,7 +56,7 @@ class UserController extends Controller
      
         // Update data user
         $user->nama = $request->input('nama');
-        $user->email = $request->input('email');
+        $user->email = $request->input('email') !== null ? $request->input('email') : null; // Allow null email
         $user->alamat = $request->input('alamat');
         $user->kota = $request->input('kota');
         $user->no_telpon = $request->input('no_telpon');

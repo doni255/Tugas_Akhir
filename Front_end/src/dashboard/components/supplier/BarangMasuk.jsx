@@ -377,6 +377,8 @@ export default function BarangMasuk() {
                           "Speed Boat",
                           "Pompa Air",
                           "Gergaji",
+                          "Mesin Serat Kayu",
+                          "Mesin Bor Listrik",
                           "Spare Part Genset",
                           "Spare Part Speed Boat",
                           "Spare Part Gergaji",

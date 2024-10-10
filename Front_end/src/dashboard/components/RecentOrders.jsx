@@ -263,11 +263,11 @@ export default function RecentOrders() {
 
             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Confirm Payment
+                Shipped The Product
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delivered the product
+                  Are you sure you want to change the product status to shipped
                   <strong>{selectedUserConfirm.name}</strong>? This action
                   cannot be undone.
                 </p>
@@ -279,7 +279,7 @@ export default function RecentOrders() {
                   onClick={changeShipped}
                   className="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
                 >
-                  Delivered
+                  Shipped
                 </button>
                 <button
                   onClick={() => setisConfirmationModalOpen(false)}
@@ -317,11 +317,11 @@ export default function RecentOrders() {
 
           <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Reject The Payment
+              Delivered The Product
             </h3>
             <div className="mt-2">
               <p className="text-sm text-gray-500">
-                Are you sure you want to confirm the payment for ? This action
+                Are you sure you want to delivered the product ? This action
                 cannot be undone.
               </p>
             </div>
@@ -332,7 +332,7 @@ export default function RecentOrders() {
                 onClick={hapusKonfirmasiPembayaran}
                 className="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
               >
-                Reject The Evident
+                Delivered
               </button>
               <button
                 onClick={() => setIsChangeDelivered(false)}

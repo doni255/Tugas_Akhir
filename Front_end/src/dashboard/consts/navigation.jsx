@@ -113,13 +113,13 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
         },
       ],
     },
-    {
-      key: "messages",
-      label: "Messages",
-      path: "/dashboard/messages",
-      icon: <HiOutlineAnnotation />,
-      roles: ["admin"],
-    },
+    // {
+    //   key: "messages",
+    //   label: "Messages",
+    //   path: "/dashboard/messages",
+    //   icon: <HiOutlineAnnotation />,
+    //   roles: ["admin"],
+    // },
   ];
 
   // Ensure the result is always an array

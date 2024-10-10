@@ -152,83 +152,166 @@ export default function Pengeluaran() {
   }
 
   return (
-    <main className="p-6 bg-gray-100 min-h-screen">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-700">
-            Laporan Pengeluaran
-          </h1>
+    <main className="bg-gray-100 min-h-screen p-6">
+      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
+        <div className="flex justify-between items-center p-4 bg-white rounded-md">
+          <div>
+            <strong className="text-3xl font-bold tracking-wide text-gray-800">
+              Laporan Pengeluaran
+            </strong>
+          </div>
           <div className="flex space-x-4">
             <button
               onClick={handleDownloadPdf}
-              className="flex items-center bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md"
+              className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
+              title="Download as PDF"
             >
-              <FaFilePdf className="mr-2" /> PDF
+              <FaFilePdf size={25} />
             </button>
-            <button className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-md">
-              <FaFileExcel className="mr-2" /> Excel
+            <button
+              className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
+              title="Download as Excel"
+            >
+              <FaFileExcel size={25} />
             </button>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full bg-white border-collapse">
-            <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-center">No</th>
-                <th className="py-3 px-6 text-left">Nama Product</th>
-                <th className="py-3 px-6 text-right">Pajak</th>
-                <th className="py-3 px-6 text-right">Harga Beli</th>
-                <th className="py-3 px-6 text-right">Sub Total</th>
-                <th className="py-3 px-6 text-center">Tanggal</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700 text-sm">
-              {currentItems.map((item, index) => (
-                <tr
-                  key={item.id_pembelian_barang}
-                  className="border-b border-gray-200 hover:bg-gray-100"
-                >
-                  <td className="py-3 px-6 text-center">
-                    {(index + 1).toString().padStart(6, "0")}
-                  </td>
-                  <td className="py-3 px-6 text-left">{item.nama_product}</td>
-                  <td className="py-3 px-6 text-right">
-                    {formatIDR(item.pajak)}
-                  </td>
-                  <td className="py-3 px-6 text-right">
-                    {formatIDR(item.harga_beli)}
-                  </td>
-                  <td className="py-3 px-6 text-right">
-                    {formatIDR(item.harga_total)}
-                  </td>
-                  <td className="py-3 px-6 text-center">
-                    {formatTanggal(item.tanggal)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          <div className="w-full">
+            <div className="bg-white px-4 pb-4 rounded-sm border-gray-200 max-h-screen overflow-y-auto">
+              <div className="mt-3">
+                <table className="w-full text-gray-700 border-x border-gray-200 rounded-sm">
+                  <thead>
+                    <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
+                      <td className="text-center font-semibold">No</td>
+                      <td className="text-center font-semibold">
+                        Nama Product
+                      </td>
+                      <td className="text-center font-semibold">Pajak</td>
+                      <td className="text-center font-semibold">Harga Beli</td>
+                      <td className="text-center font-semibold">Sub Total</td>
+                      <td className="text-center font-semibold">Tanggal</td>
+                      <td className="text-center font-semibold">Nota Produk</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentItems.map((item, index) => {
+                      const handlePrint = () => {
+                        const printContent = `
+                        <div style="font-family: 'Georgia', serif; padding: 40px; border: 2px solid #000; max-width: 600px; margin: 0 auto;">
+                          <div style="text-align: center; margin-bottom: 20px;">
+                            <h1 style="font-size: 24px; color: #4a4a4a; border-bottom: 2px solid #000; padding-bottom: 10px;">Nota Pengeluaran</h1>
+                            <h2 style="font-size: 18px; color: #333; margin-top: 5px;">Melawi Marine</h2>
+                          </div>
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">No:</span>
+                            <span style="color: #555;">${(index + 1)
+                              .toString()
+                              .padStart(6, "0")}</span>
+                          </div>
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">Nama Product:</span>
+                            <span style="color: #555;">${
+                              item.nama_product
+                            }</span>
+                          </div>
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">Pajak:</span>
+                            <span style="color: #555;">${formatIDR(
+                              item.pajak
+                            )}</span>
+                          </div>
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">Harga Beli:</span>
+                            <span style="color: #555;">${formatIDR(
+                              item.harga_beli
+                            )}</span>
+                          </div>
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">Sub Total:</span>
+                            <span style="color: #555;">${formatIDR(
+                              item.harga_total
+                            )}</span>
+                          </div>
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">Tanggal:</span>
+                            <span style="color: #555;">${formatTanggal(
+                              item.tanggal
+                            )}</span>
+                          </div>
+                          <div style="text-align: center; margin-top: 20px;">
+                            <p style="font-style: italic; color: #888;">Thank you for your business!</p>
+                            <p style="font-size: 12px; color: #999;">Melawi Marine - Providing quality products with exceptional service.</p>
+                          </div>
+                        </div>
+                      `;
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-6">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <button
-            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage >= Math.ceil(pengeluaran.length / itemsPerPage)
-            }
-          >
-            Next
-          </button>
+                        const printWindow = window.open("", "_blank");
+                        printWindow.document.write(`
+                        <html>
+                          <head>
+                            <title>Nota Pengeluaran</title>
+                            <style>
+                              @media print {
+                                body {
+                                  display: flex;
+                                  justify-content: center;
+                                  align-items: center;
+                                  height: 100vh;
+                                  background-color: #f9f9f9;
+                                }
+                              }
+                            </style>
+                          </head>
+                          <body>
+                            ${printContent}
+                          </body>
+                        </html>
+                      `);
+                        printWindow.document.close();
+                        printWindow.print();
+                      };
+
+                      return (
+                        <tr
+                          key={item.id_pembelian_barang}
+                          className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
+                        >
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {(index + 1).toString().padStart(6, "0")}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {item.nama_product}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {formatIDR(item.pajak)}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {formatIDR(item.harga_beli)}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {formatIDR(item.harga_total)}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {formatTanggal(item.tanggal)}
+                          </td>
+                          <td className="py-3 px-6 text-center">
+                            <button
+                              onClick={handlePrint}
+                              className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded"
+                            >
+                              Cetak Nota
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>

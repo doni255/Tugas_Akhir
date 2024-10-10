@@ -8,6 +8,14 @@ import EditButton from "./button/button_product/EditButton";
 import login from "../../hooks/login";
 import axios from "axios";
 
+import {
+  HiOutlinePause,
+  HiOutlinePlusCircle,
+  HiPlus,
+  HiPlusCircle,
+  HiPlusSm,
+} from "react-icons/hi";
+
 export default function DataUsers() {
   const { users, setUsers } = login(); // Ambil users dan setUsers dari hook login
 
@@ -21,7 +29,19 @@ export default function DataUsers() {
 
   // Menggunakan hook kustom untuk logika customers
   const {
+    handleSubmit,
+    formData,
+    Toaster,
+    handleChange,
+    namaRef,
+    emailRef,
+    passwordRef,
+    no_telponRef,
+    kotaRef,
+    alamatRef,
+    toggleModal,
     isModalOpen,
+    isCreateModalOpen,
     isEditModalOpen,
     handleCloseModal,
     handleCloseEditModal,
@@ -45,15 +65,182 @@ export default function DataUsers() {
 
     fetchUsers();
   }, [setUsers]); // Add setUsers to the dependency array
+
   return (
     <main>
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="flex items-center justify-between py-7 px-10">
         <div>
           <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
             Data Users 😁
           </h1>
         </div>
-        <div className="flex justify-end">dsa</div>
+
+        <div className="flex justify-end">
+          <button
+            className="inline-flex gap-x-2 items-center py-2.5 px-5 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+            onClick={toggleModal}
+          >
+            <HiPlus className="w-4 h-4 fill-current" />
+            <span className="text-sm font-semibold tracking-wide">
+              Create Item
+            </span>
+          </button>
+        </div>
+
+        {/* Modal for Create Item */}
+
+        <Modal open={isCreateModalOpen} onClose={toggleModal} type="create">
+          <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6 h-2/4">
+            <div className="m-0 lg:max-w-3xl">
+              <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-6 gap-4 max-w-md mx-auto"
+              >
+                <div className="col-span-6">
+                  <label
+                    htmlFor="FirstName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Nama
+                  </label>
+
+                  <input
+                    ref={namaRef}
+                    type="text"
+                    id="Nama"
+                    name="nama"
+                    value={formData.nama}
+                    onChange={handleChange}
+                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  />
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="Email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email
+                  </label>
+
+                  <input
+                    ref={emailRef}
+                    type="email"
+                    id="Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    placeholder="..Email Boleh Kosong"
+                  />
+                </div>
+
+                <div className="col-span-6 sm:col-span-6">
+                  <label
+                    htmlFor="Password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Password
+                  </label>
+
+                  <input
+                    ref={passwordRef}
+                    type="password"
+                    id="Password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  />
+                </div>
+
+                {/* <div className="col-span-6 sm:col-span-6">
+                <label
+                  htmlFor="Password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
+                </label>
+
+                <input
+                  ref={roleRef}
+                  type="text"
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  required
+                />
+              </div> */}
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="noHp"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Nomor HP
+                  </label>
+
+                  <input
+                    ref={no_telponRef}
+                    type="text"
+                    id="No_telpon"
+                    name="no_telpon"
+                    value={formData.no_telpon}
+                    onChange={handleChange}
+                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  />
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="Kota"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Kota
+                  </label>
+
+                  <input
+                    ref={kotaRef}
+                    type="text"
+                    id="Kota"
+                    name="kota"
+                    value={formData.kota}
+                    onChange={handleChange}
+                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  />
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="Alamat"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Alamat
+                  </label>
+
+                  <input
+                    ref={alamatRef}
+                    type="text"
+                    id="Alamat"
+                    name="alamat"
+                    value={formData.alamat}
+                    onChange={handleChange}
+                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  />
+                </div>
+
+                <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
+                  <button className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
+                    Create an account
+                  </button>
+                </div>
+              </form>
+            </div>
+          </main>
+        </Modal>
       </div>
 
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">

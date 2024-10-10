@@ -137,12 +137,12 @@ export default function Pendapatan() {
   };
 
   return (
-    <main>
+    <main className="p-6">
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
         <div className="flex justify-between items-center p-4 bg-white rounded-md">
           <div>
             <strong className="text-3xl font-bold tracking-wide text-gray-800">
-              Pendapatan
+              Laporan Pendapatan
             </strong>
           </div>
           <div className="flex space-x-4">
