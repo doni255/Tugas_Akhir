@@ -83,7 +83,7 @@ export default function DataUsers() {
           >
             <HiPlus className="w-4 h-4 fill-current" />
             <span className="text-sm font-semibold tracking-wide">
-              Create Item
+              Create User
             </span>
           </button>
         </div>
@@ -251,11 +251,11 @@ export default function DataUsers() {
                 <td className="text-center">ID</td>
                 <td className="text-center">Nama</td>
                 <td className="text-center">Email</td>
-                <td className="text-center">Tanggal Daftar</td>
+                <td className="text-center">Role</td>
                 <td className="text-center">Alamat</td>
                 <td className="text-center">Kota</td>
                 <td className="text-center">No Telepon</td>
-                <td className="text-center">Lihat/Hapus</td>
+                <td className="text-center"></td>
               </tr>
             </thead>
             <tbody>

@@ -5,7 +5,7 @@ import { HiPlus } from "react-icons/hi";
 export default function Orders() {
   return (
     <main>
-      <div className="flex items-center justify-between py-7 px-10">
+      {/* <div className="flex items-center justify-between py-7 px-10">
         <div>
           <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
             Orders from customers
@@ -14,7 +14,7 @@ export default function Orders() {
             Below here is the profile and product`s orders from consumen
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="overflow-x-auto">
         <div className="w-full">
