@@ -398,6 +398,23 @@ export default function DataUsers() {
               />
             </div>
 
+            <div className="col-span-6 sm:col-span-6">
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Role:
+              </label>
+              <input
+                type="text"
+                id="role"
+                name="role"
+                value={editUserData.role}
+                onChange={handleEditChange}
+                className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+              />
+            </div>
+
             <div className="col-span-6">
               <label
                 htmlFor="alamat"

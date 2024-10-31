@@ -8,12 +8,20 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { HiChevronDown, HiChevronUp, HiOutlineLogout } from "react-icons/hi";
 import { useAuth } from "../../App"; // Import useAuth to get the user role
+import { useNavigate } from "react-router-dom";
 
 const linkClasses =
   "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base";
 
 export default function Sidebar() {
   const { role } = useAuth(); // Get user role from context
+
+  const navigate = useNavigate();
+
+  const logoutFunction = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("id_user");
+  };
 
   // Debugging role
   console.log("User role:", role);
@@ -41,7 +49,7 @@ export default function Sidebar() {
     <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white">
       <div className="flex items-center gap-2 px-1 py-3">
         <FcBullish fontSize={24} />
-        <span className="text-neutral-100 text-lg">CapyShop</span>
+        <span className="text-neutral-100 text-lg">Dashboard</span>
       </div>
       <div className="flex-1 py-8 flex flex-col gap-0.5">
         {sidebarLinks.length ? (
@@ -51,12 +59,18 @@ export default function Sidebar() {
         )}
       </div>
       <div>
-        {bottomLinks.length ? (
+        {/* {bottomLinks.length ? (
           bottomLinks.map((item) => <SidebarLink key={item.key} item={item} />)
         ) : (
           <p>No bottom links available</p>
-        )}
-        <div className={classNames("text-red-500 cursor-pointer", linkClasses)}>
+        )} */}
+        <div
+          className={classNames("text-red-500 cursor-pointer", linkClasses)}
+          onClick={() => {
+            logoutFunction();
+            navigate("/");
+          }}
+        >
           <span className="text-xl">
             <HiOutlineLogout />
           </span>

@@ -112,7 +112,7 @@ class BarangMasukAdminController extends Controller
     $barang_masuk->delete();
 
     return response([
-        'message' => 'Product confirmation success and Barang Masuk deleted',
+        'message' => 'Product confirmation success',
         'data' => [
             'product' => $product,
             'uang' => $uang,

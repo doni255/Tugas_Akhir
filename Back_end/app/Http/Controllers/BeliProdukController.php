@@ -274,6 +274,7 @@ class BeliProdukController extends Controller
 
         if($beli_produk){
             $beli_produk->status_pengiriman = 'confirmed';
+            $beli_produk->confirmed_at = now();
             $beli_produk->save();
 
             return response()->json([

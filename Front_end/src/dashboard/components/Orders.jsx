@@ -16,7 +16,7 @@ export default function Orders() {
         </div>
       </div> */}
 
-      <div className="overflow-x-auto">
+      <div className="overflow">
         <div className="w-full">
           <RecentOrders />
         </div>

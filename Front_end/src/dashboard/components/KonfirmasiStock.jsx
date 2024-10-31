@@ -62,6 +62,7 @@ export default function KonfirmasiStock() {
         toast.success("Product berhasil di tambahkan !", {
           duration: 5000,
         });
+        fetchTambahStock();
         // resetForm();
         // window.location.reload();
       })

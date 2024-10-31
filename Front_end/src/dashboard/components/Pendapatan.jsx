@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import RecentOrders from "./RecentOrders";
 import axios from "axios";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable"; // Import for auto table
+import Pagination from "../consts/Pagination";
 
 export default function Pendapatan() {
-  const [pendapatan, setPendapatan] = useState(null);
+  const [pendapatan, setPendapatan] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = Array.isArray(pendapatan)
@@ -63,18 +65,9 @@ export default function Pendapatan() {
       const pendapatanData = [
         (index + 1).toString().padStart(6, "0"),
         item.nama_product,
-        item.harga_jual.toLocaleString("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }),
-        item.harga_total.toLocaleString("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }),
-        item.pajak.toLocaleString("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }),
+        item.harga_jual.toLocaleString("id-ID"), // Remove currency style
+        item.harga_total.toLocaleString("id-ID"), // Remove currency style
+        item.pajak.toLocaleString("id-ID"), // Remove currency style
         formatTanggal(item.tanggal),
       ];
       tableRows.push(pendapatanData);
@@ -108,32 +101,108 @@ export default function Pendapatan() {
     const summaryY = doc.autoTable.previous.finalY + 10;
     doc.setFontSize(14);
     doc.text(
-      `Total Pendapatan: ${totalPendapatan.toLocaleString("id-ID", {
-        style: "currency",
-        currency: "IDR",
-      })}`,
+      `Total Pendapatan: ${totalPendapatan.toLocaleString("id-ID")}`, // Remove currency style
       14,
       summaryY
     );
     doc.text(
-      `Total Pajak Pendapatan: ${totalPajak.toLocaleString("id-ID", {
-        style: "currency",
-        currency: "IDR",
-      })}`,
+      `Total Pajak Pendapatan: ${totalPajak.toLocaleString("id-ID")}`, // Remove currency style
       14,
       summaryY + 10
     );
     doc.text(
-      `Grand Total: ${(totalPendapatan + totalPajak).toLocaleString("id-ID", {
-        style: "currency",
-        currency: "IDR",
-      })}`,
+      `Grand Total: ${(totalPendapatan + totalPajak).toLocaleString("id-ID")}`, // Remove currency style
       14,
       summaryY + 20
     );
 
     // Save the PDF
     doc.save("laporan-pendapatan.pdf");
+  };
+
+  const handleDownloadExcel = () => {
+    const wb = XLSX.utils.book_new();
+
+    // Define the table column headers.
+    const tableColumn = [
+      "No",
+      "Nama Product",
+      "Harga Jual",
+      "Sub Total",
+      "Pajak Pendapatan",
+      "Tanggal",
+    ];
+
+    // Map through currentItems to create rows of data.
+    const data = currentItems.map((item, index) => [
+      (index + 1).toString().padStart(6, "0"),
+      item.nama_product,
+      item.harga_jual.toLocaleString("id-ID"),
+      item.harga_total.toLocaleString("id-ID"),
+      item.pajak.toLocaleString("id-ID"),
+      new Date(item.tanggal).toLocaleDateString("id-ID"),
+    ]);
+
+    // Create the worksheet and set the data.
+    const ws = XLSX.utils.aoa_to_sheet([tableColumn, ...data]);
+
+    // Adjust column widths for a better layout.
+    const columnWidths = [
+      { wch: 22 }, // No
+      { wch: 30 }, // Nama Product
+      { wch: 20 }, // Harga Jual
+      { wch: 20 }, // Sub Total
+      { wch: 25 }, // Pajak Pendapatan
+      { wch: 15 }, // Tanggal
+    ];
+    ws["!cols"] = columnWidths;
+
+    // Calculate totals for all products.
+    const totalPendapatan = currentItems.reduce(
+      (acc, item) => acc + item.harga_total,
+      0
+    );
+    const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
+    const grandTotal = totalPendapatan + totalPajak;
+
+    // Add the summary section below the table.
+    const summaryStartRow = data.length + 5;
+    XLSX.utils.sheet_add_aoa(
+      ws,
+      [
+        ["Summary"],
+        ["Total Pendapatan", totalPendapatan.toLocaleString("id-ID")],
+        ["Total Pajak Pendapatan", totalPajak.toLocaleString("id-ID")],
+        ["Grand Total", grandTotal.toLocaleString("id-ID")],
+      ],
+      { origin: `A${summaryStartRow}` }
+    );
+
+    // Style the summary section for better appearance.
+    const summaryColumnWidths = [
+      { wch: 20 }, // Adjusted width for "Summary" label
+      { wch: 25 }, // Adjusted width for the totals values
+    ];
+    ws["!cols"] = columnWidths.concat(summaryColumnWidths);
+
+    const range = XLSX.utils.decode_range(
+      `A${summaryStartRow}:B${summaryStartRow + 3}`
+    );
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!ws[cellAddress]) continue;
+        ws[cellAddress].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "4CAF50" } }, // Green background
+          alignment: { horizontal: "center" },
+        };
+      }
+    }
+
+    // Add the worksheet to the workbook and save the file.
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan Pendapatan");
+    XLSX.writeFile(wb, "laporan-pendapatan.xlsx");
   };
 
   return (
@@ -156,6 +225,7 @@ export default function Pendapatan() {
             <button
               className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
               title="Download as Excel"
+              onClick={handleDownloadExcel}
             >
               <FaFileExcel size={25} />
             </button>
@@ -269,7 +339,9 @@ export default function Pendapatan() {
                           className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
                         >
                           <td className="py-3 px-6 text-center text-gray-700">
-                            {(index + 1).toString().padStart(6, "0")}
+                            {(indexOfFirstItem + index + 1)
+                              .toString()
+                              .padStart(6, "0")}
                           </td>
                           <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.nama_product}
@@ -308,6 +380,13 @@ export default function Pendapatan() {
                     })}
                   </tbody>
                 </table>
+
+                <Pagination
+                  itemsPerPage={itemsPerPage}
+                  totalItems={pendapatan.length}
+                  paginate={paginate}
+                  currentPage={currentPage}
+                />
               </div>
             </div>
           </div>

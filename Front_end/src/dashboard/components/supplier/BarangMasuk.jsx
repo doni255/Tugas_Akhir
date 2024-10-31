@@ -8,8 +8,6 @@ import axios from "axios";
 
 import toast, { Toaster } from "react-hot-toast";
 
-
-
 import {
   HiFilter,
   HiOutlineEyeOff,
@@ -21,7 +19,6 @@ import {
 import Pagination from "../../consts/Pagination";
 import { Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-
 
 const status = [
   { name: "Published", icon: <FiLayers className="w-6 h-6" /> },
@@ -211,6 +208,7 @@ export default function BarangMasuk() {
         console.log(error);
         toggleModalCreate();
         toast.error(error.response.data.message, {
+          message: "Product sudah ada ditoko !",
           duration: 5000,
         });
       });

@@ -51,7 +51,6 @@ export default function Products({ productId, userId }) {
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isModalTambahStokOpen, setisModalTambahStockOpen] = useState(false);
   const [selectedTambahStock, setSelectedTambahStock] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [existingImage, setExistingImage] = useState(""); // State untuk menyimpan gambar yang ada
   const [userRole, setUserRole] = useState(null);
 
@@ -77,12 +76,6 @@ export default function Products({ productId, userId }) {
     setisModalTambahStockOpen(isModalTambahStokOpen);
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    console.log(`Selected category: ${category}`); // Debugging atau untuk melakukan sesuatu dengan category
-    // Tambahkan logika untuk fetch data atau filter produk berdasarkan category di sini
-  };
-
   // Function to handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,9 +86,13 @@ export default function Products({ productId, userId }) {
     }));
   };
 
+  const [formDataStock, setFormDataStock] = useState({
+    jumlah_stock: "",
+  });
+
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
+    kategori_produk: null,
     harga_beli: "",
     harga_jual: "",
     imageUrl: null,
@@ -103,9 +100,17 @@ export default function Products({ productId, userId }) {
     stock: "",
   });
 
-  const [formDataStock, setFormDataStock] = useState({
-    jumlah_stock: "",
-  });
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setFormData((prevData) => ({
+      ...prevData,
+      kategori_produk: category, // Update the kategori_produk in formData
+    }));
+    console.log(`Selected category: ${category}`); // Debugging atau untuk melakukan sesuatu dengan category
+    // Tambahkan logika untuk fetch data atau filter produk berdasarkan category di sini
+  };
 
   const handleTambahProduct = (e) => {
     const { name, value, type, files } = e.target;
@@ -131,7 +136,7 @@ export default function Products({ productId, userId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, category, harga_beli, harga_jual, stock, imageUrl } =
+    const { name, kategori_produk, harga_beli, harga_jual, stock, imageUrl } =
       formData;
 
     // Display the value that we input
@@ -141,7 +146,7 @@ export default function Products({ productId, userId }) {
     const base64Image = imageUrl ? imageUrl.split(",")[1] : null;
     const newItem = {
       nama_product: name,
-      kategori_produk: category,
+      kategori_produk: kategori_produk,
       harga_beli: harga_beli,
       harga_jual: harga_jual,
       konten_base64: base64Image,

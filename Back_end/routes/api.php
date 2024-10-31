@@ -9,6 +9,7 @@ use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TambahStockAdminController;
 use App\Http\Controllers\TambahStockController;
+use App\Http\Controllers\UangController;
 use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\UserController;
@@ -79,6 +80,9 @@ use Illuminate\Http\Request;
     Route::get('/pengeluaran', [PengeluaranController::class, 'getPengeluaran']);
     Route::get('/grafik_pengeluaran', [PengeluaranController::class, 'getGrafikPengeluaranPerbulanDiTahunIni']);
     Route::get('/grafik_pengeluaran_pertahun', [PengeluaranController::class, 'getGrafikPengeluaranPertahun']);
+
+    // Uang
+    Route::get('/uang', [UangController::class, 'showUang']);
 
     // Beli Produk
     Route::get('/keranjang_pembelian/{id_user}', [BeliProdukController::class, 'getKeranjangPembelian']);

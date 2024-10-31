@@ -139,6 +139,12 @@ export default function RecentOrders() {
       });
   };
 
+  const handleOpenModalKontak = (beli_product) => {
+    console.log(beli_product);
+    setSelectedUser(beli_product);
+    setIsOpenInformasiKontak(true);
+  };
+
   return (
     <main className="relative ">
       <Toaster position="top-right" reverseOrder={false} />
@@ -146,10 +152,10 @@ export default function RecentOrders() {
         <div className="flex items-center justify-between py-7 px-10">
           <div>
             <h1 className="text-2xl font-semibold loading-relaxed text-gray-800">
-              Bukti Pembayaran
+              Orders
             </h1>
             <p className="text-sm font-medium text-gray-500">
-              Let's grow to your business! Create your product and upload here
+              Updated status product
             </p>
           </div>
         </div>
@@ -205,7 +211,32 @@ export default function RecentOrders() {
                       {beli_product.status_pengiriman}
                     </div>
                   </td>
-                  <td className={`text-center`}>{beli_product.user.nama}</td>
+                  <td>
+                    <a
+                      href="#"
+                      onClick={() => handleOpenModalKontak(beli_product)}
+                      className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="size-5 opacity-75"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+
+                      <span className="invisible absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white group-hover:visible">
+                        Account
+                      </span>
+                    </a>
+                  </td>
                   <td className="py-4 px-4 text-center">
                     <button
                       className="text-green-500 hover:text-white border border-green-500 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
@@ -237,7 +268,55 @@ export default function RecentOrders() {
         <div className="mb-16"></div>
       </div>
 
-      {/* Modal for Konfirmasi */}
+      {/* Modal for Informasi Kontak */}
+      <Modal
+        open={isOpenInformasiKontak}
+        onClose={() => setIsOpenInformasiKontak(false)}
+      >
+        {selectedUser && (
+          <div className="sm:flex sm:items-start">
+            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-red-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
+
+            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                Account Information
+              </h3>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500">
+                  <strong>Nama: </strong>
+                  {selectedUser.user.nama}
+                  <br />
+                  <strong>Email: </strong>
+                  {selectedUser.user.email}
+                  <br />
+                  <strong>No Telepon: </strong>
+                  {selectedUser.user.no_telpon}
+                  <br />
+                  <strong>Alamat: </strong>
+                  {selectedUser.user.alamat}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Modal for shipped */}
       <Modal
         open={isConfirmationModalOpen}
         onClose={() => setisConfirmationModalOpen(false)}
@@ -293,6 +372,7 @@ export default function RecentOrders() {
         )}
       </Modal>
 
+      {/* Modal for delivered */}
       <Modal
         open={isDeleteConfirmationModalOpen}
         onClose={() => setIsChangeDelivered(false)}

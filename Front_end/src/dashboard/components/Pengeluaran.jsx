@@ -3,11 +3,12 @@ import axios from "axios";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import jsPDF from "jspdf";
 import "jspdf-autotable"; // Import for auto table
+import Pagination from "../consts/Pagination";
 
 export default function Pengeluaran() {
-  const [pengeluaran, setPengeluaran] = useState(null);
+  const [pengeluaran, setPengeluaran] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = Array.isArray(pengeluaran)
@@ -60,8 +61,8 @@ export default function Pengeluaran() {
       "No",
       "Nama Product",
       "Harga Beli",
-      "Pajak",
       "Sub Total",
+      "Pajak",
       "Tanggal",
     ];
     const tableRows = [];
@@ -70,18 +71,9 @@ export default function Pengeluaran() {
       const pengeluaranData = [
         (index + 1).toString().padStart(6, "0"),
         item.nama_product,
-        item.harga_beli.toLocaleString("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }),
-        item.pajak.toLocaleString("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }),
-        item.harga_total.toLocaleString("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }),
+        item.harga_beli.toLocaleString("id-ID"), // Remove currency style
+        item.harga_total.toLocaleString("id-ID"), // Remove currency style
+        item.pajak.toLocaleString("id-ID"), // Remove currency style
         formatTanggal(item.tanggal),
       ];
       tableRows.push(pengeluaranData);
@@ -309,6 +301,12 @@ export default function Pengeluaran() {
                     })}
                   </tbody>
                 </table>
+                <Pagination
+                  itemsPerPage={itemsPerPage}
+                  totalItems={pengeluaran.length}
+                  paginate={paginate}
+                  currentPage={currentPage}
+                />
               </div>
             </div>
           </div>

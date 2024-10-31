@@ -49,30 +49,19 @@ const useCustomers = (users, setUsers) => {
         );
 
         handleCloseModal();
+        // Show success message
+        toast.success("User deleted successfully!");
       } catch (error) {
         console.error("Error deleting users: ", error);
       }
     }
   };
 
-  // const handleEditClick = (user) => {
-  //   setEditUserData({
-  //     id_user: user.id_user, // Tambahkan id_user
-  //     nama: user.nama,
-  //     email: user.email,
-  //     role: user.role,
-  //     alamat: user.alamat,
-  //     kota: user.kota,
-  //     no_telpon: user.no_telpon,
-  //   });
-  //   setIsEditModalOpen(true);
-  // };
-
   const handleEditClick = (user) => {
     setEditUserData({
       id_user: user.id_user || "", // Pastikan id_user tidak null
       nama: user.nama || "", // Inisialisasi dengan string kosong jika null
-      email: user.email || null, // Pastikan email tidak null
+      email: user.email || "", // Pastikan email tidak null
       role: user.role || "", // Pastikan role tidak null
       alamat: user.alamat || "", // Pastikan alamat tidak null
       kota: user.kota || "", // Pastikan kota tidak null
@@ -114,7 +103,7 @@ const useCustomers = (users, setUsers) => {
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
             user.id_user === editUserData.id_user
-              ? { ...user, ...editUserData }
+              ? { ...user, ...editUserData, email: editUserData.email || null }
               : user
           )
         );
@@ -203,13 +192,33 @@ const useCustomers = (users, setUsers) => {
         body: JSON.stringify(formData),
       });
 
-      // Redirect if it success
-      const result = await response.json();
-      console.log("Result:", result);
-      // Redirect to login page with success state
-      navigate("/", { state: { registrationSuccess: true } });
+      // Check if the response is successful
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Result:", result);
+
+        // Clear form fields after successful submission if needed
+        setFormData({
+          nama: "",
+          password: "",
+          no_telpon: "",
+          kota: "",
+          alamat: "",
+        });
+
+        // Update the users state to include the new user
+        setUsers((prevUsers) => [...prevUsers, result]);
+
+        // Show success message
+        toast.success("User registered successfully!");
+        // Close the modal after successful registration
+        setIsCreateModalOpen(false);
+      } else {
+        throw new Error("Failed to register user.");
+      }
     } catch (error) {
-      setError("An unexpected error occurred.");
+      console.error("An unexpected error occurred:", error);
+      toast.error("An unexpected error occurred.");
     }
   };
 

@@ -146,7 +146,7 @@ export default function Header() {
                 )}
               </Menu.Item>
 
-              <Menu.Item>
+              {/* <Menu.Item>
                 {({ active }) => (
                   <div
                     className={classNames(
@@ -158,7 +158,7 @@ export default function Header() {
                     Settings
                   </div>
                 )}
-              </Menu.Item>
+              </Menu.Item> */}
 
               <Menu.Item>
                 {({ active }) => (

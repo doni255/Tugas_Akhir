@@ -43,9 +43,9 @@ class UserController extends Controller
             'no_telpon' => 'required|string|regex:/^[0-9]+$/|max:20',
         ]);
 
-        if ($validator->fails()){
-            return response()->json($validator->errors(), 422);
-        }
+        // if ($validator->fails()){
+        //     return response()->json($validator->errors(), 422);
+        // }
 
         // FInd user by id
         $user = User::find($id);
@@ -91,7 +91,7 @@ class UserController extends Controller
         // Validasi data yang masuk 
         $validator = Validator::make($request->all(), [
         'nama' => 'required|string|max:255|unique:users,nama',
-        'email' => 'required|email|unique:users,email',
+        'email' => 'nullable|email|unique:users,email',
         'no_telpon' => 'required|string|max:20',
         'role' => 'required|string|max:50',
         'kota' => 'required|string|max:100',
