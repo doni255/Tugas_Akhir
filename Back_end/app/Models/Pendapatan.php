@@ -15,7 +15,8 @@ class Pendapatan extends Model
     protected $fillable = [
         'harga_jual',
         'pajak',
-        'harga_total',
+        'jumlah',
+        'harga_total_jual',
         'tanggal',
         'nama_product',
     ];

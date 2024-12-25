@@ -22,33 +22,35 @@ class PengeluaranController extends Controller
         return response()->json($pengeluaran);
     }
 
-    public function getGrafikPengeluaranPerbulanDiTahunini()
+    public function getGrafikPengeluaranPerbulanDiTahunini(Request $request)
     {
+        $year = $request->input('year', date('Y')); // Get the year from the request or default to the current year
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
-        // Mengambil data pengeluaran berdasarkan bulan
-        $pengeluaranPerbulan = Pengeluaran::selectRaw('MONTH(tanggal) as bulan, SUM(harga_total) as total_pengeluaran')
-            ->whereYear('tanggal', date('Y'))
+    
+        // Fetch expense data grouped by month for the specified year
+        $pengeluaranPerbulan = Pengeluaran::selectRaw('MONTH(tanggal) as bulan, SUM(harga_total_beli) as total_pengeluaran')
+            ->whereYear('tanggal', $year) // Use the specified year
             ->groupBy('bulan')
             ->get();
-
-        // Menginisialisasi array untuk menampung data pengeluaran per bulan
+    
+        // Initialize the monthly expense array
         $pengeluaranPerbulanArray = [];
-
-        // Memproses data pengeluaran per bulan
+    
+        // Populate data for all months
         foreach ($bulan as $key => $value) {
             $pengeluaranPerbulanArray[$key]['bulan'] = $value;
             $pengeluaranPerbulanArray[$key]['total_pengeluaran'] = 0;
-
+    
             foreach ($pengeluaranPerbulan as $pengeluaran) {
                 if ($pengeluaran->bulan == $key + 1) {
                     $pengeluaranPerbulanArray[$key]['total_pengeluaran'] = $pengeluaran->total_pengeluaran;
                 }
             }
         }
-
+    
         return response()->json($pengeluaranPerbulanArray);
     }
+    
 
     public function getGrafikPengeluaranPertahun()
     {
@@ -59,7 +61,7 @@ class PengeluaranController extends Controller
 
         // Mengambil data pengeluaran berdasarkan tahun
 
-        $pengeluaranPertahun = Pengeluaran::selectRaw('YEAR(tanggal) as tahun, SUM(harga_total) as total_pengeluaran')
+        $pengeluaranPertahun = Pengeluaran::selectRaw('YEAR(tanggal) as tahun, SUM(harga_total_beli) as total_pengeluaran')
             ->groupBy('tahun')
             ->get();
 

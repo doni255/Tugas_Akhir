@@ -119,8 +119,9 @@ class TambahStockAdminController extends Controller
         $pengeluaran->nama_product = $product->nama_product;
         
         $pengeluaran->harga_beli = $product->harga_beli; // Tambahkan harga_total
+        $pengeluaran->jumlah = $tambahStock->jumlah_stock;
         $pengeluaran->pajak = $product->harga_beli * 25 / 100;        
-        $pengeluaran->harga_total = ($product->harga_beli + $pengeluaran->pajak) * $tambahStock->jumlah_stock;
+        $pengeluaran->harga_total_beli = ($product->harga_beli + $pengeluaran->pajak) * $tambahStock->jumlah_stock;
 
         $pengeluaran->tanggal = date('Y-m-d');
         $pengeluaran->save();

@@ -66,7 +66,7 @@ export default function Pendapatan() {
         (index + 1).toString().padStart(6, "0"),
         item.nama_product,
         item.harga_jual.toLocaleString("id-ID"), // Remove currency style
-        item.harga_total.toLocaleString("id-ID"), // Remove currency style
+        item.harga_total_jual.toLocaleString("id-ID"), // Remove currency style
         item.pajak.toLocaleString("id-ID"), // Remove currency style
         formatTanggal(item.tanggal),
       ];
@@ -92,7 +92,7 @@ export default function Pendapatan() {
 
     // Calculate totals
     const totalPendapatan = currentItems.reduce(
-      (acc, item) => acc + item.harga_total,
+      (acc, item) => acc + item.harga_total_jual,
       0
     );
     const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
@@ -138,7 +138,7 @@ export default function Pendapatan() {
       (index + 1).toString().padStart(6, "0"),
       item.nama_product,
       item.harga_jual.toLocaleString("id-ID"),
-      item.harga_total.toLocaleString("id-ID"),
+      item.harga_total_jual.toLocaleString("id-ID"),
       item.pajak.toLocaleString("id-ID"),
       new Date(item.tanggal).toLocaleDateString("id-ID"),
     ]);
@@ -159,7 +159,7 @@ export default function Pendapatan() {
 
     // Calculate totals for all products.
     const totalPendapatan = currentItems.reduce(
-      (acc, item) => acc + item.harga_total,
+      (acc, item) => acc + item.harga_total_jual,
       0
     );
     const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
@@ -244,6 +244,7 @@ export default function Pendapatan() {
                         Nama Product
                       </td>
                       <td className="text-center font-semibold">Harga Jual</td>
+                      <td className="text-center font-semibold">Jumlah</td>
                       <td className="text-center font-semibold">Sub Total</td>
                       <td className="text-center font-semibold">
                         Pajak Pendapatan
@@ -261,12 +262,7 @@ export default function Pendapatan() {
                           <h1 style="font-size: 24px; color: #4a4a4a; border-bottom: 2px solid #000; padding-bottom: 10px;">Nota Produk</h1>
                           <h2 style="font-size: 18px; color: #333; margin-top: 5px;">Melawi Marine</h2>
                         </div>
-                        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
-                          <span style="font-weight: bold; color: #333;">No:</span>
-                          <span style="color: #555;">${(index + 1)
-                            .toString()
-                            .padStart(6, "0")}</span>
-                        </div>
+                       
                         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
                           <span style="font-weight: bold; color: #333;">Nama Product:</span>
                           <span style="color: #555;">${
@@ -280,16 +276,21 @@ export default function Pendapatan() {
                             { style: "currency", currency: "IDR" }
                           )}</span>
                         </div>
+                       
                         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
-                          <span style="font-weight: bold; color: #333;">Sub Total:</span>
-                          <span style="color: #555;">${pendapatan.harga_total.toLocaleString(
-                            "id-ID",
-                            { style: "currency", currency: "IDR" }
-                          )}</span>
+                          <span style="font-weight: bold; color: #333;">Jumlah :</span>
+                          <span style="color: #555;">${pendapatan.jumlah}</span>
                         </div>
                         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
                           <span style="font-weight: bold; color: #333;">Pajak Pendapatan:</span>
                           <span style="color: #555;">${pendapatan.pajak.toLocaleString(
+                            "id-ID",
+                            { style: "currency", currency: "IDR" }
+                          )}</span>
+                        </div>
+                         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                          <span style="font-weight: bold; color: #333;">Sub Total:</span>
+                          <span style="color: #555;">${pendapatan.harga_total_jual.toLocaleString(
                             "id-ID",
                             { style: "currency", currency: "IDR" }
                           )}</span>
@@ -346,6 +347,7 @@ export default function Pendapatan() {
                           <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.nama_product}
                           </td>
+
                           <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.harga_jual.toLocaleString("id-ID", {
                               style: "currency",
@@ -353,10 +355,16 @@ export default function Pendapatan() {
                             })}
                           </td>
                           <td className="py-3 px-6 text-center text-gray-700">
-                            {pendapatan.harga_total.toLocaleString("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                            })}
+                            {pendapatan.jumlah}
+                          </td>
+                          <td className="py-3 px-6 text-center text-gray-700">
+                            {pendapatan.harga_total_jual.toLocaleString(
+                              "id-ID",
+                              {
+                                style: "currency",
+                                currency: "IDR",
+                              }
+                            )}
                           </td>
                           <td className="py-3 px-6 text-center text-gray-700">
                             {pendapatan.pajak.toLocaleString("id-ID", {

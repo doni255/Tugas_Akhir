@@ -6,14 +6,19 @@ import axios from "axios";
 import Pagination from "../consts/Pagination";
 
 import ConfirmButton from "./button/button_product/ConfirmButton";
+import ModalDetailPesanan from "./ModalDetailPesanan";
 
 import RejectedButton from "./button/button_product/RejectedButton";
 import toast, { Toaster } from "react-hot-toast";
+import { FaUserAlt } from "react-icons/fa"; // Import ikon default
 
 export default function KonfirmasiPembayaran() {
   const [isOpenInformasiKontak, setIsOpenInformasiKontak] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmationModalOpen, setisConfirmationModalOpen] = useState(false);
+
+  // MODAL LIHAT DETAIL PRODUK
+  const [selectedData, setSelectedData] = useState(null);
 
   const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
     useState(false);
@@ -43,6 +48,16 @@ export default function KonfirmasiPembayaran() {
     fetchBeliProduct();
   }, []);
 
+  const openModal = (data) => {
+    setSelectedData(data);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedData(null);
+    setIsModalOpen(false);
+  };
+
   // Fungsi untuk fetch data status beli produk
   const fetchBeliProduct = async () => {
     console.log("fetching data");
@@ -51,7 +66,7 @@ export default function KonfirmasiPembayaran() {
     try {
       const response = await axios.get(
         "http://localhost:8000/api/status_beli_product"
-      );  
+      );
       const data = response.data.data || [];
       console.log("data", data);
 
@@ -156,7 +171,9 @@ export default function KonfirmasiPembayaran() {
             <thead>
               <tr className="text-sm font-medium text-gray-700 border-b border-gray-200">
                 <td className="text-center font-semibold">ID Product</td>
-                <td className=" text-center font-semibold">Bukti Pembayaran</td>
+                <td className="text-center font-semibold"></td>
+                <td className=" text-center font-semibold">Pemesan</td>
+                <td className=" text-center font-semibold">Jumlah</td>
                 <td className=" text-center font-semibold">Tanggal</td>
                 <td className=" text-center font-semibold">Status</td>
                 <td className=" text-center font-semibold"></td>
@@ -175,6 +192,7 @@ export default function KonfirmasiPembayaran() {
                   <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.id_product}
                   </td>
+
                   <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.bukti_pembayaran ? (
                       <img
@@ -185,6 +203,30 @@ export default function KonfirmasiPembayaran() {
                     ) : (
                       <span className="italic text-gray-400">No Image</span>
                     )}
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    <button
+                      onClick={() => openModal(beli_product)}
+                      className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white py-4 px-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                      <div className="flex items-center justify-center space-x-4">
+                        <div className="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shadow-xl transform hover:scale-105 transition duration-300">
+                          <FaUserAlt className="w-9 h-9 text-gray-400" />
+                        </div>
+                        <div className="text-left">
+                          <h3 className="font-semibold text-gray-900 text-lg">
+                            {beli_product.product_name}
+                          </h3>
+                          <p className="text-sm text-white">Detail Kontak</p>
+
+                          {/* Diganti di sini */}
+                        </div>
+                      </div>
+                    </button>
+                  </td>
+
+                  <td className="py-3 px-6 text-center text-gray-700">
+                    {beli_product.jumlah}
                   </td>
                   <td className="py-3 px-6 text-center text-gray-700">
                     {beli_product.tanggal}
@@ -208,7 +250,6 @@ export default function KonfirmasiPembayaran() {
                     />
                     <RejectedButton
                       onClick={() => {
-                        console.log("babi");
                         handleDeleteConfirmation(beli_product);
                       }}
                     />
@@ -228,6 +269,15 @@ export default function KonfirmasiPembayaran() {
         />
         <div className="mb-16"></div>
       </div>
+
+      {/* Render Modal */}
+      {selectedData && (
+        <ModalDetailPesanan
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          data={selectedData}
+        />
+      )}
 
       {/* Modal for Konfirmasi */}
       <Modal

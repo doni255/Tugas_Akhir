@@ -47,16 +47,23 @@ const History = () => {
           <h2 style="font-size: 18px; color: #333; margin-top: 5px;">Melawi Marine</h2>
         </div>
         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
-          <span style="font-weight: bold; color: #333;">No:</span>
-          <span style="color: #555;">${item.id_histori_beli_produk}</span>
-        </div>
-        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
           <span style="font-weight: bold; color: #333;">Nama Product:</span>
           <span style="color: #555;">${item.nama_product}</span>
         </div>
         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
-          <span style="font-weight: bold; color: #333;">Harga Jual:</span>
+          <span style="font-weight: bold; color: #333;">Harga Produk:</span>
           <span style="color: #555;">${item.harga_jual.toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          })}</span>
+        </div>
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+          <span style="font-weight: bold; color: #333;">Jumlah:</span>
+          <span style="color: #555;">${item.jumlah}</span>
+        </div>
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+          <span style="font-weight: bold; color: #333;">Harga Total:</span>
+          <span style="color: #555;">${item.harga_total_jual.toLocaleString("id-ID", {
             style: "currency",
             currency: "IDR",
           })}</span>
@@ -157,9 +164,26 @@ const History = () => {
 
                   {/* Product Price */}
                   <div className="mt-2 text-center">
-                    <p className="text-gray-400 text-sm">Harga Jual</p>
+                    <p className="text-gray-400 text-sm">Harga Produk</p>
                     <span className="text-lg font-semibold text-yellow-400">
                       {item.harga_jual.toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      })}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 text-center">
+                    <p className="text-gray-400 text-sm">Jumlah Produk</p>
+                    <span className="text-lg font-semibold text-yellow-400">
+                      {item.jumlah}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 text-center">
+                    <p className="text-gray-400 text-sm">Harga Total</p>
+                    <span className="text-lg font-semibold text-yellow-400">
+                      {item.harga_total_jual.toLocaleString("id-ID", {
                         style: "currency",
                         currency: "IDR",
                       })}

@@ -16,6 +16,8 @@ class histori_beli_produk extends Model
         'nama_product',
         'gambar',
         'harga_jual',
+        'jumlah',
+        'harga_total_jual',
         'tanggal',        
     ];
 

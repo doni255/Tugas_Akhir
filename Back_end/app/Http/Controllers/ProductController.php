@@ -94,53 +94,70 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function create(Request $request){
-        // Validasi input dari permintaa
-        $validator = Validator::make($request -> all(), [
-            'nama_product' => 'required|string|max:255',
-            'kategori_produk' => 'required|string',
-            'harga_beli' => 'required|numeric', // Ensure it's numeric
-            'harga_jual' => 'required|numeric', // Ensure it's numeric
-            'konten_base64' => 'nullable', // Misalkan ini untuk gambar dalam format base64
-            'jumlah_stock' => 'required|string',            
-        ]);
+    public function create(Request $request)
+{
+    // Validasi data
+    $request->validate([
+        'nama_product' => 'required|string|max:255',
+        'kategori_produk' => 'required|string|max:255',
+        'harga_beli' => 'required|numeric',
+        'harga_jual' => 'required|numeric',
+        'jumlah_stock' => 'required|string|max:255',
+        'gambar' => 'nullable|file', // Pastikan ini diterima sebagai file
+    ]);
 
-        // Jika validasi gagal, kembalikan respons error
-        if ($validator->fails()) {
-            return response([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 400);
+    try {
+        $storeData = $request->all();
+        $storeData['nama_product'] = $storeData['nama_product'];
+        $storeData['kategori_produk'] = $storeData['kategori_produk'];
+        $storeData['harga_beli'] = $storeData['harga_beli'];
+        $storeData['harga_jual'] = $storeData['harga_jual'];
+        $storeData['jumlah_stock'] = $storeData['jumlah_stock'];
+        $storeData['pajak'] = $storeData['harga_jual'] * 25 / 100;
+        $storeData['harga_total_jual'] = $storeData['harga_jual'] + $storeData['pajak'];
+
+        // Jika ada file gambar yang diunggah, tambahkan ke database
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $storeData['gambar'] = file_get_contents($file->getRealPath());
+        } else {
+            $storeData['gambar'] = null; // Pastikan null jika tidak ada gambar
         }
-    
 
-     // Mengonversi base64 ke binary data
-     $binaryImage = $request->konten_base64 ? base64_decode($request->konten_base64) : null;
-    
-     // Buat produk baru dengan data yang diberikan
-     $product = new Product();
-     $product->nama_product = $request->nama_product;
-     $product->kategori_produk = $request->kategori_produk;
-     $product->harga_beli = $request->harga_beli; // Ini harus menerima harga sebagai string tanpa simbol dolar
-     $product->harga_jual = $request->harga_jual; // Ini harus menerima harga sebagai string tanpa simbol dolar
-     $product->gambar = $binaryImage; // Menggunakan kolom gambar
-     $product->jumlah_stock = $request->jumlah_stock;
-     $product->save();
+        // Simpan produk baru
+        $product = Product::create($storeData);
 
-     $pengeluaran = new Pengeluaran();
-     $pengeluaran->nama_product = $request->nama_product;
-     $pengeluaran->harga_total = $request->harga_beli;
-     $pengeluaran->tanggal = date('Y-m-d');
-     $pengeluaran->save();
+        // Simpan ke tabel pengeluaran
+        $pengeluaran = new Pengeluaran();
+        $pengeluaran->nama_product = $storeData['nama_product'];
+        $pengeluaran->harga_beli = $storeData['harga_beli'] + ($storeData['harga_beli'] * 25 / 100);
+        $pengeluaran->harga_total = $storeData['harga_beli'];
+        $pengeluaran->pajak = $storeData['harga_beli'] * 25 / 100;
+        $pengeluaran->tanggal = date('Y-m-d');
+        $pengeluaran->save();
 
-    // Kembalikan respons sukses dengan data produk yang baru dibuat
-    return response()-> json([
-        'message' => 'Product created successfully',
-        'data' => $product,
-        'pengeluaran' => $pengeluaran
-    ], 200);
-
+        // Response sukses
+        return response()->json([
+            'message' => 'Product created successfully',
+            'data' => [
+                'id_product' => $product->id_product,
+                'nama_product' => $product->nama_product,
+                'kategori_produk' => $product->kategori_produk,
+                'harga_beli' => $product->harga_beli,
+                'harga_jual' => $product->harga_jual,
+                'jumlah_stock' => $product->jumlah_stock,
+                'konten_base64' => $product->konten_base64, // Base64 untuk gambar
+            ],
+            'pengeluaran' => $pengeluaran,
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Failed to create product',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     public function destroy($id_product)
     {
@@ -182,33 +199,22 @@ class ProductController extends Controller
             // 'gambar' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // if ( $request->file('gambar')->getMimeType() != 'image/jpeg' && $request->file('gambar')->getMimeType() != 'image/png') {
-        //     return response()->json([
-        //         'message' => 'Gambar must be an image',
-        //         'data' => null
-        //     ], 400);
-        // }
-
-        // if (!$request->hasFile('gambar')) {
-        //     return response()->json([
-        //         'message' => 'Gambar is required',
-               
-        //     ], 400);
-        // }
-    
+     
         try{
-        // $product->nama_product = $request->input('nama_product');
-        // $product->kategori_produk = $request->input('kategori_produk');
-        // $product->harga_beli = $request->input('harga_beli');
-        // $product->harga_jual = $request->input('harga_jual');
-        // $product->jumlah_stock = $request->input('jumlah_stock');
-
         $storeData = $request->all();
         $storeData['nama_product'] = $storeData['nama_product'];
         $storeData['kategori_produk'] = $storeData['kategori_produk'];
         $storeData['harga_beli'] = $storeData['harga_beli'];
         $storeData['harga_jual'] = $storeData['harga_jual'];
         $storeData['jumlah_stock'] = $storeData['jumlah_stock'];
+
+           // Hitung pajak
+           $pajak = $storeData['harga_beli'] * 25 / 100; // Pajak 25%
+           $harga_total = $storeData['harga_beli'] + $pajak;
+   
+           // Tambahkan hasil perhitungan pajak ke data
+           $storeData['pajak'] = $pajak;
+           $storeData['harga_total'] = $harga_total;
 
         // Jika ada file gambar yang diunggah, update gambar
         if ($request->hasFile('gambar')) {
@@ -230,6 +236,8 @@ class ProductController extends Controller
                 'harga_jual' => $product->harga_jual,
                 'jumlah_stock' => $product->jumlah_stock,
                 'konten_base64' => $product->konten_base64,
+                'pajak' => $pajak,
+                'harga_total' => $harga_total,
                 // Avoid returning the raw image; use URL or path if available
             ]
         ], 200);
@@ -250,6 +258,14 @@ class ProductController extends Controller
             'jumlah_stock' => 'required|numeric',       
         ]);
 
+         // Check if requested stock exceeds available stock
+    if ($request->jumlah_stock > $product->jumlah_stock) {
+        return response()->json([
+            'message' => 'Jumlah stock melebihi stock yang tersedia',
+            'available_stock' => $product->jumlah_stock,
+        ], 400);
+    }
+
         // Jika validasi gagal, kembalikan respons error
         if ($validator->fails()) {
             return response([
@@ -267,10 +283,10 @@ class ProductController extends Controller
 
         $pendapatan = new Pendapatan();
         $pendapatan->nama_product = $product->nama_product;
-        $pendapatan->harga_total = $product->harga_beli * $request->jumlah_stock;
+        $pendapatan->jumlah = $request->jumlah_stock;
         $pendapatan->harga_jual = $product->harga_jual;
-        $pendapatan->pajak = $product->harga_jual * 25/100;
-        $pendapatan->harga_total = $product->harga_jual + $pendapatan->pajak;
+        $pendapatan->pajak = $product->pajak * $request->jumlah_stock;
+        $pendapatan->harga_total_jual = $product->harga_total_jual * $request->jumlah_stock;
         $pendapatan->tanggal = date('Y-m-d');
         $pendapatan->save();
     

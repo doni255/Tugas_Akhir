@@ -26,34 +26,19 @@ const FeatureSectionSaw_SparePart = () => {
   }
 
   return (
-    <div className="container pt-16 mx-auto">
+    <div className="container pt-6 mx-auto">
       <div className="lg:flex justify-between items-center">
         <div>
-          <h3 className="font-medium text-2xl">Gergaji & SparePart</h3>
+          <h3 className="font-medium text-2xl bg-green-200 p-3  border-green-500 rounded-lg">
+            Gergaji & SparePart
+          </h3>
+
           <p className="text-gray-600 mt-2">
-            Buy farm fresh fruits and vegetables online at the best prices
+            Buy our products and order online at the best prices
           </p>
         </div>
-
-        {/* <div className="space-x-4 mt-8 lg:mt-0">
-          <button className="feature_btn">Fruits</button>
-          <button className="text-gray-600 hover:text-accent">
-            Vegetables
-          </button>
-          <button className="text-gray-600 hover:text-accent">
-            Bread & Bakery
-          </button>
-        </div> */}
       </div>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 pt-8 gap-6">
-        {/* <div>
-          <img
-            className="w-full h-full object-contain"
-            alt="banner"
-            src="https://s.alicdn.com/@sc04/kf/Hb1778a45b15445cb80687fd3d827b5565.jpg_720x720q50.jpg"
-          />
-        </div> */}
-
         {products.length > 0 ? (
           products.map((product) => (
             <ProductCard key={product.id_product} product={product} />

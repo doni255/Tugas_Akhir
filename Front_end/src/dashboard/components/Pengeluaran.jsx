@@ -63,6 +63,7 @@ export default function Pengeluaran() {
       "Harga Beli",
       "Sub Total",
       "Pajak",
+      "jumlah",
       "Tanggal",
     ];
     const tableRows = [];
@@ -72,8 +73,10 @@ export default function Pengeluaran() {
         (index + 1).toString().padStart(6, "0"),
         item.nama_product,
         item.harga_beli.toLocaleString("id-ID"), // Remove currency style
-        item.harga_total.toLocaleString("id-ID"), // Remove currency style
-        item.pajak.toLocaleString("id-ID"), // Remove currency style
+        item.harga_total_beli.toLocaleString("id-ID"), // Remove currency style
+        item.pajak.toLocaleString("id-ID"), // Remove currency style  
+        item.jumlah,
+
         formatTanggal(item.tanggal),
       ];
       tableRows.push(pengeluaranData);
@@ -98,9 +101,10 @@ export default function Pengeluaran() {
 
     // Calculate totals
     const totalPengeluaran = currentItems.reduce(
-      (acc, item) => acc + item.harga_total,
+      (acc, item) => acc + item.harga_total_beli,
       0
     );
+    
     const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
 
     // Format totals to IDR currency
@@ -180,8 +184,9 @@ export default function Pengeluaran() {
                       <td className="text-center font-semibold">
                         Nama Product
                       </td>
-                      <td className="text-center font-semibold">Pajak</td>
                       <td className="text-center font-semibold">Harga Beli</td>
+                      <td className="text-center font-semibold">Pajak</td>
+                      <td className="text-center font-semibold">Jumlah</td>
                       <td className="text-center font-semibold">Sub Total</td>
                       <td className="text-center font-semibold">Tanggal</td>
                       <td className="text-center font-semibold">Nota Produk</td>
@@ -196,17 +201,19 @@ export default function Pengeluaran() {
                             <h1 style="font-size: 24px; color: #4a4a4a; border-bottom: 2px solid #000; padding-bottom: 10px;">Nota Pengeluaran</h1>
                             <h2 style="font-size: 18px; color: #333; margin-top: 5px;">Melawi Marine</h2>
                           </div>
-                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
-                            <span style="font-weight: bold; color: #333;">No:</span>
-                            <span style="color: #555;">${(index + 1)
-                              .toString()
-                              .padStart(6, "0")}</span>
-                          </div>
+                        
                           <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
                             <span style="font-weight: bold; color: #333;">Nama Product:</span>
                             <span style="color: #555;">${
                               item.nama_product
                             }</span>
+                          </div>
+                          
+                          <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                            <span style="font-weight: bold; color: #333;">Harga Beli:</span>
+                            <span style="color: #555;">${formatIDR(
+                              item.harga_beli
+                            )}</span>
                           </div>
                           <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
                             <span style="font-weight: bold; color: #333;">Pajak:</span>
@@ -215,15 +222,13 @@ export default function Pengeluaran() {
                             )}</span>
                           </div>
                           <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
-                            <span style="font-weight: bold; color: #333;">Harga Beli:</span>
-                            <span style="color: #555;">${formatIDR(
-                              item.harga_beli
-                            )}</span>
+                            <span style="font-weight: bold; color: #333;">Jumlah:</span>
+                            <span style="color: #555;">${item.jumlah}</span>
                           </div>
                           <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
                             <span style="font-weight: bold; color: #333;">Sub Total:</span>
                             <span style="color: #555;">${formatIDR(
-                              item.harga_total
+                              item.harga_total_beli
                             )}</span>
                           </div>
                           <div style="margin-bottom: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
@@ -270,28 +275,44 @@ export default function Pengeluaran() {
                           key={item.id_pembelian_barang}
                           className="hover:bg-blue-50 transition duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border-b border-gray-200 last:border-none"
                         >
+                          {/* Sequential Number */}
                           <td className="py-3 px-6 text-center text-gray-700">
-                            {(index + 1).toString().padStart(6, "0")}
+                            {String(
+                              index + 1 + (currentPage - 1) * itemsPerPage
+                            ).padStart(6, "0")}
                           </td>
+                          {/* Product Name */}
                           <td className="py-3 px-6 text-center text-gray-700">
                             {item.nama_product}
                           </td>
-                          <td className="py-3 px-6 text-center text-gray-700">
-                            {formatIDR(item.pajak)}
-                          </td>
-                          <td className="py-3 px-6 text-center text-gray-700">
+
+                          {/* Purchase Price */}
+                          <td className="py-3 px-6 text-right text-gray-700">
                             {formatIDR(item.harga_beli)}
                           </td>
-                          <td className="py-3 px-6 text-center text-gray-700">
-                            {formatIDR(item.harga_total)}
+                          {/* Tax */}
+                          <td className="py-3 px-6 text-right text-gray-700">
+                            {formatIDR(item.pajak)}
                           </td>
+                          {/* Purchase Price */}
+                          <td className="py-3 px-6 text-right text-gray-700">
+                            {item.jumlah}
+                          </td>
+                          {/* Total Price */}
+                          <td className="py-3 px-6 text-right text-gray-700">
+                            {formatIDR(item.harga_total_beli)}
+                          </td>
+                          {/* Date */}
                           <td className="py-3 px-6 text-center text-gray-700">
                             {formatTanggal(item.tanggal)}
                           </td>
+                          {/* Print Button */}
                           <td className="py-3 px-6 text-center">
                             <button
                               onClick={handlePrint}
-                              className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded"
+                              className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded transition duration-300"
+                              title="Cetak Nota"
+                              aria-label={`Cetak Nota untuk ${item.nama_product}`}
                             >
                               Cetak Nota
                             </button>

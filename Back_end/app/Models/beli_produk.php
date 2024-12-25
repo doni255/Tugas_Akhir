@@ -16,6 +16,8 @@ class beli_produk extends Model
         'id_user',
         'bukti_pembayaran',
         'harga_jual',
+        'harga_total',
+        'jumlah',
         'tanggal',
         'status',
         'status_pengiriman',

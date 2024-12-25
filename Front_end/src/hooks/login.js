@@ -74,7 +74,7 @@ const login = () => {
         if (response.data.data.role === "admin") {
           navigate("/dashboard");
         } else if (response.data.data.role === "supplier") {
-          navigate("/dashboard");
+          navigate("/dashboard/products");
         }
         window.location.reload();
       }

@@ -23,34 +23,35 @@ class PendapatanController extends Controller
         return response()->json(Pendapatan::all());
     }
 
-    public function     getGrafikPendapatanPerbulanDiTahunini()
+    public function getGrafikPendapatanPerbulanDiTahunini(Request $request)
     {
+        $year = $request->input('year', date('Y')); // Get the year from the request or use the current year as default
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
-        // Mengambil data pendapatan berdasarkan bulan
-        $pendapatanPerbulan = Pendapatan::selectRaw('MONTH(tanggal) as bulan, SUM(harga_total) as total_pendapatan')
-            ->whereYear('tanggal', date('Y'))
+    
+        // Fetch revenue data grouped by month for the specified year
+        $pendapatanPerbulan = Pendapatan::selectRaw('MONTH(tanggal) as bulan, SUM(harga_total_jual) as total_pendapatan')
+            ->whereYear('tanggal', $year) // Filter by the specified year
             ->groupBy('bulan')
             ->get();
-
-        // Menginisialisasi array untuk menampung data pendapatan per bulan
+    
+        // Initialize the monthly revenue array
         $pendapatanPerbulanArray = [];
-
-        // Memproses data pendapatan per bulan
+    
+        // Populate data for all months
         foreach ($bulan as $key => $value) {
             $pendapatanPerbulanArray[$key]['bulan'] = $value;
             $pendapatanPerbulanArray[$key]['total_pendapatan'] = 0;
-
+    
             foreach ($pendapatanPerbulan as $pendapatan) {
                 if ($pendapatan->bulan == $key + 1) {
                     $pendapatanPerbulanArray[$key]['total_pendapatan'] = $pendapatan->total_pendapatan;
                 }
             }
         }
-
+    
         return response()->json($pendapatanPerbulanArray);
     }
-
+    
     public function getGrafikPendapatanPertahun()
     {
         $tahun = Pendapatan::selectRaw('YEAR(tanggal) as tahun')
@@ -58,7 +59,7 @@ class PendapatanController extends Controller
             ->get();
 
         // Mengambil data pendapatan berdasarkan tahun
-        $pendapatanPertahun = Pendapatan::selectRaw('YEAR(tanggal) as tahun, SUM(harga_total) as total_pendapatan')
+        $pendapatanPertahun = Pendapatan::selectRaw('YEAR(tanggal) as tahun, SUM(harga_total_jual) as total_pendapatan')
             ->groupBy('tahun')
             ->get();
 

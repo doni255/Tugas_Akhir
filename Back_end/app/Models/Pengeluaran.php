@@ -15,8 +15,9 @@ class Pengeluaran extends Model
     protected $fillable = [
         'harga_beli',
         'pajak',
-        'harga_total',
         'tanggal',
+        'jumlah',
+        'harga_total_beli',
         'nama_product',
     ];
 }

@@ -89,6 +89,16 @@ const useCustomers = (users, setUsers) => {
       console.log("Selected User ID:", editUserData.id_user);
       console.log("Edit User Data:", editUserData);
 
+      const { nama, role, alamat, kota, no_telpon} = editUserData; // Extract the required fields
+
+      // Validate required fields
+      if (!nama || !role || !alamat || !kota || !no_telpon) {
+        toast.error(
+          "Please fill in all required fields: Nama, Role, Alamat, Kota, and No Telepon."
+        );
+        return;
+      }
+
       try {
         const response = await axios.put(
           `http://localhost:8000/api/users/${editUserData.id_user}`,
@@ -108,6 +118,7 @@ const useCustomers = (users, setUsers) => {
           )
         );
         handleCloseEditModal(); // Menutup modal setelah update
+        toast.success("User updated successfully!");
       } catch (error) {
         console.error("Error updating user: ", error);
       }

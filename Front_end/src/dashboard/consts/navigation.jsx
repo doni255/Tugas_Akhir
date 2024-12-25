@@ -21,7 +21,7 @@ export const DASHBOARD_SIDEBAR_LINKS = () => {
       label: "Dashboard",
       path: "/dashboard",
       icon: <HiOutlineViewGrid />,
-      roles: ["admin", "supplier"], // Roles allowed to view this link
+      roles: ["admin"], // Roles allowed to view this link
     },
     {
       key: "products",

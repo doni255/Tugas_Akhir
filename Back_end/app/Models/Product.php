@@ -21,6 +21,8 @@ class Product extends Authenticatable
         'kategori_produk',
         'harga_beli',
         'harga_jual',
+        'pajak',
+        'harga_total_jual',
         'jumlah_stock', 
     ];
     

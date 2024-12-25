@@ -69,7 +69,7 @@ use Illuminate\Http\Request;
     // Tambah Stock Konfirmasi untuk admin
     Route::get('/tambah_stock_admin', [TambahStockAdminController::class, 'getTambahStock']);
     Route::post('/tambah_stock_admin/konfirmasi_tambah_stock', [TambahStockAdminController::class, 'konfirmasiTambahStock']);     
-    Route::delete('/tambah_stock/destroy/{id}', [TambahStockAdminController::class, 'destroy']);
+    Route::delete('/tambah_stock/destroy/{id_product}', [TambahStockAdminController::class, 'destroy']);
 
     // Pendapatan 
     Route::get('/pendapatan', [PendapatanController::class, 'getPendapatan']);
@@ -88,6 +88,7 @@ use Illuminate\Http\Request;
     Route::get('/keranjang_pembelian/{id_user}', [BeliProdukController::class, 'getKeranjangPembelian']);
     Route::post('/keranjang_pembelian/tambah_keranjang/{id_user}', [BeliProdukController::class, 'keranjangPembelian']);
     Route::post('/keranjang_pembelian/beli_product/{id_beli_produk}', [BeliProdukController::class, 'beliProduct']);
+    Route::post('/keranjang_pembelian/beli_all_products', [BeliProdukController::class, 'beliAllProducts']);
     Route::get('/status_beli_product', [BeliProdukController::class, 'getBeliProductByStatus']);
     Route::delete('/hapus_keranjang/{id_beli_produk}', [BeliProdukController::class, 'destroyEvidentPayment']);
     Route::post("/konfirmasi_pembayaran/{id_beli_produk}", [BeliProdukController::class, 'konfirmasiPembayaran']);

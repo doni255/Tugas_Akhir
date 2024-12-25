@@ -29,16 +29,36 @@ const TrackOrder = () => {
     }
   };
 
-  const handleSubmitPesanan = () => {
-    console.log("id produk in handel submit", selectedIdBeliProduk);
+  // const handleSubmitPesanan = () => {
+  //   console.log("id produk in handel submit", selectedIdBeliProduk);
+
+  //   try {
+  //     const response = axios.post(
+  //       `http://localhost:8000/api/konfirmasi_penerimaan_produk/${selectedIdBeliProduk}`
+  //     );
+  //     toast.success("Pesanan Diterima");
+  //     fetchTrackOrder();
+  //   } catch (error) {
+  //     toast.error("Gagal menerima pesanan");
+  //   }
+  // };
+
+  const handleSubmitPesanan = async () => {
+    console.log("id produk in handleSubmitPesanan", selectedIdBeliProduk);
+
+    if (!selectedIdBeliProduk) {
+      toast.error("Produk ID tidak ditemukan.");
+      return;
+    }
 
     try {
-      const response = axios.post(
+      const response = await axios.post(
         `http://localhost:8000/api/konfirmasi_penerimaan_produk/${selectedIdBeliProduk}`
       );
       toast.success("Pesanan Diterima");
-      fetchTrackOrder();
+      fetchTrackOrder(); // Refresh track order data
     } catch (error) {
+      console.error(error);
       toast.error("Gagal menerima pesanan");
     }
   };

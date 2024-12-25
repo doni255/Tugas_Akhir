@@ -139,45 +139,185 @@ export default function Products({ productId, userId }) {
     const { name, kategori_produk, harga_beli, harga_jual, stock, imageUrl } =
       formData;
 
-    // Display the value that we input
-    console.log(formData);
+    // Validate required fields
+    if (!name || !kategori_produk || !harga_beli || !harga_jual || !stock) {
+      toast.error("Please fill out all required fields.");
+      return;
+    }
 
-    // Lanjutkan ke pengiriman data jika semua field sudah terisi
-    const base64Image = imageUrl ? imageUrl.split(",")[1] : null;
-    const newItem = {
-      nama_product: name,
-      kategori_produk: kategori_produk,
-      harga_beli: harga_beli,
-      harga_jual: harga_jual,
-      konten_base64: base64Image,
-      jumlah_stock: stock,
-    };
+    // Create FormData object
+    const formDataToSend = new FormData();
+    formDataToSend.append("nama_product", name);
+    formDataToSend.append("kategori_produk", kategori_produk);
+    formDataToSend.append("harga_beli", harga_beli);
+    formDataToSend.append("harga_jual", harga_jual);
+    formDataToSend.append("jumlah_stock", stock);
 
-    console.log(newItem); // Debug log to check the structure of newItem
+    // Add image file to FormData if it exists
+    if (imageUrl) {
+      const imageFile = dataURItoBlob(imageUrl); // Convert base64 to blob
+      formDataToSend.append("gambar", imageFile); // Append the image as a file
+    }
 
     try {
       const response = await axios.post(
         "http://localhost:8000/api/create",
-        newItem,
+        formDataToSend,
         {
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json", // Gunakan application/json
+            "Content-Type": "multipart/form-data", // Ensure this is set for FormData
           },
         }
       );
 
-      console.log("Response dari server:", response);
-      toggleModalCreate();
-      fetchProducts();
-      toast.success("Product berhasil ditambahkan!", {
-        duration: 3000,
-      });
+      if (response.status >= 200 && response.status < 300) {
+        toggleModalCreate();
+        toast.success("Product berhasil ditambahkan!");
+        fetchProducts(); // Refresh product list after successful addition
+      } else {
+        toast.error("Failed to add product.");
+      }
     } catch (error) {
-      console.log("Error saat mengirim data:", error);
+      console.error("Error saat mengirim data:", error);
+      toast.error("Something went wrong while adding the product.");
       toggleModalCreate();
     }
   };
+
+  // Helper function to convert base64 to Blob
+  const dataURItoBlob = (dataURI) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uintArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      uintArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([uintArray], { type: "image/jpeg" }); // Adjust MIME type as needed
+  };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const { name, kategori_produk, harga_beli, harga_jual, stock, imageUrl } = formData;
+
+  //   // Validate required fields
+  //   if (!name || !kategori_produk || !harga_beli || !harga_jual || !stock) {
+  //     toast.error("Please fill out all required fields.");
+  //     return;
+  //   }
+
+  //   // Display the value that we input
+  //   console.log(formData);
+
+  //   const base64Image = imageUrl ? imageUrl.split(",")[1] : null;
+  //   const newItem = {
+  //     nama_product: name,
+  //     kategori_produk: kategori_produk,
+  //     harga_beli: harga_beli,
+  //     harga_jual: harga_jual,
+  //     konten_base64: base64Image,
+  //     jumlah_stock: stock,
+  //   };
+
+  //   console.log(newItem); // Debug log to check the structure of newItem
+
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/api/create",
+  //       newItem,
+  //       {
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Response dari server:", response);
+
+  //     if (response.status >= 200 && response.status < 300) {
+  //       // Success handling
+  //       toggleModalCreate();
+  //       toast.success("Product berhasil ditambahkan!", { duration: 3000 });
+
+  //       // Refresh product list after successful addition
+  //       fetchProducts();  // Call fetchProducts after a successful post request
+  //     } else {
+  //       console.log("Unexpected response status:", response.status);
+  //       toast.error("Failed to add product.");
+  //     }
+  //   } catch (error) {
+  //     // Log the full error object to debug further
+  //     console.error("Error saat mengirim data:", error);
+
+  //     if (error.response) {
+  //       console.error("Response error:", error.response.data);  // Logs the error response from the server
+  //     }
+
+  //     if (error.request) {
+  //       console.error("Request error:", error.request);  // Logs the request if no response was received
+  //     }
+
+  //     if (!error.response && !error.request) {
+  //       console.error("General error:", error.message);  // Any other error that occurs
+  //     }
+
+  //     toast.error("Something went wrong while adding the product.");
+  //     toggleModalCreate();
+  //   }
+
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const { name, kategori_produk, harga_beli, harga_jual, stock, imageUrl } =
+  //     formData;
+
+  //   // Validate required fields
+  //   if (!name || !kategori_produk || !harga_beli || !harga_jual || !stock) {
+  //     toast.error("Please fill out all required fields.");
+  //     return;
+  //   }
+
+  //   // Display the value that we input
+  //   console.log(formData);
+
+  //   // Lanjutkan ke pengiriman data jika semua field sudah terisi
+  //   const base64Image = imageUrl ? imageUrl.split(",")[1] : null;
+  //   const newItem = {
+  //     nama_product: name,
+  //     kategori_produk: kategori_produk,
+  //     harga_beli: harga_beli,
+  //     harga_jual: harga_jual,
+  //     konten_base64: base64Image,
+  //     jumlah_stock: stock,
+  //   };
+
+  //   console.log(newItem); // Debug log to check the structure of newItem
+
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/api/create",
+  //       newItem,
+  //       {
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json", // Gunakan application/json
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Response dari server:", response);
+  //     toggleModalCreate();
+  //     fetchProducts();
+  //     toast.success("Product berhasil ditambahkan!", {
+  //       duration: 3000,
+  //     });
+  //   } catch (error) {
+  //     console.log("Error saat mengirim data:", error);
+  //     toggleModalCreate();
+  //   }
+  // };
 
   const handleTambahStockClick = (id_product) => {
     console.log(`handleTambahStockClick called with id_product: ${id_product}`);
@@ -376,25 +516,71 @@ export default function Products({ productId, userId }) {
     setIsBuyModalOpen(true);
   };
 
+  // const handlePembelianProduct = async (e, id_product) => {
+  //   e.preventDefault();
+  //   const { jumlah_stock } = formDataStock; // Hapus id_product jika tidak dibutuhkan
+
+  //   // Validate inputs
+  //   if (!jumlah_stock) {
+  //     toast.error("Jumlah stock harus di isi!", {
+  //       duration: 3000,
+  //     });
+  //     return;
+  //   }
+
+  //   const newItem = {
+  //     jumlah_stock: jumlah_stock,
+  //   };
+  //   console.log(newItem);
+
+  //   console.log(setSelectedProduct());
+  //   try {
+  //     const response = await axios.put(
+  //       `http://localhost:8000/api/product/pembelian_product/${id_product}`, // Gunakan id_product dari parameter
+  //       newItem,
+  //       {
+  //         headers: {
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     // Handle successful response
+  //     if (response.status === 200 || response.status === 201) {
+  //       toast.success("Pembelian Produk Berhasil", {
+  //         duration: 3000,
+  //       });
+  //       setIsBuyModalOpen(false);
+  //     }
+
+  //     // Optionally refresh the list or fetch updated data
+  //     fetchProducts(); // Pastikan fungsi ini ada dan bekerja dengan benar
+  //   } catch (error) {
+  //     // Handle errors (network issues, server errors, etc.)
+  //     console.error("Gagal melakukan pembelian:", error);
+  //     alert("Terjadi kesalahan");
+  //   }
+  // };
+
   const handlePembelianProduct = async (e, id_product) => {
     e.preventDefault();
-    const { jumlah_stock } = formDataStock; // Hapus id_product jika tidak dibutuhkan
+    const { jumlah_stock } = formDataStock;
 
     // Validate inputs
     if (!jumlah_stock) {
-      alert("Jumlah stock harus di isi!");
+      toast.error("Jumlah stock harus di isi!", {
+        duration: 3000,
+      });
       return;
     }
 
     const newItem = {
       jumlah_stock: jumlah_stock,
     };
-    console.log(newItem);
 
-    console.log(setSelectedProduct());
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/product/pembelian_product/${id_product}`, // Gunakan id_product dari parameter
+        `http://localhost:8000/api/product/pembelian_product/${id_product}`,
         newItem,
         {
           headers: {
@@ -411,12 +597,30 @@ export default function Products({ productId, userId }) {
         setIsBuyModalOpen(false);
       }
 
-      // Optionally refresh the list or fetch updated data
-      fetchProducts(); // Pastikan fungsi ini ada dan bekerja dengan benar
+      // Refresh product list
+      fetchProducts();
     } catch (error) {
-      // Handle errors (network issues, server errors, etc.)
-      console.error("Gagal melakukan pembelian:", error);
-      alert("Terjadi kesalahan");
+      if (error.response && error.response.status === 400) {
+        const errorMessage = error.response.data.message;
+        const availableStock = error.response.data.available_stock;
+
+        if (errorMessage.includes("melebihi stock")) {
+          toast.error(
+            `Pembelian Jumlah stock melebihi yang tersedia (${availableStock} tersedia)`,
+            {
+              duration: 3000,
+            }
+          );
+        } else {
+          toast.error(errorMessage, {
+            duration: 3000,
+          });
+        }
+      } else {
+        toast.error("Terjadi kesalahan. Silakan coba lagi.", {
+          duration: 3000,
+        });
+      }
     }
   };
 
@@ -519,7 +723,6 @@ export default function Products({ productId, userId }) {
                     value={formData.name}
                     onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    required
                   />
                 </div>
 
@@ -552,6 +755,8 @@ export default function Products({ productId, userId }) {
                           "Spare Part Genset",
                           "Spare Part Mesin Kapal",
                           "Spare Part Gergaji",
+                          "Mesin Serat Kayu",
+                          "Mesin Bor Listrik",
                         ].map((category) => (
                           <Menu.Item key={category}>
                             {({ active }) => (
@@ -588,7 +793,6 @@ export default function Products({ productId, userId }) {
                     value={formData.harga_beli}
                     onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    required
                   />
                 </div>
 
@@ -606,7 +810,6 @@ export default function Products({ productId, userId }) {
                     value={formData.harga_jual}
                     onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    required
                   />
                 </div>
 
@@ -643,7 +846,6 @@ export default function Products({ productId, userId }) {
                     value={formData.stock}
                     onChange={handleTambahProduct}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    required
                   />
                 </div>
                 <div className="flex gap-2.5">
@@ -692,6 +894,8 @@ export default function Products({ productId, userId }) {
                 <td className="text-center font-semibold">Kategori Produk</td>
                 <td className="text-center font-semibold">Harga Beli</td>
                 <td className="text-center font-semibold">Harga Jual</td>
+                <td className="text-center font-semibold">Pajak</td>
+                <td className="text-center font-semibold">Harga Total Jual</td>
                 <td className=" text-center font-semibold">Stock</td>
                 <td></td>
                 <td></td>
@@ -729,16 +933,53 @@ export default function Products({ productId, userId }) {
                   <td className="py-3 px-6 text-center text-gray-700">
                     {product.harga_beli}
                   </td>
-                  <td className="py-3 px-6 text-center text-gray-700">
-                    {product.harga_jual !== null
-                      ? product.harga_jual
-                      : "Harga Belum Ditentukan"}
+                  <td className="py-3 px-6 text-center">
+                    {product.harga_jual !== null ? (
+                      <span className="text-gray-700">
+                        {product.harga_jual}
+                      </span>
+                    ) : (
+                      <span className="text-red-500 italic">
+                        Harga Belum Ditentukan
+                      </span>
+                    )}
                   </td>
+
+                  <td className="py-3 px-6 text-center">
+                    {product.harga_jual !== null ? (
+                      <span className="text-gray-700">{product.pajak}</span>
+                    ) : (
+                      <span className="text-red-500 italic">
+                        Pajak Belum Ditentukan
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="py-3 px-6 text-center">
+                    {product.harga_jual !== null ? (
+                      <span className="text-gray-700">
+                        {product.harga_total_jual}
+                      </span>
+                    ) : (
+                      <span className="text-red-500 italic">
+                        Harga Belum Ditentukan
+                      </span>
+                    )}
+                  </td>
+
                   <td className="py-3 px-6 text-center text-gray-700">
-                    {product.jumlah_stock}
+                    <span
+                      className={`font-semibold ${
+                        product.jumlah_stock < 10
+                          ? "text-red-600"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {product.jumlah_stock}
+                    </span>
                   </td>
                   {/* <td className="py-4 px-4 text-center">{product.createdAt}</td> */}
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-4 px-4 text-center block">
                     {role === "admin" && (
                       <EditButton onClick={() => handleEditClick(product)} />
                     )}
@@ -834,6 +1075,8 @@ export default function Products({ productId, userId }) {
                       "Spare Part Genset",
                       "Spare Part Speed Boat",
                       "Spare Part Gergaji",
+                      "Mesin Serat Kayu",
+                      "Mesin Bor Listrik",
                     ].map((category) => (
                       <Menu.Item key={category}>
                         {({ active }) => (

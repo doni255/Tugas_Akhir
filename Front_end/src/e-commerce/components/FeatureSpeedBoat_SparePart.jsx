@@ -29,9 +29,11 @@ const FeatureSpeedBoat_SparePart = () => {
     <div className="container pt-16">
       <div className="lg:flex justify-between items-center">
         <div>
-          <h3 className="font-medium text-2xl">Speed Boat & SparePart</h3>
+          <h3 className="font-medium text-2xl bg-green-200 p-3  border-green-500 rounded-lg">
+            Speed Boat & SparePart
+          </h3>
           <p className="text-gray-600 mt-2">
-            Buy farm fresh fruits and vegetables online at the best prices
+            Buy our products and order online at the best prices
           </p>
         </div>
 
