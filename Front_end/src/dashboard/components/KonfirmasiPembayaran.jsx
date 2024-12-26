@@ -102,7 +102,7 @@ export default function KonfirmasiPembayaran() {
         console.log(response);
         // fetchTambahStock();
         setisConfirmationModalOpen(false);
-        toast.success("Product berhasil di tambahkan !", {
+        toast.success("Product berhasil di konfirmasi !", {
           duration: 5000,
         });
         fetchBeliProduct();

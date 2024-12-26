@@ -14,22 +14,21 @@ const ProductCard = ({ product }) => {
   }, [product.jumlah_stock]);
 
   const tambahKeranjang = (idProduct) => {
+    const role = localStorage.getItem("role");
+    if (role !== "user") {
+      toast.error("Anda harus login terlebih dahulu.", {
+        duration: 2000,
+      });
+      return;
+    }
+
     const idUser = localStorage.getItem("id_user");
 
-    if (!idUser) {
+    if (!idUser ) {
       toast.error("Anda harus login terlebih dahulu.");
       return;
     }
 
-    // Frontend validation for quantity greater than available stock
-    // if (quantity > product.jumlah_stock) {
-    //   toast.error(
-    //     `Jumlah yang Anda pilih melebihi stok yang tersedia (${product.jumlah_stock})`
-    //   );
-    //   return;
-    // }
-
-    // Make POST request to add product to cart
     axios
       .post(
         `http://localhost:8000/api/keranjang_pembelian/tambah_keranjang/${idUser}`,
@@ -42,24 +41,14 @@ const ProductCard = ({ product }) => {
         }
       )
       .then((response) => {
-        if (response.data.message === "Product added to cart") {
-          toast.success("Produk berhasil ditambahkan ke keranjang.");
-
-          // Decrease the stock locally
-          // product.jumlah_stock -= quantity;
-
-          // Reset the quantity after adding to cart
-          setQuantity(1);
-        } else {
-          toast.success("Produk jumlahnya sudah diperbarui di keranjang.");
-        }
+        toast.success(response.data.message)
       })
       .catch((error) => {
         console.error("Error tambah keranjang:", error);
         if (error.response) {
           console.log("Error response data:", error.response.data);
           toast.error(
-            `Jumlah yang Anda pilih sudah maksimal terisi di keranjang pembelian`
+            error.response.data.message
           );
         }
       });

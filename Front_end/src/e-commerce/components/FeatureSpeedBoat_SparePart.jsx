@@ -9,7 +9,7 @@ const FeatureSpeedBoat_SparePart = () => {
   useEffect(() => {
     axios
       .post("http://localhost:8000/api/product/categories", {
-        categories: ["spare part mesin kapal"],
+        categories: ["spare part mesin kapal", "mesin kapal", "speed boat"],
       })
       .then((response) => {
         setProducts(response.data.data || []); // Pastikan data di-set sebagai array

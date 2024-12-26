@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
-const useCustomers = (users, setUsers) => {
+const   useCustomers = (users, setUsers) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -224,6 +224,7 @@ const useCustomers = (users, setUsers) => {
         toast.success("User registered successfully!");
         // Close the modal after successful registration
         setIsCreateModalOpen(false);
+        window.location.reload();
       } else {
         throw new Error("Failed to register user.");
       }

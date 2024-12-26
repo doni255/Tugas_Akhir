@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
+import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable"; // Import for auto table
 import Pagination from "../consts/Pagination";
@@ -27,6 +28,15 @@ export default function Pengeluaran() {
       setPengeluaran([]);
     }
   };
+
+  // Sort the pendapatan data by tanggal (newest first)
+  const sortedData = pengeluaran
+    ? pengeluaran.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+    : [];
+
+  useEffect(() => {
+    fetchPengeluaran(); // Fetch the data when the component mounts
+  }, []);
 
   useEffect(() => {
     fetchPengeluaran();
@@ -74,7 +84,7 @@ export default function Pengeluaran() {
         item.nama_product,
         item.harga_beli.toLocaleString("id-ID"), // Remove currency style
         item.harga_total_beli.toLocaleString("id-ID"), // Remove currency style
-        item.pajak.toLocaleString("id-ID"), // Remove currency style  
+        item.pajak.toLocaleString("id-ID"), // Remove currency style
         item.jumlah,
 
         formatTanggal(item.tanggal),
@@ -104,7 +114,7 @@ export default function Pengeluaran() {
       (acc, item) => acc + item.harga_total_beli,
       0
     );
-    
+
     const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
 
     // Format totals to IDR currency
@@ -147,6 +157,94 @@ export default function Pengeluaran() {
     );
   }
 
+  const handleDownloadExcel = () => {
+    const wb = XLSX.utils.book_new();
+
+    // Define the table column headers.
+    const tableColumn = [
+      "No",
+      "Nama Product",
+      "Harga Beli",
+      "Sub Total",
+      "Pajak",
+      "Jumlah",
+      "Tanggal",
+    ];
+
+    // Map through currentItems to create rows of data.
+    const data = currentItems.map((item, index) => [
+      (index + 1).toString().padStart(6, "0"),
+      item.nama_product,
+      item.harga_beli.toLocaleString("id-ID"),
+      item.harga_total_beli.toLocaleString("id-ID"),
+      item.pajak.toLocaleString("id-ID"),
+      item.jumlah,
+      new Date(item.tanggal).toLocaleDateString("id-ID"),
+    ]);
+
+    // Create the worksheet and set the data.
+    const ws = XLSX.utils.aoa_to_sheet([tableColumn, ...data]);
+
+    // Adjust column widths for a better layout.
+    const columnWidths = [
+      { wch: 22 }, // No
+      { wch: 30 }, // Nama Product
+      { wch: 20 }, // Harga Beli
+      { wch: 20 }, // Sub Total
+      { wch: 15 }, // Pajak
+      { wch: 15 }, // Jumlah
+      { wch: 15 }, // Tanggal
+    ];
+    ws["!cols"] = columnWidths;
+
+    // Calculate totals for all products.
+    const totalPengeluaran = currentItems.reduce(
+      (acc, item) => acc + item.harga_total_beli,
+      0
+    );
+    const totalPajak = currentItems.reduce((acc, item) => acc + item.pajak, 0);
+    const grandTotal = totalPengeluaran + totalPajak;
+
+    // Add the summary section below the table.
+    const summaryStartRow = data.length + 5;
+    XLSX.utils.sheet_add_aoa(
+      ws,
+      [
+        ["Summary"],
+        ["Total Pengeluaran", totalPengeluaran.toLocaleString("id-ID")],
+        ["Total Pajak", totalPajak.toLocaleString("id-ID")],
+        ["Grand Total", grandTotal.toLocaleString("id-ID")],
+      ],
+      { origin: `A${summaryStartRow}` }
+    );
+
+    // Style the summary section for better appearance.
+    const summaryColumnWidths = [
+      { wch: 20 }, // Adjusted width for "Summary" label
+      { wch: 25 }, // Adjusted width for the totals values
+    ];
+    ws["!cols"] = columnWidths.concat(summaryColumnWidths);
+
+    const range = XLSX.utils.decode_range(
+      `A${summaryStartRow}:B${summaryStartRow + 3}`
+    );
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!ws[cellAddress]) continue;
+        ws[cellAddress].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "FF5733" } }, // Orange background for Pengeluaran
+          alignment: { horizontal: "center" },
+        };
+      }
+    }
+
+    // Add the worksheet to the workbook and save the file.
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan Pengeluaran");
+    XLSX.writeFile(wb, "laporan-pengeluaran.xlsx");
+  };
+
   return (
     <main className="bg-gray-100 min-h-screen p-6">
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border-gray-200 flex-1">
@@ -165,6 +263,7 @@ export default function Pengeluaran() {
               <FaFilePdf size={25} />
             </button>
             <button
+              onClick={handleDownloadExcel}
               className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white p-2 rounded-md shadow-lg transform hover:scale-105 transition-transform duration-300"
               title="Download as Excel"
             >

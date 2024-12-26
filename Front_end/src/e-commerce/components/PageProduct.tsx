@@ -445,9 +445,7 @@ const ProductList = ({
           {products.some((product) => product.name === "Pompa Air") && (
             <FeatureWaterPump_Sparepart />
           )}
-          {products.some((product) => product.name === "Pompa Air", "Pemotong Rumput") && (
-            <FeatureAnotherMachine />
-          )}
+          <FeatureAnotherMachine />
         </>
       ) : (
         <li>No products found</li>

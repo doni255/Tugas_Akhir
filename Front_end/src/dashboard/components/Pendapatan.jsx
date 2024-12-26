@@ -8,8 +8,9 @@ import "jspdf-autotable"; // Import for auto table
 import Pagination from "../consts/Pagination";
 
 export default function Pendapatan() {
-  const [pendapatan, setPendapatan] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pendapatan, setPendapatan] = useState([]);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -19,19 +20,27 @@ export default function Pendapatan() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Fetch pendapatan data from the API
   const fetchPendapatan = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/pendapatan");
       console.log("Data fetched from API:", response.data);
       setPendapatan(response.data);
+      setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching data:", error);
       setPendapatan([]);
+      setLoading(false);
     }
   };
 
+  // Sort the pendapatan data by tanggal (newest first)
+  const sortedData = pendapatan
+    ? pendapatan.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+    : [];
+
   useEffect(() => {
-    fetchPendapatan();
+    fetchPendapatan(); // Fetch the data when the component mounts
   }, []);
 
   const formatTanggal = (tanggal) => {
